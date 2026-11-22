@@ -115,7 +115,7 @@ pros::MotorGroup drivetrainLeft({-4,-8,-3}, pros::v5::MotorGearset::green);
 pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 ```
 >[!NOTE]
->There are more examples which may end up with this configuration, this is not the only way that these happen.
+>There are more examples which may end up with this configuration, these are not the only way that these happen.
 ## Downloading code
 To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "N/A 1", "N/A 2", click A on your controller to continue.\
 For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move forward/backward while the right joystick should move left/right.If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
@@ -154,14 +154,13 @@ Change the name to something fitting for what your declared motor is going to do
 Change the name from `motorHelper1` to match the name in your `helpers.hpp` folder, then change the `forward`/`backward` to the new names you picked in your `helpers.hpp`.\
 **Examples:**\
 **1. Lift system which moves up/down**
-\
 ```
 In helpers.hpp:
     void liftControls(const bool up, const bool down, const float speed);
 
 In helpers.cpp:
     void liftControls(const bool up, const bool down, const float speed) {
-        [Future code here]
+        [Code here]
     }
 ```
 \
@@ -172,13 +171,13 @@ In helpers.hpp:
 
 In helpers.cpp:
     void intakeControls(const bool in, const bool out, const float speed) {
-        [Future code here]
+        [Code here]
     }
 ```
 \
 Once you've finished that, you're going to scroll further down in your `helpers.cpp` file until you find the `motorControls` function, which should look like\
 `void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {`\
-Inside of it, you should find something similar to the following:\
+Inside of it, you should find something similar to the following:
 ```
 motorHelper1(
     buttonStatus(options.NA1),
@@ -186,7 +185,212 @@ motorHelper1(
     speedOptions.NA1
 );
 ```
-This must be renamed to the same name as your new function. This will be where your function is ventually going to be used. But for now, you've made a helper function!
+This must be renamed to the same name as your new function. This will be where your function is eventually going to be used. But for now, you've made a helper function!
+## Writing a simple program inside our helper function
+Since you've created the helper function, now you need to write code inside it. Look back at your function *definition*, it should currently look something like
+```
+void intakeControls(const bool in, const bool out, const float speed) {
+
+}
+```
+>[!NOTE]
+>Yours may have different names, that's okay, you can copy the project if it makes more sense that way, but the lesson can be adapted to a different/unique function.
+We're now going to add code here, let's start on a simple idea: We want a motor to spin forwards when you click the `in` button and backwards when we click the `out` button (for preface, these boolean inputs are buttons that we will define in [the next section](#defining-motor-controls)). Let's start this by writing our `in` conditional, we will write
+```
+if (up) {
+    intake.move(speed);
+    return;
+}
+```
+This may seem like a jump, but this can be broken apart.\
+The `if (up)` is asking if the `up` boolean is set to true, in the exmaple code's context, this will eventually mean "is the selected button being held?"\
+The `intake.move(speed);` line is simply saying "the intake motor must start spinning at the value of `speed`.\
+The `return;` tells the function that it is done doing what it must and can immediately leave.\
+Now what about when it should move down? Let's write something similar, under our new code block, we will write something like
+```
+if (down) {
+    intake.move(-speed);
+    return;
+}
+```
+This is almost exactly the same, except now the code is asking about the `down` button and is spinning in the opposite direction (due to it being the negative speed value). Finally, what if it should brake when not being pressed? Under the other two block codes, we will write `intake.brake();`. Now the `return;` line has meaning, without it, our robot would see that we pressed a button, move the motor, and then immediately brake the motor. With this `return;` line, we tell the function that once it's activated from a button, it can stop looking for more code to run.\
+In the example, the final code looks as follows:
+```
+void intakeControls(const bool in, const bool out, const float speed) {
+    if (up) {
+        intake.move(speed);
+        return;
+    }
+
+    if (down) {
+        intake.move(-speed);
+        return;
+    }
+
+    intake.brake();
+}
+```
+**Again, your code may look slightly different or have different names, that's okay. However, if your code isn't working as desired, follow the example's steps.**\
+Now you've written a simple program inside your helper function! But to make it run, we have to define motor controls.
+
 ## Defining motor controls
+Defining motor controls is probably one of the silliest looking parts, but with practice (and if you read [the section on it](#extra-syntax)), it should make sense. To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
+```
+    struct motorControlOptions {
+        /*
+        Do NOT touch the assigned type   |           | change amount and  | do not change
+                                         v           v names as needed    v given value
+        */
+        std::optional<pros::controller_digital_e_t> NA1 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA2 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA3 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA4 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA5 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA6 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA7 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA8 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA9 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA10 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA11 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
+    };
+```
+The comments directly instruct you on what to do, for our intake function let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively. These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to our the `motorControls` function, you should see something like:
+```
+void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
+    intakeControls(
+        buttonStatus(options.NA1),
+        buttonStatus(options.NA2),
+        speedOptions.NA1
+    );
+
+    [other code here]
+}
+```
+Change the names of the two parameters from `options.NA1` to `options.intakeIn` and `options.NA2` to `options.intakeOut`.\
+**Example:**
+```
+void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
+    intakeControls(
+        buttonStatus(options.intakeIn),
+        buttonStatus(options.intakeOut),
+        speedOptions.NA1
+    );
+
+    [other code here]
+}
+```
+You've now told your code which values to use through more clarified naming conventions! Though, the controls haven't actually been defined yet. To do this, go your `main.cpp` file and scroll until you find the `motorControls` function in main, it should look as follows:
+```
+motorControls({
+    //Controls options for motors
+    //remove entire line for no control of said motor
+    .NA1 = std::nullopt,
+    .NA2 = std::nullopt,
+    .NA3 = std::nullopt,
+    .NA4 = std::nullopt,
+    .NA5 = std::nullopt,
+    .NA6 = std::nullopt,
+
+},{
+    //Speed options for the motors
+    //remove entire line for default speed of 100% for said motor
+    .NA1 = 127,
+    .NA2 = 127,
+    .NA3 = 127
+});
+```
+For now, we will only change `.NA1` and `.NA2`. Start by changing their names to match the same ones you typed out earlier, for our example it would be:
+```
+motorControls({
+    //Controls options for motors
+    //remove entire line for no control of said motor
+    .intakeIn = std::nullopt,
+    .intakeOut = std::nullopt,
+    .NA3 = std::nullopt,
+    .NA4 = std::nullopt,
+    .NA5 = std::nullopt,
+    .NA6 = std::nullopt,
+
+},{
+    //Speed options for the motors
+    //remove entire line for default speed of 100% for said motor
+    .NA1 = 127,
+    .NA2 = 127,
+    .NA3 = 127
+});
+```
+Finally, we can assign controller buttons to these! To start, assign your first one to some button, for our example, we will assign `.intakeIn` to `pros::E_CONTROLLER_DIGITAL_UP` which is the up-arrow button on the controller, and `.intakeOut` will be assigned to `pros::E_CONTROLLER_DIGITAL_DOWN`, the controller down-arrow. Your final should look something like this:
+```
+motorControls({
+    //Controls options for motors
+    //remove entire line for no control of said motor
+    .intakeIn = pros::E_CONTROLLER_DIGITAL_UP,
+    .intakeOut = pros::E_CONTROLLER_DIGITAL_DOWN,
+    .NA3 = std::nullopt,
+    .NA4 = std::nullopt,
+    .NA5 = std::nullopt,
+    .NA6 = std::nullopt,
+
+},{
+    //Speed options for the motors
+    //remove entire line for default speed of 100% for said motor
+    .NA1 = 127,
+    .NA2 = 127,
+    .NA3 = 127
+});
+```
+Now download it and test it! Does holding your first button move it forward/up/in and your second button moves it backward/down/out? If so, you've succesfully coded a working helper function with defined controls!
+>[!NOTE]
+>If your forward/up/in goes backward/down/out, flip your motor port to be negative
+But what if your motor intake is spinning too fast? How do we turn it down? Using the speedOptions struct we can set speeds other than the default 100%!
+## Defining motor speeds
+Following similar steps as before, move back to the `helpers.hpp` file and find the `motorSpeedOptions` struct. Change `NA1` to be a name suitable for you, in the case of the example, a good name would be `intakeSpeed`. Now move to the `helpers.cpp` file and go to the `motorControls` function, inside of it is your function which still calls `speedOptions.NA1`, change `NA1` to your new name. For our example project, it will now look as follows:
+```
+In helpers.hpp:
+    struct motorSpeedOptions {
+        double intakeSpeed = 127;
+        double NA2 = 127;
+        double NA3 = 127;
+        double NA4 = 127;
+        double NA5 = 127;
+    };
+
+In helpers.cpp:
+	void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
+        motorHelper1(
+            buttonStatus(options.NA1),
+            buttonStatus(options.NA2),
+            speedOptions.intakeSpeed
+        );
+
+        [other code]
+    }
+```
+Now, we need to set the speed. Go to `main.cpp` and find your motorControls code, it should look something like this:
+```
+motorControls({
+    //Controls options for motors
+    //remove entire line for no control of said motor
+    .intakeIn = pros::E_CONTROLLER_DIGITAL_UP,
+    .intakeOut = pros::E_CONTROLLER_DIGITAL_DOWN,
+    .NA3 = std::nullopt,
+    .NA4 = std::nullopt,
+    .NA5 = std::nullopt,
+    .NA6 = std::nullopt,
+
+},{
+    //Speed options for the motors
+    //remove entire line for default speed of 100% for said motor
+    .NA1 = 127,
+    .NA2 = 127,
+    .NA3 = 127
+});
+```
+Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. Now change 127 to be whatever speed you prefer. Now check if it builds and test it, if it works, you've succesfully created a working helper function with customizable speed!
+>[!TIP]
+>There is a `motorVelocity` function which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:
+>`.intakeSpeed = motorVelocity(80);`
+>This will run the motor at 80% speed
 
 # Extra syntax
