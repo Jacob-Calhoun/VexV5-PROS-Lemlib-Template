@@ -9,6 +9,7 @@ Hello! This file contains all the directions that should get you started!
 # Installing the template for your own repo
 >[!CAUTION]
 >These steps are for Windows, MacOS users may need to adapt some names for Mac apps
+
 ## Method 1: Installing the .zip folder and making your own repo
 1. Make a github account
 2. Go to "My repositories"
@@ -116,6 +117,7 @@ pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 ```
 >[!NOTE]
 >There are more examples which may end up with this configuration, these are not the only way that these happen.
+
 ## Downloading code
 To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "N/A 1", "N/A 2", click A on your controller to continue.\
 For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move forward/backward while the right joystick should move left/right.If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
@@ -344,6 +346,7 @@ motorControls({
 Now download it and test it! Does holding your first button move it forward/up/in and your second button moves it backward/down/out? If so, you've succesfully coded a working helper function with defined controls!
 >[!NOTE]
 >If your forward/up/in goes backward/down/out, flip your motor port to be negative
+
 But what if your motor intake is spinning too fast? How do we turn it down? Using the speedOptions struct we can set speeds other than the default 100%!
 ## Defining motor speeds
 Following similar steps as before, move back to the `helpers.hpp` file and find the `motorSpeedOptions` struct. Change `NA1` to be a name suitable for you, in the case of the example, a good name would be `intakeSpeed`. Now move to the `helpers.cpp` file and go to the `motorControls` function, inside of it is your function which still calls `speedOptions.NA1`, change `NA1` to your new name. For our example project, it will now look as follows:
@@ -390,8 +393,8 @@ motorControls({
 ```
 Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. Now change 127 to be whatever speed you prefer. Now check if it builds and test it, if it works, you've succesfully created a working helper function with customizable speed!
 >[!TIP]
->There is a `motorVelocity` function which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:
->`.intakeSpeed = motorVelocity(80);`
+>There is a `motorVelocity` function which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:\
+>`.intakeSpeed = motorVelocity(80);`\
 >This will run the motor at 80% speed
 
 # Extra syntax
