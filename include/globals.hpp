@@ -16,9 +16,18 @@
     extern pros::MotorGroup drivetrainRight;
 
 //Motors
-
+    extern pros::Motor Motor1;
+    extern pros::Motor Motor2;
+    extern pros::Motor Motor5;
+    extern pros::Motor Motor3;
+    extern pros::Motor Motor4;
   
 //Pneumatics
+    extern pros::adi::Pneumatics Pneumatic1;
+    extern pros::adi::Pneumatics Pneumatic2;
+    extern pros::adi::Pneumatics Pneumatic3;
+    extern pros::adi::Pneumatics Pneumatic4;
+    extern pros::adi::Pneumatics Pneumatic5;
 
 
 //Sensors
