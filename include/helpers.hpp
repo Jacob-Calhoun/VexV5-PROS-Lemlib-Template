@@ -70,5 +70,11 @@
         bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const buttonPressTypes& pressType = buttonPressTypes::HELD);
     //Related to motors (use motorControls, do not remove it)
         void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});
+        void motorHelper1(const bool forward, const bool backward, const float speed);
+        void motorHelper2(const bool forward, const bool backward, const float speed);
+        void motorHelper3(const bool forward, const bool backward, const float speed);
     //Related to pneumatics (use pneumaticControls, do not remove it)
         void pneumaticControls(const struct pneumaticControlOptions& options = {});
+        void pneumaticHelper1(const bool out, const bool in);
+        void pneumaticHelper2(const bool out, const bool in);
+        void pneumaticHelper3(const bool out, const bool in);

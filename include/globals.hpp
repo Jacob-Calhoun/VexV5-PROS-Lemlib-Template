@@ -18,9 +18,9 @@
 //Motors
     extern pros::Motor Motor1;
     extern pros::Motor Motor2;
-    extern pros::Motor Motor5;
     extern pros::Motor Motor3;
     extern pros::Motor Motor4;
+    extern pros::Motor Motor5;
   
 //Pneumatics
     extern pros::adi::Pneumatics Pneumatic1;

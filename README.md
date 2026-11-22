@@ -83,12 +83,12 @@ Hello! This file contains all the directions that should get you started!\
 >Currently, there can be issues where clangd says things are wrong and highlights them red, it CAN be incorrect. If you are unsure about clangd's error message, type `pros build` into your terminal and see if you get an error. If not, your code is fine.
 
 # Working with the template
-In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the [`Extra syntax` section](#Extra-syntax)
+In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the ["Extra syntax" section](#Extra-syntax)
 
 ## Define your drivetrain
-When opening your project, you should see files in the "src" and "include" folder dropdown, these files will be where you do all your coding. To start your project, enter `globals.hpp` and look around. Near the top, you should see lines like\
+When opening your project, you should see files in the "src" and "include" folder dropdown, these files will be where you do all your coding. To start your project, click on `globals.hpp` file within the "include" dropdown and look around. Near the top of this file, you should see lines like\
 `extern pros::MotorGroup drivetrainLeft;`\
-These are motor group declarations. A declaration is what goes in your .hpp files, it tells your code that this group of motors exist and are named drivetrainLeft, but it will not be defined in this file. Now navigate to `globals.cpp`, in there you should find\
+These are motor group declarations. A declaration is what goes in your .hpp files, it tells your code that this group of motors exist and are named drivetrainLeft, but it will not be defined in this file. Now navigate to the `globals.cpp` file, in there you should find\
 `pros::MotorGroup drivetrainLeft({1,1}, pros::v5::MotorGearset::green);`\
 The `{1,1}` is the list of ports for the motors in this group. Let's change it to reflect your actual drivetrain ports on the left side. If you have 3 motors on each side, no worries, add another comma and port number (example: `{1,2,3}`). Then look at the `pros::v5::MotorGearset::green`, this is your cartridge. Set it to whatever your drivetrain uses (you should be using the same cartridge for your entire drivetrain), if you use blue then it would be `pros::v5::MotorGearset::blue`. Now do the same for your right side in\
 `pros::MotorGroup drivetrainRight({1,1}, pros::v5::MotorGearset::green)`\
@@ -108,5 +108,23 @@ This also follows the same format, but we only write a number like `1`/`-1` rath
 void opcontrol () {
     //temporary code
 ```
-Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Now download this by following the same [download instructions](#downloading-code) from before. Once done, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the body and check for any errors.
+Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Now download this by following the same [download instructions](#downloading-code) from before. Once done, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors. Now you can add/remove these motor definitions/declarations (remove both, not just one or the other) so that you only have the motors you're using!\
+**Example:**
+```
+In globals.hpp file:
+    extern pros::Motor intake;
+    extern pros::Motor lift;
+    extern pros::Motor claw;
+
+In globals.cpp file:
+    pros::Motor intake(4, pros::v5::MotorGearset::green);
+    pros::Motor lift(-7, pros::v5::MotorGearset::blue);
+    pros::Motor claw(12, pros::v5::MotorGearset::red);
+```
+
+## Making helper functions
+Helper functions are the foundation for your code, they allow us to tell the robot what to do and when.
+
+## Defining motor controls
+
 # Extra syntax
