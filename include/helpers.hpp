@@ -32,11 +32,6 @@
         double NA3 = 127;
         double NA4 = 127;
         double NA5 = 127;
-        double NA6 = 127;
-        double NA7 = 127;
-        double NA8 = 127;
-        double NA9 = 127;
-        double NA10 = 127;
     };
     
     struct pneumaticControlOptions {

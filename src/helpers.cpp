@@ -51,14 +51,60 @@ then asks which type of button press we want
         return false;
     }
 
+//motorHelper1
+void motorHelper1(const bool forward, const bool backward, const float speed) {
+
+}
+
+//motorHelper2
+void motorHelper2(const bool forward, const bool backward, const float speed) {
+    
+}
+
+//motorHelper3
+void motorHelper3(const bool forward, const bool backward, const float speed) {
+    
+}
+
 /*
 Motor controls
 gives on main area where all motor functions go
 assign controls in main.cpp
 */
 	void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
+        motorHelper1(
+            buttonStatus(options.NA1),
+            buttonStatus(options.NA2),
+            speedOptions.NA1
+        );
 
+        motorHelper2(
+            buttonStatus(options.NA3),
+            buttonStatus(options.NA4),
+            speedOptions.NA2
+        );
+
+        motorHelper3(
+            buttonStatus(options.NA5),
+            buttonStatus(options.NA6),
+            speedOptions.NA3
+        );
 	}
+
+//pneumaticHelper1
+void pneumaticHelper1(const bool out, const bool in) {
+
+}
+
+//pneumaticHelper2
+void pneumaticHelper2(const bool out, const bool in) {
+
+}
+
+//pneumaticHelper3
+void pneumaticHelper3(const bool out, const bool in) {
+
+}
 
 /*
 Pneumatic controls
@@ -66,6 +112,19 @@ gives on main area where all pneumatic functions go
 assign controls in main.cpp
 */
 	void pneumaticControls(const struct pneumaticControlOptions& options) {
+        pneumaticHelper1(
+            buttonStatus(options.NA1),
+            buttonStatus(options.NA2)
+        );
 
+        pneumaticHelper2(
+            buttonStatus(options.NA3),
+            buttonStatus(options.NA4)
+        );
+
+        pneumaticHelper3(
+            buttonStatus(options.NA5),
+            buttonStatus(options.NA6)
+        );
 	}
 

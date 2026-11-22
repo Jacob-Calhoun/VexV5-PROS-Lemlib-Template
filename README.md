@@ -92,7 +92,26 @@ These are motor group declarations. A declaration is what goes in your .hpp file
 `pros::MotorGroup drivetrainLeft({1,1}, pros::v5::MotorGearset::green);`\
 The `{1,1}` is the list of ports for the motors in this group. Let's change it to reflect your actual drivetrain ports on the left side. If you have 3 motors on each side, no worries, add another comma and port number (example: `{1,2,3}`). Then look at the `pros::v5::MotorGearset::green`, this is your cartridge. Set it to whatever your drivetrain uses (you should be using the same cartridge for your entire drivetrain), if you use blue then it would be `pros::v5::MotorGearset::blue`. Now do the same for your right side in\
 `pros::MotorGroup drivetrainRight({1,1}, pros::v5::MotorGearset::green)`\
-We're not done, though! Motors on opposite sides need to spin opposite ways, if your motors on the left and right all face the same way, they would be `{1,2}`/`{1,2,3}` and `{-3,-4}`/`{-4,-5,-6}` respectively. A negative number for a port number means inverted, forward becomes backward and vice versa. In a moment when we test, if the drivetrain drives incorrectly, that's okay! Just change the negative/positive ports until it begins working, you should be able to figure out which should be negative and positive by talking to your builder and experimenting.
+We're not done, though! Motors on opposite sides need to spin opposite ways, if your motors on the left and right all face the same way, they would be `{1,2}`/`{1,2,3}` and `{-3,-4}`/`{-4,-5,-6}` respectively. A negative number for a port number means inverted, forward becomes backward and vice versa. In a moment when we test, if the drivetrain drives incorrectly, that's okay! Just change the negative/positive ports until it begins working, you should be able to figure out which should be negative and positive by talking to your builder and experimenting.\
+**Examples:**\
+**1.**
+```
+In globals.cpp file:
+pros::MotorGroup drivetrainLeft({4,-8}, pros::v5::MotorGearset::green);
+pros::MotorGroup drivetrainRight({12,-9}, pros::v5::MotorGearset::green);
+```
+\
+**2.**
+```
+pros::MotorGroup drivetrainLeft({-3,-2}, pros::v5::MotorGearset::green);
+pros::MotorGroup drivetrainRight({5,17}, pros::v5::MotorGearset::green);
+```
+\
+**3.**
+```
+pros::MotorGroup drivetrainLeft({-4,-8,-3}, pros::v5::MotorGearset::green);
+pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
+```
 
 ## Downloading code
 To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "N/A 1", "N/A 2", click A on your controller to continue.\
@@ -123,7 +142,9 @@ In globals.cpp file:
 ```
 
 ## Making helper functions
-Helper functions are the foundation for your code, they allow us to tell the robot what to do and when.
+Helper functions are the foundation for your code, they allow us to tell the robot what to do and when. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
+`void motorHelper1(const bool forward, const bool backward, const float speed);`\
+Change the name to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`.
 
 ## Defining motor controls
 

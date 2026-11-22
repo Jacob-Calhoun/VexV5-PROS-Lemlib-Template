@@ -16,9 +16,9 @@
   //Miscellaneous motors
     pros::Motor Motor1(1, pros::v5::MotorGearset::green);
     pros::Motor Motor2(1, pros::v5::MotorGearset::green);
-    pros::Motor Motor5(1, pros::v5::MotorGearset::green);
     pros::Motor Motor3(1, pros::v5::MotorGearset::green);
     pros::Motor Motor4(1, pros::v5::MotorGearset::green);
+    pros::Motor Motor5(1, pros::v5::MotorGearset::green);
 
 //Pneumatics
     pros::adi::Pneumatics Pneumatic1('A', false);

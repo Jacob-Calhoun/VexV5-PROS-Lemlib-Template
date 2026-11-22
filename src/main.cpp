@@ -100,14 +100,31 @@ void opcontrol() {
 		motorControls({
 			//Controls options for motors
 			//remove entire line for no control of said motor
+            .NA1 = std::nullopt,
+            .NA2 = std::nullopt,
+            .NA3 = std::nullopt,
+            .NA4 = std::nullopt,
+            .NA5 = std::nullopt,
+            .NA6 = std::nullopt,
 
 		},{
 			//Speed options for the motors
 			//remove entire line for default speed of 100% for said motor
-
+            .NA1 = 127,
+            .NA2 = 127,
+            .NA3 = 127
 		});
 
-		pneumaticControls();
+		pneumaticControls({
+            //Controls options for motors
+			//remove entire line for no control of said motor
+            .NA1 = std::nullopt,
+            .NA2 = std::nullopt,
+            .NA3 = std::nullopt,
+            .NA4 = std::nullopt,
+            .NA5 = std::nullopt,
+            .NA6 = std::nullopt
+        });
 		//Delay for resources
 		pros::delay(10);
 	  }
