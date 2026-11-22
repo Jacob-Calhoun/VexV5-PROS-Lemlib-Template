@@ -1,4 +1,4 @@
-Hello! This file contains all the directions that should get you started!\
+Hello! This file contains all the directions that should get you started!
 # Installing VSCode
 1. Make a Github account
 2. Follow [this link](https://code.visualstudio.com/download) for download options
@@ -94,25 +94,28 @@ The `{1,1}` is the list of ports for the motors in this group. Let's change it t
 `pros::MotorGroup drivetrainRight({1,1}, pros::v5::MotorGearset::green)`\
 We're not done, though! Motors on opposite sides need to spin opposite ways, if your motors on the left and right all face the same way, they would be `{1,2}`/`{1,2,3}` and `{-3,-4}`/`{-4,-5,-6}` respectively. A negative number for a port number means inverted, forward becomes backward and vice versa. In a moment when we test, if the drivetrain drives incorrectly, that's okay! Just change the negative/positive ports until it begins working, you should be able to figure out which should be negative and positive by talking to your builder and experimenting.\
 **Examples:**\
-**1.**
+**1. 4-motor drivetrain with motors facing opposite ways**
 ```
 In globals.cpp file:
 pros::MotorGroup drivetrainLeft({4,-8}, pros::v5::MotorGearset::green);
 pros::MotorGroup drivetrainRight({12,-9}, pros::v5::MotorGearset::green);
 ```
 \
-**2.**
+**2. 4-motor drivetrain with motors facing the same way**
 ```
+In globals.cpp file:
 pros::MotorGroup drivetrainLeft({-3,-2}, pros::v5::MotorGearset::green);
 pros::MotorGroup drivetrainRight({5,17}, pros::v5::MotorGearset::green);
 ```
 \
-**3.**
+**3. 6-motor drivetrain with motors facing the same way**
 ```
+In globals.cpp file:
 pros::MotorGroup drivetrainLeft({-4,-8,-3}, pros::v5::MotorGearset::green);
 pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 ```
-
+>[!NOTE]
+>There are more examples which may end up with this configuration, this is not the only way that these happen.
 ## Downloading code
 To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "N/A 1", "N/A 2", click A on your controller to continue.\
 For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move forward/backward while the right joystick should move left/right.If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
@@ -122,12 +125,7 @@ Now let's define some motors. Navigate back to `globals.hpp` and find the motors
 `extern pros::Motor Motor1;`\
 These will be motors on your robot. It follows the same declaration format as the drivetrain but now we declare a single motor rather than a motorgroup.  To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, or `intake`. Now navigate back to the `globals.cpp` file and fine the line that looks like\
 `pros::Motor Motor1(1, pros::v5::MotorGearset::green);`\
-This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}` because there's only one port for a motor. Once this makes sense, change the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port to this part of your robot. Finally, we need to actually test it; let's start by going to `main.cpp` and scrolling down until you find
-```
-void opcontrol () {
-    //temporary code
-```
-Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Now download this by following the same [download instructions](#downloading-code) from before. Once done, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors. Now you can add/remove these motor definitions/declarations (remove both, not just one or the other) so that you only have the motors you're using!\
+This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}` because there's only one port for a motor. Once this makes sense, change the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port to this part of your robot.
 **Example:**
 ```
 In globals.hpp file:
@@ -140,12 +138,55 @@ In globals.cpp file:
     pros::Motor lift(-7, pros::v5::MotorGearset::blue);
     pros::Motor claw(12, pros::v5::MotorGearset::red);
 ```
+\
+Finally, we need to actually test it; let's start by going to `main.cpp` and scrolling down until you find
+```
+void opcontrol () {
+    //temporary code
+```
+Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Now download this by following the same [download instructions](#downloading-code) from before. Once done, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors. Now you can add/remove these motor definitions/declarations (remove both, not just one or the other) so that you only have the motors you're using!
 
 ## Making helper functions
 Helper functions are the foundation for your code, they allow us to tell the robot what to do and when. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
 `void motorHelper1(const bool forward, const bool backward, const float speed);`\
-Change the name to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`.
+Change the name to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`. Then, we need to make sure the parameters make sense, does this motor move your part forward/backward, up/down, in/out, open/close, etc? Once you've decided, change the names of `forward` and `backward` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
+`void motorHelper1(const bool forward, const bool backward, const float speed) {`\
+Change the name from `motorHelper1` to match the name in your `helpers.hpp` folder, then change the `forward`/`backward` to the new names you picked in your `helpers.hpp`.\
+**Examples:**\
+**1. Lift system which moves up/down**
+\
+```
+In helpers.hpp:
+    void liftControls(const bool up, const bool down, const float speed);
 
+In helpers.cpp:
+    void liftControls(const bool up, const bool down, const float speed) {
+        [Future code here]
+    }
+```
+\
+**2. Intake system which takes pieces in/out**
+```
+In helpers.hpp:
+    void intakeControls(const bool in, const bool out, const float speed);
+
+In helpers.cpp:
+    void intakeControls(const bool in, const bool out, const float speed) {
+        [Future code here]
+    }
+```
+\
+Once you've finished that, you're going to scroll further down in your `helpers.cpp` file until you find the `motorControls` function, which should look like\
+`void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {`\
+Inside of it, you should find something similar to the following:\
+```
+motorHelper1(
+    buttonStatus(options.NA1),
+    buttonStatus(options.NA2),
+    speedOptions.NA1
+);
+```
+This must be renamed to the same name as your new function. This will be where your function is ventually going to be used. But for now, you've made a helper function!
 ## Defining motor controls
 
 # Extra syntax
