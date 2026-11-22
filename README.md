@@ -121,6 +121,8 @@ pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 ## Downloading code
 To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "N/A 1", "N/A 2", click A on your controller to continue.\
 For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move forward/backward while the right joystick should move left/right.If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
+>[!TIP]
+>To install code to other slots, write `pros mu --slot n` where n is an integer number 1 through 8.
 
 ## Define your motors
 Now let's define some motors. Navigate back to `globals.hpp` and find the motors lines similar to\
@@ -148,10 +150,10 @@ void opcontrol () {
 ```
 Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Now download this by following the same [download instructions](#downloading-code) from before. Once done, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors. Now you can add/remove these motor definitions/declarations (remove both, not just one or the other) so that you only have the motors you're using!
 
-## Making helper functions
+## Making motor helper functions
 Helper functions are the foundation for your code, they allow us to tell the robot what to do and when. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
 `void motorHelper1(const bool forward, const bool backward, const float speed);`\
-Change the name to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`. Then, we need to make sure the parameters make sense, does this motor move your part forward/backward, up/down, in/out, open/close, etc? Once you've decided, change the names of `forward` and `backward` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
+Change the name to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`. Then, we need to make sure the parameters make sense, ask "does this motor move your part forward/backward, up/down, in/out, open/close, etc?" Once you've decided, change the names of `forward` and `backward` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
 `void motorHelper1(const bool forward, const bool backward, const float speed) {`\
 Change the name from `motorHelper1` to match the name in your `helpers.hpp` folder, then change the `forward`/`backward` to the new names you picked in your `helpers.hpp`.\
 **Examples:**\
@@ -188,7 +190,7 @@ motorHelper1(
 );
 ```
 This must be renamed to the same name as your new function. This will be where your function is eventually going to be used. But for now, you've made a helper function!
-## Writing a simple program inside our helper function
+## Writing a simple program inside our motor helper function
 Since you've created the helper function, now you need to write code inside it. Look back at your function *definition*, it should currently look something like
 ```
 void intakeControls(const bool in, const bool out, const float speed) {
@@ -396,5 +398,24 @@ Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. No
 >There is a `motorVelocity` function which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:\
 >`.intakeSpeed = motorVelocity(80);`\
 >This will run the motor at 80% speed
+
+## Define your pneumatics
+Similar to earlier, we're now going to define our pneumatic parts. Navigate back to `globals.hpp` and find the motors lines similar to\
+`extern pros::adi::Pneumatics Pneumatic1;`\
+These will be pneumatic pistons on your robot. To start, let's change the pneumatic's name from `Pneumatic1` to something on your robot, try replacing it with `clawToggle` or `intakeToggle`. Now navigate back to the `globals.cpp` file and fine the line that looks like\
+`pros::adi::Pneumatics Pneumatic1('A', false);`\
+This line is declaring your pneumatic in port A and the second conditional tells it whether to start extended or not (true = start extended). Unlike motors, you don't flip pneumatic directions in the code, you flip the hoses attatched to the pneumatic.\
+**Example:**
+```
+In globals.hpp:
+    extern pros::adi::Pneumatics clawToggle;
+
+In globals.cpp:
+    pros::adi::Pneumatics Pneumatic1('C', false);
+```
+>[!TIP]
+>To test if your pneumatic configuration is proper, set its starting position to extended and [download the code](#downloading-code), if it starts extended then everything works! If not, try flipping the hoses around first. If it still fails, check your definition.
+
+## Making pneumatic helper functions
 
 # Extra syntax
