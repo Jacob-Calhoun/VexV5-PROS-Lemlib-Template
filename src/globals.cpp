@@ -10,14 +10,22 @@
 
 //Motors
   //Miscellaneous motors
-
+    pros::Motor Motor1(1, pros::v5::MotorGearset::green);
+    pros::Motor Motor2(1, pros::v5::MotorGearset::green);
+    pros::Motor Motor5(1, pros::v5::MotorGearset::green);
+    pros::Motor Motor3(1, pros::v5::MotorGearset::green);
+    pros::Motor Motor4(1, pros::v5::MotorGearset::green);
 
   //Drivetrain
     pros::MotorGroup drivetrainLeft({1,1}, pros::v5::MotorGearset::green);
     pros::MotorGroup drivetrainRight({1,1}, pros::v5::MotorGearset::green);
 
 //Pneumatics
-
+    pros::adi::Pneumatics Pneumatic1('A', false);
+    pros::adi::Pneumatics Pneumatic2('A', false);
+    pros::adi::Pneumatics Pneumatic3('A', false);
+    pros::adi::Pneumatics Pneumatic4('A', false);
+    pros::adi::Pneumatics Pneumatic5('A', false);
 
 //Sensors
 	pros::Imu imu(1);

@@ -2,16 +2,18 @@
 #include "api.h"
 #include "lemlib/api.hpp"
 #include "mvlib/Optional/lemlib.hpp"
+#include "pros/motor_group.hpp"
 #include <array>
 #include <string>
 #include <algorithm>
 #include <optional>
   
 //Controllers
-  extern pros::Controller master;
+    extern pros::Controller master;
 
 //Drivetrain Motors
-
+    extern pros::MotorGroup drivetrainLeft;
+    extern pros::MotorGroup drivetrainRight;
 
 //Motors
 
@@ -20,27 +22,27 @@
 
 
 //Sensors
-  extern pros::Imu imu;
+    extern pros::Imu imu;
 
 //Tracking Wheel
-  extern pros::Rotation verticalEncoder;
-  extern lemlib::TrackingWheel verticalTrackingWheel;
-  extern pros::Rotation horizontalEncoder;
-  extern lemlib::TrackingWheel horizontalTrackingWheel;
+    extern pros::Rotation verticalEncoder;
+    extern lemlib::TrackingWheel verticalTrackingWheel;
+    extern pros::Rotation horizontalEncoder;
+    extern lemlib::TrackingWheel horizontalTrackingWheel;
 
 //Odom
-  extern lemlib::OdomSensors Sensors;
+    extern lemlib::OdomSensors Sensors;
 
 //Drivetrain
-  extern lemlib::Drivetrain Drivetrain;
+    extern lemlib::Drivetrain Drivetrain;
 
 //PID
-  extern lemlib::ControllerSettings LateralController;
-  extern lemlib::ControllerSettings AngularController;
+    extern lemlib::ControllerSettings LateralController;
+    extern lemlib::ControllerSettings AngularController;
 
 //Input Curves
-  extern lemlib::ExpoDriveCurve ThrottleCurve;
-  extern lemlib::ExpoDriveCurve SteerCurve;
+    extern lemlib::ExpoDriveCurve ThrottleCurve;
+    extern lemlib::ExpoDriveCurve SteerCurve;
 
 //Chassis
-  extern lemlib::Chassis chassis;
+    extern lemlib::Chassis chassis;

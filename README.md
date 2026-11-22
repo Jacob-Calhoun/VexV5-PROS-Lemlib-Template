@@ -1,8 +1,14 @@
-Hello! This file contains all the directions that should get you started!
-**Note: This assumes you've already downloaded VSCode and linked it to your Github account**
+Hello! This file contains all the directions that should get you started!\
+# Installing VSCode
+1. Make a Github account
+2. Follow [this link](https://code.visualstudio.com/download) for download options
+3. Install the one for you
+4. Once installed, open it and click "sign in through Github"
+5. Sign in with your Github information
 
 # Installing the template for your own repo
-**Note: These steps are for Windows, MacOS users may need to adapt some names for Mac apps**
+>[!CAUTION]
+>These steps are for Windows, MacOS users may need to adapt some names for Mac apps
 ## Method 1: Installing the .zip folder and making your own repo
 1. Make a github account
 2. Go to "My repositories"
@@ -56,6 +62,7 @@ Hello! This file contains all the directions that should get you started!
 24. Type `git commit -m "Start of project"` and hit enter
 25. Type `git branch -M main` and hit enter
 26. Type `git push -u origin main --force` and hit enter
+
 # Installing required/desired extentions:
 1. Looking at the sidebar of VSCode, select the square of 4 blocks labeled "extensions"
 2. Search for the following listed extensions
@@ -68,9 +75,13 @@ Hello! This file contains all the directions that should get you started!
 4. Material Icon Theme
 
 # Installing the required PROS CLI & Toolchain
-1. Please follow this link for ([Installing on Windows](https://pros.cs.purdue.edu/v5/getting-started/windows.html)) or ([Installing for MacOS](https://pros.cs.purdue.edu/v5/getting-started/macos.html))to be given the directions on what to do.
+1. Please follow [this link for installing on Windows](https://pros.cs.purdue.edu/v5/getting-started/windows.html) or [this link for installing for MacOS](https://pros.cs.purdue.edu/v5/getting-started/macos.html) to be given the directions on what to do
 2. Open terminal once more and run `pros build-compile-commands`
 3. Once those directions are followed, please close the folder and then VSCode itself
 4. Reopen both, everything should begin working
+>[!CAUTION]
+>Currently, there can be issues where clangd says things are wrong and highlights them red, it CAN be incorrect. If you are unsure about clangd's error message, type `pros build` into your terminal and see if you get an error. If not, your code is fine.
 
 # Working with the template
+In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the `Applying template syntax` section
+## Start defining motors
