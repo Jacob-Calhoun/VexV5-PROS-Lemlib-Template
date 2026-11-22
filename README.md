@@ -195,6 +195,7 @@ void intakeControls(const bool in, const bool out, const float speed) {
 ```
 >[!NOTE]
 >Yours may have different names, that's okay, you can copy the project if it makes more sense that way, but the lesson can be adapted to a different/unique function.
+
 We're now going to add code here, let's start on a simple idea: We want a motor to spin forwards when you click the `in` button and backwards when we click the `out` button (for preface, these boolean inputs are buttons that we will define in [the next section](#defining-motor-controls)). Let's start this by writing our `in` conditional, we will write
 ```
 if (up) {
