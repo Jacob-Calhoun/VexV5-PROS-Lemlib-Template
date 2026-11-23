@@ -240,6 +240,15 @@ chassis.turnToHeading(45,1000);    // Tries to face the heading 45 degrees withi
 chassis.turnToHeading(-70, 4000);   // Tries to face the heading -70 degrees within 4 seconds
 chassis.turnToHeading(126, 3250);   // Tries to face the heading 126 degrees within 3.25 seconds
 ```
+
+### pros::delay function
+The pros::delay function is a function which tells the robot to wait a specific amount of time before continuing to the next line. It requires 1 argument, an amount of time in milliseconds. Using it should look similar to this:\
+```
+pros::delay(500);   // Waits 0.5 seconds
+pros::delay(8000);  // Waits 8 seconds
+pros::delay(3520);  // Waits 3.52 seconds
+```
+
 ## Drivetrain properties
 This section will talk about drivetrains and what you can do with them for driver control.
 
@@ -309,19 +318,39 @@ In globals.cpp file:
     pros::Motor claw(12, pros::v5::MotorGearset::red);
 ```
 \
-Finally, we need to actually test it; let's start by going to `main.cpp` and scrolling down until you find
+Now let's give it a brake type using the [`motor.set_brake_type` function](#motorset_brake_type-function), navigate to `main.cpp` and scroll until you find something like
+```
+//Set encoder unit, brake mode, tare position, and zero position here
+    Motor1.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+    Motor2.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+    Motor3.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+    Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+    Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+```
+We're going to rename `Motor1` to our chosen name and pick a new brake type from the [brake types library](#motor-brake-types-library), for our example, we'll pick the commonly used hold option (if you're following with your own choices, you can use hold or coast), so our new code will look like this:
+```
+//Set encoder unit, brake mode, tare position, and zero position here
+    Motor1.set_brake_type(pros::E_MOTOR_BRAKE_HOLD)
+    Motor2.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+    Motor3.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+    Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+    Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+```
+Now that we have all of this defined, let's test it! Find something that looks similar to the following:
 ```
 void opcontrol () {
     //temporary code
 ```
-Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127).\
+Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Then we will write the [pros delay function](#prosdelay-function) `pros::delay(2500);` which tells the computer to wait 2.5 seconds before continuing to the next step. Finally, we can write `[you motor's name].brake();` to tell the motor to brake using our newly selected brake option.\
 **Example:**
 ```
 void opcontrol() {
     //temporary code
-        claw.move(127);
+        intake.move(127);
+        pros::delay(2500);
+        intake.brake();
 ```
-Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the autonomous selector, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors.
+Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the autonomous selector, the motor should start spinning. If the motor spins for 2.5 seconds before stopping, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors.
 
 ### Making motor helper functions
 Helper functions are the foundation for your code, they allow us to tell the robot what to do and when. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
