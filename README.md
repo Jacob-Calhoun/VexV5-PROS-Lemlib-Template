@@ -218,7 +218,11 @@ chassis.turnToHeading(126, 3250);   // Tries to face the heading 126 degrees wit
 This section will talk about drivetrains and what you can do with them for driver control.
 
 ### Define your drivetrain
-When opening your project, you should see files in the "src" and "include" folder dropdown, these files will be where you do all your coding. To start your project, click on `globals.hpp` file within the "include" dropdown and look around. Near the top of this file, you should see lines like\
+When opening your project, you should see files in the "src" and "include" folder dropdowns, these files will be where you do all your coding. To start your project, click on `globals.hpp` file within the "include" dropdown and look around.
+>[!TIP]
+>All of the .hpp files will be under the "include" dropdown, all of the .cpp files will be under the "src" dropdown.
+
+Near the top of this file, you should see lines like\
 `extern pros::MotorGroup drivetrainLeft;`\
 These are motor group declarations. A declaration is what goes in your .hpp files, it tells your code that this group of motors exist and are named drivetrainLeft, but it will not be defined in this file. Now navigate to the `globals.cpp` file, in there you should find\
 `pros::MotorGroup drivetrainLeft({1,1}, pros::v5::MotorGearset::green);`\

@@ -14,7 +14,7 @@
     pros::MotorGroup drivetrainRight({1,1}, pros::v5::MotorGearset::green);
 
   //Miscellaneous motors
-    pros::Motor claw(1, pros::v5::MotorGearset::green);
+    pros::Motor Motor1(1, pros::v5::MotorGearset::green);
     pros::Motor Motor2(1, pros::v5::MotorGearset::green);
     pros::Motor Motor3(1, pros::v5::MotorGearset::green);
     pros::Motor Motor4(1, pros::v5::MotorGearset::green);
