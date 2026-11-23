@@ -21,7 +21,17 @@ ideal for better control when desired
 *can be turned off in main.cpp
 (where joystick positions are taken)*
 */
-	float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button) {
+	float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button, const bool& invertedSpeed) {
+        if (invertedSpeed) {
+            if (buttonStatus(button)) {
+			currentDriveSpeedMultiplier = 1;
+			return 1;
+		    }
+
+            currentDriveSpeedMultiplier = drivetrainSpeedConstant;
+            return drivetrainSpeedConstant;
+        }
+
 		if (buttonStatus(button)) {
 			currentDriveSpeedMultiplier = drivetrainSpeedConstant;
 			return drivetrainSpeedConstant;

@@ -61,7 +61,7 @@
 //Functions (can make own, ask for help as needed)
     //Miscellaneous helpers
         double motorVelocity(int givenVelocity);
-        float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button = std::nullopt);
+        float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button = std::nullopt, const bool& invertedSpeed = false);
         bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const buttonPressTypes& pressType = buttonPressTypes::HELD);
     //Related to motors (use motorControls, do not remove it)
         void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});

@@ -86,7 +86,10 @@ Hello! This file contains all the directions that should get you started!
 # Working with the template
 In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the ["Extra syntax" section](#Extra-syntax)
 
-## Define your drivetrain
+## Drivetrain properties
+This section will talk about drivetrains and what you can do with them for driver control.
+
+### Define your drivetrain
 When opening your project, you should see files in the "src" and "include" folder dropdown, these files will be where you do all your coding. To start your project, click on `globals.hpp` file within the "include" dropdown and look around. Near the top of this file, you should see lines like\
 `extern pros::MotorGroup drivetrainLeft;`\
 These are motor group declarations. A declaration is what goes in your .hpp files, it tells your code that this group of motors exist and are named drivetrainLeft, but it will not be defined in this file. Now navigate to the `globals.cpp` file, in there you should find\
@@ -117,6 +120,26 @@ pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 ```
 >[!NOTE]
 >There are more examples which may end up with this configuration, these are not the only way that these happen.
+
+### Drivetrain speed modifier
+>[!CAUTION]
+>This is a QoL feature, for new programmers it may be harder to understand. This is not essential, so don't worry if you don't touch it. It is also recommended that you try this after testing ONLY your drivetrain.
+
+Has your team or driver ever needed to be fast but then slow down for moments to get accurate placement? Maybe even vice versa and you only want to be fast at certain times? Built into your drivetrain is a speed modifier!\
+**Note: This feature is for holding a button, currently it doesn't support a toggle system.**\
+Navigate to `main.cpp` and scroll down until you find the lines that look like this:
+```
+int leftY = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+int rightX = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+```
+pick a button for holding to slow down, for our example, let's pick Y. Inside the empty parentheses we will write our button. So in our case it is `pros::E_CONTROLLER_DIGITAL_Y`. Afterwards, it should look something like this:
+```
+int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+```
+Now navigate to `helpers.cpp` and near the top should be something like\
+`float drivetrainSpeedConstant = 0.85;`\
+This is the second value of the drive speed, it should be between 0 and 1 at all times. Set it to whatever value you like. Now download the code using [the below section](#downloading-code) and test it.
 
 ## Downloading code
 To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "N/A 1", "N/A 2", click A on your controller to continue.\
