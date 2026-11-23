@@ -8,7 +8,7 @@ Hello! This file contains all the directions that should get you started!
 
 # Installing the template for your own repo
 >[!CAUTION]
->These steps are for Windows, MacOS users may need to adapt some names for Mac apps
+>These steps are for Windows, MacOS users may need to adapt some names for Mac apps.
 
 ## Method 1: Installing the .zip folder and making your own repo
 1. Make a github account
@@ -209,7 +209,7 @@ if (up) {
 ```
 This may seem like a jump, but this can be broken apart.\
 The `if (up)` is asking if the `up` boolean is set to true, in the exmaple code's context, this will eventually mean "is the selected button being held?"\
-The `intake.move(speed);` line is simply saying "the intake motor must start spinning at the value of `speed`.\
+The `intake.move(speed);` line is simply saying "the intake motor must start spinning at the value of `speed`."\
 The `return;` tells the function that it is done doing what it must and can immediately leave.\
 Now what about when it should move down? Let's write something similar, under our new code block, we will write something like
 ```
@@ -241,24 +241,24 @@ Now you've written a simple program inside your helper function! But to make it 
 ## Defining motor controls
 Defining motor controls is probably one of the silliest looking parts, but with practice (and if you read [the section on it](#extra-syntax)), it should make sense. To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
 ```
-    struct motorControlOptions {
-        /*
-        Do NOT touch the assigned type   |           | change amount and  | do not change
-                                         v           v names as needed    v given value
-        */
-        std::optional<pros::controller_digital_e_t> NA1 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA2 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA3 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA4 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA5 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA6 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA7 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA8 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA9 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA10 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA11 = std::nullopt;
-        std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
-    };
+struct motorControlOptions {
+    /*
+    Do NOT touch the assigned type   |           | change amount and  | do not change
+                                        v           v names as needed    v given value
+    */
+    std::optional<pros::controller_digital_e_t> NA1 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA2 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA3 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA4 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA5 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA6 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA7 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA8 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA9 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA10 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA11 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
+};
 ```
 The comments directly instruct you on what to do, for our intake function let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively. These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to our the `motorControls` function, you should see something like:
 ```
@@ -347,7 +347,7 @@ motorControls({
 ```
 Now download it and test it! Does holding your first button move it forward/up/in and your second button moves it backward/down/out? If so, you've succesfully coded a working helper function with defined controls!
 >[!NOTE]
->If your forward/up/in goes backward/down/out, flip your motor port to be negative
+>If your forward/up/in goes backward/down/out, flip your motor port to be negative.
 
 But what if your motor intake is spinning too fast? How do we turn it down? Using the speedOptions struct we can set speeds other than the default 100%!
 ## Defining motor speeds
@@ -397,7 +397,7 @@ Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. No
 >[!TIP]
 >There is a `motorVelocity` function which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:\
 >`.intakeSpeed = motorVelocity(80);`\
->This will run the motor at 80% speed
+>This will run the motor at 80% speed.
 
 ## Define your pneumatics
 Similar to earlier, we're now going to define our pneumatic parts. Navigate back to `globals.hpp` and find the motors lines similar to\
@@ -411,11 +411,189 @@ In globals.hpp:
     extern pros::adi::Pneumatics clawToggle;
 
 In globals.cpp:
-    pros::adi::Pneumatics Pneumatic1('C', false);
+    pros::adi::Pneumatics clawToggle('C', false);
 ```
 >[!TIP]
 >To test if your pneumatic configuration is proper, set its starting position to extended and [download the code](#downloading-code), if it starts extended then everything works! If not, try flipping the hoses around first. If it still fails, check your definition.
 
 ## Making pneumatic helper functions
+Navigate to `helpers.hpp` and find the line which says\
+`void pneumaticHelper1(const bool out, const bool in);`\
+Change the name to something fitting for what your declared motor is going to do, something like `intakeToggleControls` or `clawToggleControls`. Then, we need to make sure the parameters make sense, ask "does this pneumatic open/close a part, change it's function, etc?" Once you've decided, change the names of `out` and `in` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
+`void pneumaticHelper1(const bool out, const bool in) {`\
+Change the name from `pneumaticHelper1` to match the name in your `helpers.hpp` folder, then change the `out`/`in` to the new names you picked in your `helpers.hpp`.\
+**Examples:**\
+**1. A claw which toggles between open and closed**
+```
+In helpers.hpp:
+    void clawToggleControls(const bool open, const bool closed);
+
+In helpers.cpp:
+    void clawToggleControls(const bool open, const bool closed) {
+        [code here]
+    }
+```
+\
+**2. A motor which switches from intake to lift**
+```
+In helpers.hpp:
+    void intakeToLiftToggle(const bool intake, const bool lift);
+
+In helpers.cpp:
+    void intakeToLiftToggle(const bool intake, const bool lift) {
+        [code here]
+    }
+```
+\
+Once you've finished that, you're going to scroll further down in your `helpers.cpp` file until you find the `pneumaticControls` function, which should look like\
+`void pneumaticControls(const struct pneumaticControlOptions& options) {`\
+Inside of it, you should find something similar to the following:
+```
+    pneumaticHelper1(
+        buttonStatus(options.NA1),
+        buttonStatus(options.NA2)
+    );
+```
+This must be renamed to the same name as your new function. This will be where your function is eventually going to be used.
+
+## Writing a simple program inside our pneumatic helper function
+Since you've created the helper function, now you need to write code inside it. Look back at your function *definition*, it should currently look something like
+```
+void clawToggleControls(const bool open, const bool closed) {
+
+}
+```
+>[!NOTE]
+>Yours may have different names, that's okay, you can copy the project if it makes more sense that way, but the lesson can be adapted to a different/unique function.
+
+We're now going to add code here, let's start on a simple idea: We want a pneumatic to open the claw when you click the `open` button and close it when we click the `close` button (for preface, these boolean inputs are buttons that we will define in [the next section](#defining-pneumatic-controls)). Let's start this by writing our `open` conditional, we will write
+```
+if (open) {
+    clawToggle.extend();
+    return;
+}
+```
+This may seem like a jump, but this can be broken apart.\
+The `if (open)` is asking if the `open` boolean is set to true, in the exmaple code's context, this will eventually mean "was the selected button pressed?"\
+The `clawToggle,extend();` line is simply saying "the pneumatic should now extend."\
+The `return;` tells the function that it is done doing what it must and can immediately leave.\
+Now what about when it should close? Let's write something similar, under our new code block, we will write something like
+```
+if (close) {
+    clawToggle.retract();
+}
+```
+This is almost exactly the same, except now the code is asking about the `close` button and retracting the piston. Now the `return;` line in the "open" statement has meaning, without it, if someone pressed both buttons, our robot would instantly extend and retract the piston, wasting air. Now the function ends early so that this doesn't happen.\
+In the example, the final code looks as follows:
+```
+void clawToggleControls(const bool open, const bool close) {
+    if (open) {
+    clawToggle.extend();
+    return;
+    }
+
+    if (close) {
+    clawToggle.retract();
+    }
+}
+```
+**Again, your code may look slightly different or have different names, that's okay. However, if your code isn't working as desired, follow the example's steps.**\
+Now you've written a simple program inside your helper function! But to make it run, we have to define pneumatic controls.
+
+## Defining pneumatic controls
+To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
+```
+struct pneumaticControlOptions {
+    /*
+    Do NOT touch the assigned type   |           | change amount and  | do not change
+                                        v           v names as needed    v given value
+    */
+    std::optional<pros::controller_digital_e_t> NA1 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA2 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA3 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA4 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA5 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA6 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA7 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA8 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA9 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA10 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA11 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
+};
+```
+The comments directly instruct you on what to do, for our clawToggle function let's rename `NA1` and `NA2` to `clawOpen` and `clawClose` respectively. These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to our the `pneumaticControls` function, you should see something like:
+```
+void pneumaticControls(const struct pneumaticControlOptions& options) {
+    clawToggleControls(
+        buttonStatus(options.NA1),
+        buttonStatus(options.NA2)
+    );
+
+    [other code here]
+}
+```
+Change the names of the two parameters from `options.NA1` to `options.clawOpen` and `options.NA2` to `options.clawClose`. Then, add a new parameter to the buttonStatus function by putting a comma after the first parameter, now type `buttonPressTypes::NEW_PRESS`. This is telling the buttonStatus function to look for a new press of the button, so if the button is held it will only activate once.\
+**Example:**
+```
+void pneumaticControls(const struct pneumaticControlOptions& options) {
+    clawToggleControls(
+        buttonStatus(options.clawOpen, buttonPressTypes::NEW_PRESS),
+        buttonStatus(options.clawClose, buttonPressTypes::NEW_PRESS)
+    );
+
+    [other code here]
+}
+```
+You've now told your code which values to use through more clarified naming conventions! Though, the controls haven't actually been defined yet. To do this, go your `main.cpp` file and scroll until you find the `pneumaticControls` function in main, it should look as follows:
+```
+pneumaticControls({
+    //Controls options for motors
+    //remove entire line for no control of said motor
+    .NA1 = std::nullopt,
+    .NA2 = std::nullopt,
+    .NA3 = std::nullopt,
+    .NA4 = std::nullopt,
+    .NA5 = std::nullopt,
+    .NA6 = std::nullopt
+});
+```
+For now, we will only change `.NA1` and `.NA2`. Start by changing their names to match the same ones you typed out earlier, for our example it would be:
+```
+pneumaticControls({
+    //Controls options for motors
+    //remove entire line for no control of said motor
+    .clawOpen = std::nullopt,
+    .clawClose = std::nullopt,
+    .NA3 = std::nullopt,
+    .NA4 = std::nullopt,
+    .NA5 = std::nullopt,
+    .NA6 = std::nullopt
+});
+```
+Finally, we can assign controller buttons to these! To start, assign your first one to some button, for our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller, and `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
+```
+motorControls({
+pneumaticControls({
+    //Controls options for motors
+    //remove entire line for no control of said motor
+    .clawOpen = pros::E_CONTROLLER_DIGITAL_LEFT,
+    .clawClose = pros::E_CONTROLLER_DIGITAL_RIGHT,
+    .NA3 = std::nullopt,
+    .NA4 = std::nullopt,
+    .NA5 = std::nullopt,
+    .NA6 = std::nullopt
+});
+```
+Now download it and test it! Does pressing your first button open the claw? Does pressing the second button close the claw? If so, you've successfully coded a pneumatic helper function and its controls!
+>[!NOTE]
+>If your open instead does close, flip your attatched hoses on the pneumatic.
+
+# The pros commands you'll use
+(Coming soon)
+
+# The git commands you'll use
+(Coming soon)
 
 # Extra syntax
+(Coming soon)
