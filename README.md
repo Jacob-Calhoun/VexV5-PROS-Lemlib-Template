@@ -1,14 +1,34 @@
-Hello! This file contains all the directions that should get you started!
+Hello! This file contains all the directions that should get you started and teach you how to use the template!
 # Installing VSCode
+>[!CAUTION]
+>These steps are from Windows installtion, MacOS users may need to adapt some names for Mac apps.
+
 1. Make a Github account
 2. Follow [this link](https://code.visualstudio.com/download) for download options
-3. Install the one for you
-4. Once installed, open it and click "sign in through Github"
-5. Sign in with your Github information
+3. Install the setup program for you
+4. Open the setup program and install VSCode
+5. Once installed, open it and click "sign in through Github"
+6. Sign in with your Github information
+
+# Installing git
+>[!CAUTION]
+>These steps are from Windows installtion, MacOS users may need to adapt some names for Mac apps.
+
+1. Follow [this link](https://git-scm.com/install/windows) for download options
+2. Install the setup program for you
+3. Open the setup progam and install github
+   -When propmted with the questions, go slowly.
+   -Ensure you pick to use VSCode as your default, *not* Vim or VSCode insiders edition
+4. Open VSCode
+5. Go to "terminal"
+6. Select "New terminal"
+7. Run `git -v`
+   -If it returns something, then you're all set!
+   -If you get nothing in return, troubleshoot through the community and ensure you followed the steps.
 
 # Installing the template for your own repo
 >[!CAUTION]
->These steps are for Windows, MacOS users may need to adapt some names for Mac apps.
+>These steps are from Windows installtion, MacOS users may need to adapt some names for Mac apps.
 
 ## Method 1: Installing the .zip folder and making your own repo
 1. Make a github account
@@ -33,6 +53,7 @@ Hello! This file contains all the directions that should get you started!
 20. Type `git commit -m "Start of project"` and hit enter
 21. Type `git branch -M main` and hit enter
 22. Type `git push -u origin main --force` and hit enter
+
 ## Method 2: Cloning the repo and changing the origin to your repo
 1. Make a github account
 2. Go to "My repositories"
@@ -46,9 +67,9 @@ Hello! This file contains all the directions that should get you started!
 10. Go to VSCode and make sure no folder/files are open
 11. Go to terminal and click "New terminal"
 12. Type `cd [desired file location]` and hit enter
-   - Ensure that it is somewhere convienient
-   - An example could be `C:/Users/[your name]`
-   - An easy way to get this is to open the file explorer app and then copy the address bar at the top
+    - Ensure that it is somewhere convienient
+    - An example could be `C:/Users/[your name]`
+    - An easy way to get this is to open the file explorer app and then copy the address bar at the top
 13. Type `git clone -b main --single-branch [copied repo link here]` and hit enter
 14. Type `cd VexV5-PROS-Lemlib-Template` and hit enter
 15. Go to "file" and click "Open folder"
@@ -104,7 +125,7 @@ The referenced "buttons" are part of a pros class, you will always use one of th
 `pros::E_CONTROLLER_DIGITAL_R1`\
 `pros::E_CONTROLLER_DIGITAL_R2`
 
-## Button press types library
+### Button press types library
 The referenced "press types" are part of a custom class, you will always use one of the following as your type:\
 `buttonPressTypes::HELD`\
 `buttonPressTypes::NEW_PRESS`\
@@ -114,7 +135,7 @@ The referenced "press types" are part of a custom class, you will always use one
 The referenced functions are functions which will handle things for you, ensuring you understand them is crucial.
 
 ### motorVelocity function
-The motorVelocity function is a function which takes `motor.move();` values in the -127 to 127 domain and restructures them into the -100 to 100 domain, effectively making your entered value a percentage rather than a standalone number. It has one restriction, it only takes integer values, but you normally shouldn't need decimal percentage values. To use it, rather than writing `motor.move(127);` you would write `motor.move(motorVelocity(100));`. While it does seem annoying, it can come in handy for autonomous and other functions. Unlike some other functions, if this function is written, you **have** to provide a parameter.
+The motorVelocity function is a function which takes `motor.move();` values in the -127 to 127 domain and restructures them into the -100 to 100 domain, effectively making your entered value a percentage rather than a standalone number. It has one restriction, it only takes integer values, but you normally shouldn't need decimal percentage values. To use it, rather than writing `motor.move(127);` you would write `motor.move(motorVelocity(100));`. While it does seem annoying, it can come in handy for autonomous and other functions. Unlike some other functions, if this function is written, you **have** to provide a parameter.\
 **Note: Because this function is meant to return a value, you should normally only call it inside the .move**
 
 ### buttonStatus function
@@ -125,11 +146,11 @@ buttonStatus(pros::E_CONTROLLER_DIGITAL_Left, buttonPressTypes::HELD);  // Sends
 buttonStatus(pros::E_CONTROLLER_DIGITAL_B, buttonPressTypes::NEW_PRESS);    // Sends signal only when newly pressed
 buttonStatus(pros::E_CONTROLLER_DIGITAL_X, buttonPressTypes::NEW_RELEASE);  // Sends signal only when newly released
 ```
-Are all valid function calls and will return a boolean (true/false) value.
+Are all valid function calls and will return a boolean (true/false) value.\
 **Note: Because this function is meant to return a value, you should normally only call it whenever trying to get a button's state for a function or conditional**
 
 ### drivetrainSpeedModifier function
-**Note: This is also somewhat covered in the docs under the [drivetrain properties section](#drivetrain-speed-modifier)**
+**Note: This is also somewhat covered in the docs under the [drivetrain properties section](#drivetrain-speed-modifier)**\
 The drivetrainSpeedModifier function is a function which takes a selected button and uses it to either slow down or speed up the robot while holding a chosen button. You should *not* be writing this function on your own and should only use it in its preplaced spots. The first parameter entered will be your [button](#pros-controller-button-library) of choice and the second is an optional boolean which inverses the default system. The system is defaulted to slow down when the button is pressed, but by writing `drivetrainSpeedModifier([button of choice], true)` the true boolean will make it so that your drivetrain will run at the selected speed value until you press the button, at which point it will run at full speed.\
 **Examples:**
 ```
@@ -499,7 +520,7 @@ Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. No
 >`.intakeSpeed = motorVelocity(80);`\
 >This will run the motor at 80% speed.
 
-## Pneumatic
+## Pneumatics
 This section will focus on pneumatics and what you can do with them, extras may be located in the [extra syntax section](#extra-syntax)
 ### Define your pneumatics
 Similar to earlier, we're now going to define our pneumatic parts. Navigate back to `globals.hpp` and find the motors lines similar to\
