@@ -86,6 +86,24 @@ Hello! This file contains all the directions that should get you started!
 # Working with the template
 In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the ["Extra syntax" section](#Extra-syntax)
 
+## Libraries you'll use
+This section has a bank of the libraries you'll be using so when writing controls and such you know what you can call.
+
+### Pros controller button library
+The referenced "buttons" are part of a pros class, you will always use one of the following as your buttons:\
+`pros::E_CONTROLLER_DIGITAL_UP`\
+`pros::E_CONTROLLER_DIGITAL_DOWN`\
+`pros::E_CONTROLLER_DIGITAL_LEFT`\
+`pros::E_CONTROLLER_DIGITAL_RIGHT`\
+`pros::E_CONTROLLER_DIGITAL_L1`\
+`pros::E_CONTROLLER_DIGITAL_L2`\
+`pros::E_CONTROLLER_DIGITAL_X`\
+`pros::E_CONTROLLER_DIGITAL_B`\
+`pros::E_CONTROLLER_DIGITAL_Y`\
+`pros::E_CONTROLLER_DIGITAL_A`\
+`pros::E_CONTROLLER_DIGITAL_R1`\
+`pros::E_CONTROLLER_DIGITAL_R2`\
+
 ## Drivetrain properties
 This section will talk about drivetrains and what you can do with them for driver control.
 
@@ -132,7 +150,7 @@ Navigate to `main.cpp` and scroll down until you find the lines that look like t
 int leftY = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 int rightX = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 ```
-pick a button[^1] for holding to slow down, for our example, let's pick Y. Inside the empty parentheses we will write our button[^1]. So in our case it is `pros::E_CONTROLLER_DIGITAL_Y`. Afterwards, it should look something like this:
+pick a [button](#pros-controller-button-library) for holding to slow down, for our example, let's pick Y. Inside the empty parentheses we will write our [button](#pros-controller-button-library). So in our case it is `pros::E_CONTROLLER_DIGITAL_Y`. Afterwards, it should look something like this:
 ```
 int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
@@ -285,7 +303,29 @@ struct motorControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-The comments directly instruct you on what to do, for our intake function let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively. These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to our the `motorControls` function, you should see something like:
+The comments directly instruct you on what to do, for our intake function let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively.\
+**Example:**
+```
+struct motorControlOptions {
+    /*
+    Do NOT touch the assigned type   |           | change amount and  | do not change
+                                        v           v names as needed    v given value
+    */
+    std::optional<pros::controller_digital_e_t> intakeIn = std::nullopt;
+    std::optional<pros::controller_digital_e_t> intakeOut = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA3 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA4 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA5 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA6 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA7 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA8 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA9 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA10 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA11 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
+};
+```
+These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to our the `motorControls` function, you should see something like:
 ```
 void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
     intakeControls(
@@ -350,7 +390,7 @@ motorControls({
     .NA3 = 127
 });
 ```
-Finally, we can assign controller buttons to these! To start, assign your first one to some button[^1], for our example, we will assign `.intakeIn` to `pros::E_CONTROLLER_DIGITAL_UP` which is the up-arrow button[^1] on the controller, and `.intakeOut` will be assigned to `pros::E_CONTROLLER_DIGITAL_DOWN`, the controller down-arrow. Your final should look something like this:
+Finally, we can assign controller buttons to these! To start, assign your first one to some [button](#pros-controller-button-library), for our example, we will assign `.intakeIn` to `pros::E_CONTROLLER_DIGITAL_UP` which is the up-arrow [button](#pros-controller-button-library) on the controller, and `.intakeOut` will be assigned to `pros::E_CONTROLLER_DIGITAL_DOWN`, the controller down-arrow. Your final should look something like this:
 ```
 motorControls({
     //Controls options for motors
@@ -370,11 +410,12 @@ motorControls({
     .NA3 = 127
 });
 ```
-Now download it and test it! Does holding your first button[^1] move it forward/up/in and your second button[^1] moves it backward/down/out? If so, you've succesfully coded a working helper function with defined controls!
+Now download it and test it! Does holding your first [button](#pros-controller-button-library) move it forward/up/in and your second [button](#pros-controller-button-library) moves it backward/down/out? If so, you've succesfully coded a working helper function with defined controls!
 >[!NOTE]
 >If your forward/up/in goes backward/down/out, flip your motor port to be negative.
 
 But what if your motor intake is spinning too fast? How do we turn it down? Using the speedOptions struct we can set speeds other than the default 100%!
+
 ### Defining motor speeds
 Following similar steps as before, move back to the `helpers.hpp` file and find the `motorSpeedOptions` struct. Change `NA1` to be a name suitable for you, in the case of the example, a good name would be `intakeSpeed`. Now move to the `helpers.cpp` file and go to the `motorControls` function, inside of it is your function which still calls `speedOptions.NA1`, change `NA1` to your new name. For our example project, it will now look as follows:
 ```
@@ -549,7 +590,29 @@ struct pneumaticControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-The comments directly instruct you on what to do, for our clawToggle function let's rename `NA1` and `NA2` to `clawOpen` and `clawClose` respectively. These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to our the `pneumaticControls` function, you should see something like:
+The comments directly instruct you on what to do, for our clawToggle function let's rename `NA1` and `NA2` to `clawOpen` and `clawClose` respectively.\
+**Example:**
+```
+struct pneumaticControlOptions {
+    /*
+    Do NOT touch the assigned type   |           | change amount and  | do not change
+                                        v           v names as needed    v given value
+    */
+    std::optional<pros::controller_digital_e_t> clawOpen = std::nullopt;
+    std::optional<pros::controller_digital_e_t> clawClose = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA3 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA4 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA5 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA6 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA7 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA8 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA9 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA10 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA11 = std::nullopt;
+    std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
+};
+```
+These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to our the `pneumaticControls` function, you should see something like:
 ```
 void pneumaticControls(const struct pneumaticControlOptions& options) {
     clawToggleControls(
@@ -560,7 +623,7 @@ void pneumaticControls(const struct pneumaticControlOptions& options) {
     [other code here]
 }
 ```
-Change the names of the two parameters from `options.NA1` to `options.clawOpen` and `options.NA2` to `options.clawClose`. Then, add a new parameter to the buttonStatus function by putting a comma after the first parameter, now type `buttonPressTypes::NEW_PRESS`. This is telling the buttonStatus function to look for a new press of the button[^1], so if the button[^1] is held it will only activate once.\
+Change the names of the two parameters from `options.NA1` to `options.clawOpen` and `options.NA2` to `options.clawClose`. Then, add a new parameter to the buttonStatus function by putting a comma after the first parameter, now type `buttonPressTypes::NEW_PRESS`. This is telling the buttonStatus function to look for a new press of the [button](#pros-controller-button-library), so if the [button](#pros-controller-button-library) is held it will only activate once.\
 **Example:**
 ```
 void pneumaticControls(const struct pneumaticControlOptions& options) {
@@ -598,9 +661,8 @@ pneumaticControls({
     .NA6 = std::nullopt
 });
 ```
-Finally, we can assign controller buttons[^1] to these! To start, assign your first one to some button[^1], for our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller, and `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
+Finally, we can assign controller [buttons](#pros-controller-button-library) to these! To start, assign your first one to some [button](#pros-controller-button-library), for our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller, and `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
 ```
-motorControls({
 pneumaticControls({
     //Controls options for motors
     //remove entire line for no control of said motor
@@ -612,7 +674,7 @@ pneumaticControls({
     .NA6 = std::nullopt
 });
 ```
-Now download it and test it! Does pressing your first button open the claw? Does pressing the second button[^1] close the claw? If so, you've successfully coded a pneumatic helper function and its controls!
+Now download it and test it! Does pressing your first button open the claw? Does pressing the second [button](#pros-controller-button-library) close the claw? If so, you've successfully coded a pneumatic helper function and its controls!
 >[!NOTE]
 >If your open instead does close, flip your attatched hoses on the pneumatic.
 
@@ -624,30 +686,3 @@ Now download it and test it! Does pressing your first button open the claw? Does
 
 # Extra syntax
 (Coming soon)
-
-[^1]: The referenced "buttons" are part of a pros class, you will always use one of the following as your buttons:\
-E_CONTROLLER_DIGITAL_UP\
-E_CONTROLLER_DIGITAL_DOWN\
-E_CONTROLLER_DIGITAL_LEFT\
-E_CONTROLLER_DIGITAL_RIGHT\
-E_CONTROLLER_DIGITAL_L1\
-E_CONTROLLER_DIGITAL_L2\
-E_CONTROLLER_DIGITAL_X\
-E_CONTROLLER_DIGITAL_B\
-E_CONTROLLER_DIGITAL_Y\
-E_CONTROLLER_DIGITAL_A\
-E_CONTROLLER_DIGITAL_R1\
-E_CONTROLLER_DIGITAL_R2\
-pros::E_CONTROLLER_DIGITAL_UP\
-pros::E_CONTROLLER_DIGITAL_DOWN\
-pros::E_CONTROLLER_DIGITAL_LEFT\
-pros::E_CONTROLLER_DIGITAL_RIGHT\
-pros::E_CONTROLLER_DIGITAL_L1\
-pros::E_CONTROLLER_DIGITAL_L2\
-pros::E_CONTROLLER_DIGITAL_X\
-pros::E_CONTROLLER_DIGITAL_B\
-pros::E_CONTROLLER_DIGITAL_Y\
-pros::E_CONTROLLER_DIGITAL_A\
-pros::E_CONTROLLER_DIGITAL_R1\
-pros::E_CONTROLLER_DIGITAL_R2\
-Including the pros:: is based on the context of when you're writing it.
