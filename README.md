@@ -109,7 +109,7 @@ This section will give directions on how to install the needed programs and the 
 >Currently, there can be issues where clangd says things are wrong and highlights them red, it CAN be incorrect. If you are unsure about clangd's error message, type `pros build` into your terminal and see if you get an error. If not, your code is fine.
 
 # Working with the template
-In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the ["Extra syntax" section](#Extra-syntax)
+In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the ["Extra syntax" section](#Extra-stuff)
 >[!WARNING]
 >For this documentation, you can NOT use port 1 until you've gotten to [autonomous programs](#defining-autonomous-sensors), this is because the auton sensors are defaulted to port 1 and your brain will be confused if anything is in port 1. If you really want to use port 1 then go to `globals.cpp` and change the port numbers on `pros::Imu imu(1);`,`pros::Rotation verticalEncoder(1);`, and `pros::Rotation horizontalEncoder(1);` to an unused port on your robot.
 
@@ -258,7 +258,7 @@ For those coming from [the drivetrain section](#define-your-drivetrain), use the
 >To install code to other slots, write `pros mu --slot n` where n is an integer number 1 through 8.
 
 ## Motors
-This section will focus on motors and what you can do with them, extras may be located in the [extra syntax section](#extra-syntax)
+This section will focus on motors and what you can do with them, extras may be located in the [extra syntax section](#extra-stuff)
 
 ### Define your motors
 Now let's define some motors. Navigate back to `globals.hpp` and find the motors lines similar to\
@@ -376,7 +376,7 @@ void intakeControls(const bool in, const bool out, const float speed) {
 Now you've written a simple program inside your helper function! But to make it run, we have to define motor controls.
 
 ### Defining motor controls
-Defining motor controls is probably one of the silliest looking parts, but with practice (and if you read [the bonus section on it](#extra-syntax)), it should make sense. To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
+Defining motor controls is probably one of the silliest looking parts, but with practice (and if you read [the bonus section on it](#extra-stuff)), it should make sense. To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
 ```
 struct motorControlOptions {
     /*
@@ -560,7 +560,7 @@ Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. No
 >This will run the motor at 80% speed.
 
 ## Pneumatics
-This section will focus on pneumatics and what you can do with them, extras may be located in the [extra syntax section](#extra-syntax)
+This section will focus on pneumatics and what you can do with them, extras may be located in the [extra stuff section](#extra-stuff)
 
 ### Define your pneumatics
 Similar to earlier, we're now going to define our pneumatic parts. Navigate back to `globals.hpp` and find the motors lines similar to\
@@ -915,24 +915,27 @@ We've define an autonomous program, but it currently does nothing. Let's first u
 Let's now [download](#downloading-code) this and run the code. When we run the code, a menu should appear and prompt us to select an autonomous. Use the up/down arrows on the controller to get the ">" arrow pointing at our new calibration autonomous, then click A to select it. The robot should begin moving forwards and stop near the value (0, 15)! If it instead keeps going forwards and reports a negative y-value, try flipping your vertical tracking wheel port to a negative number. If the issue persists, ensure you've follow the directions properly.
 
 ### Calibration auton program
-While this is a good start, this isn't a square. we're then going to move to (15, 15) within 5 seconds. For (0, 15), we'll use the [`chassis.moveToPose` function](#chassismovetopose-function) and tell it to move to (0, 15) with a theta value of 180 (yours may be -180). Now we have code that looks as follows:
+While this is a good start, this isn't a square. we're then going to point to a heading of 90 using the [`chassis.turnToHeading` function](#chassisturntoheading-function), then moving to (15, 15) within 5 seconds. For (0, 15), we'll combine the heading and point using the [`chassis.moveToPose` function](#chassismovetopose-function) and tell it to move to (0, 15) with a theta value of -180. Now we have code that looks as follows:
 ```
 //Route 1
     void calibrationAuton() {
         chassis.setPose(0, 0, 0);
         chassis.moveToPoint(0, 15, 5000);
+        chassis.turnToHeading(90, 3000);
         chassis.moveToPoint(15, 15, 5000);
-        chassis.moveToPose(0, 15, 180, 5000);
+        chassis.moveToPose(0, 15, -180, 5000);
     }
 ```
-We will then finish it with two more lines, returning it to (0, 0) and spinning it to face a theta of 0 degrees once more. Turning the robot to a heading can be done using the [`chassis.turnToHeading` function](#chassisturntoheading-function) and we already know how to move the robot. Our final will look like this:
+We will then finish it with three more lines, returning it to (0, 0) and spinning it to face a theta of 0 degrees once more. Turning the robot to a heading can be done using the [`chassis.turnToHeading` function](#chassisturntoheading-function) and we already know how to move the robot. Our final will look like this:
 ```
 //Route 1
     void calibrationAuton() {
         chassis.setPose(0, 0, 0);
         chassis.moveToPoint(0, 15, 5000);
+        chassis.turnToHeading(90, 3000);
         chassis.moveToPoint(15, 15, 5000);
-        chassis.moveToPose(0, 15, 180, 5000);
+        chassis.moveToPose(0, 15, -180, 5000);
+        chassis.turnToHeading(-270, 3000);
         chassis.moveToPoint(0, 0, 5000);
         chassis.turnToHeading(0, 5000);
     }
@@ -940,14 +943,59 @@ We will then finish it with two more lines, returning it to (0, 0) and spinning 
 Now download and test this, hopefully it runs roughly in a square. If not, ensure that you followed the steps properly. If it did work, you've coded a clibration program!
 
 ### Calibrating PID values
-
+Now we have a calibrating program, but what are we calibrating? Put simply, we're calibrating the values for how the robot moves. These values are called the PID values because those are the 3 we work with. Their full names are proportional, integral, and derivative, but that won't be discussed here (it's in [the extras area](#extra-stuff)). For our basics, we won't even modify I.\
+\
+Think of our P and D values as parts of a rubber band. Our P value is how far we are from where we want the robot to be, think of it as how much you stretch the rubber band out. Then our D value stops the P value from growing too large, think of it as being how unelastic the rubber band is, pulling back on D to make it 0. We need to balance these values so that P and D don't undershoot or overshoot our robot's desired position.\
+\
+Navigate to `globals.cpp` and find the block that looks as follows:
+```
+// lateral PID controller
+lemlib::ControllerSettings LateralController(
+    7, // proportional gain (kP)
+    0, // integral gain (kI)
+    15, // derivative gain (kD)
+    0, // anti windup
+    0, // small error range, in inches
+    0, // small error range timeout, in milliseconds
+    0, // large error range, in inches
+    0, // large error range timeout, in milliseconds
+    0 // maximum acceleration (slew)
+);
+```
+This is where we'll be changing values, right now we'll be specifically changing the proportional gain and derivative gain lines. Now run your autonomous program again and wait for it to move forwards, then try to look at the screen quickly, is the y value above or below 15?\
+If it's above 15:\
+-Turn up your kD value slightly\
+If it's below 15:\
+-Turn up your kP value slightly\
+Repeat this process until it gets incredibly close to (0, 15).\
+\
+Now we need to tune our turning, find the block that looks as follows:
+```
+// angular PID controller
+lemlib::ControllerSettings AngularController(
+    2, // proportional gain (kP)
+    0, // integral gain (kI)
+    10, // derivative gain (kD)
+    0, // anti windup
+    0, // small error range, in degrees
+    0, // small error range timeout, in milliseconds
+    0, // large error range, in degrees
+    0, // large error range timeout, in milliseconds
+    0 // maximum acceleration (slew)
+);
+```
+Now run the code and watch it turn at each point, is it turning too far or not far enough?\
+If it's too far:\
+-Turn up your kD value slightly\
+If it's not far enough:\
+-Turn up your kP value slightly\
 # The pros commands you'll use
 (Coming soon)
 
 # The git commands you'll use
 (Coming soon)
 
-# Extra syntax
+# Extra stuff
 (Coming soon)
 
 ## Libraries you can use
@@ -978,3 +1026,6 @@ The motorVelocity function is a function which takes `motor.move();` values in t
 **Note: Because this function is meant to return a value, you should normally only call it inside the .move**
 
 [^1]: Theta values are the direction which the robot faces, it can be both positive or negative. 0/360 directly forward, 180/-180 are directly backward, and so forth.
+
+## PID explained
+This 
