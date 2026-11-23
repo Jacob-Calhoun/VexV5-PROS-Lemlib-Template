@@ -13,8 +13,8 @@
         Do NOT touch the assigned type   |           | change amount and  | do not change
                                          v           v names as needed    v given value
         */
-        std::optional<pros::controller_digital_e_t> moveSelectionUp = std::nullopt;
-        std::optional<pros::controller_digital_e_t> moveSelectionDown = std::nullopt;
+        std::optional<pros::controller_digital_e_t> moveSelectionUp = pros::E_CONTROLLER_DIGITAL_UP;
+        std::optional<pros::controller_digital_e_t> moveSelectionDown = pros::E_CONTROLLER_DIGITAL_DOWN;
         std::optional<pros::controller_digital_e_t> selectAuton = pros::E_CONTROLLER_DIGITAL_A;
     };
 //Functions

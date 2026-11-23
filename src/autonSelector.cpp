@@ -7,9 +7,9 @@
         //Stays none
         "None",
         //Set to name of corresponding function
-        "N/A 1",
-        "N/A 2",
-        "N/A 3",
+        "autonRoute1",
+        "autonRoute2",
+        "autonRoute3",
         "N/A 4",
         "N/A 5",
         "N/A 6",

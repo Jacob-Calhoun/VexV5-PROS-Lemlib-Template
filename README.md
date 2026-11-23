@@ -110,6 +110,8 @@ This section will give directions on how to install the needed programs and the 
 
 # Working with the template
 In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the ["Extra syntax" section](#Extra-syntax)
+>[!WARNING]
+>For this documentation, you can NOT use port 1 until you've gotten to [autonomous programs](#defining-autonomous-sensors), this is because the auton sensors are defaulted to port 1 and your brain will be confused if anything is in port 1. If you really want to use port 1 then go to `globals.cpp` and change the port numbers on `pros::Imu imu(1);`,`pros::Rotation verticalEncoder(1);`, and `pros::Rotation horizontalEncoder(1);` to an unused port on your robot.
 
 ## Libraries you'll use
 This section has a bank of the libraries you'll be using so when writing controls and such you know what you can call.
@@ -138,6 +140,23 @@ The referenced "press types" are part of a custom class, you will always use one
 `buttonPressTypes::NEW_RELEASE`
 These tell the [`buttonStatus` function](#buttonStatus-function) when to return a true/false value for a specified button.
 
+### Tracking wheels library
+The referenced "tracking wheel types" are as follows:\
+`NEW_2`\
+`NEW_275`\
+`OLD_275`\
+`NEW_275_HALF`\
+`OLD_275_HALF`\
+`NEW_32`\
+`OLD_325`\
+`NEW_325_HALF`\
+`OLD_325_HALF`\
+`NEW_4`\
+`OLD_4`\
+`NEW_4_HALF`\
+`OLD_4_HALF`
+These will be used in [autonomous sensor definitions](#defining-autonomous-sensors) for your tracking wheels.
+
 ## Functions you'll use
 The referenced functions are functions which will handle things for you, ensuring you understand them is crucial.
 
@@ -162,6 +181,39 @@ Are all valid function calls and will return a boolean (true/false) value.\
 >[!TIP]
 >To make a "when *not* pressed/released/held" function, pass `!buttonStatus([chosen button], [optional param])"
 
+### chassis.setPose function
+The chassis.setPose function is a function which tells the robot what to set its new position to, it will then base any future instructions off the new position as if it was always there. This can be useful for checkpoints in autonomous programs and should always be at the start of your autonomous program unless you want everything to be relative to the robots starting position. When using it, it takes 3 parameters, an x value, y value, and theta[^1] value. Your function call should be structured somewhat like this:
+```
+chassis.setPose(0, 0, 0);   // Sets the position to (0,0) while facing straight forward
+chassis.setPose(10, 1, 45); // Sets the position to (10,1) while facing 45 degrees
+```
+For positional values, x and y should be in inches while the theta[^1] value should be in degrees.
+
+### chassis.moveToPoint function
+The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate without any desired theta[^1] value. It requires 3 arguments to run, an x value, y value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before moving on. Your function call should be structured somewhat like this:
+```
+chassis.moveToPoint(10, 10, 3000);  // Tries to move to the point (10,10) within 3 seconds
+chassis.moveToPoint(-10, 10, 4700);  // Tries to move to the point (-10,10) within 4.7 seconds
+chassis.moveToPoint(3, -7, 8000);  // Tries to move to the point (3,-7) within 8 seconds
+```
+For positional values, x and y should be in inches while the timeout value should be in milliseconds.
+
+### chassis.moveToPose function
+The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate with a desired theta[^1] value. It requires 4 arguments to run, an x value, y value, a theta[^1] (direction) value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before moving on. Your function call should be structured somewhat like this:
+```
+chassis.moveToPoint(10, 10, 0, 3200);  // Tries to move to the point (10,10) with a theta[^1] value of 0 within 3.2 seconds
+chassis.moveToPoint(-10, 10, 75, 8100);  // Tries to move to the point (-10,10) with a theta[^1] value of 75 within 8.1 seconds
+chassis.moveToPoint(3, -7, -53, 700);  // Tries to move to the point (3,-7) with a theta[^1] value of -53 within 0.7 seconds
+```
+For positional values, x and y should be in inches, theta[^1] should be in degrees. The timeout value should be in milliseconds.
+
+### chassis.turnToHeading function
+The chassis.turnToHeading function is a function which tells the robot to turn to a specific theta[^1] value. It requires 2 arguments to run, a theta value and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before moving on. Your function call should be structured somewhat like this:
+```
+chassis.turnToHeading(45,1000);    // Tries to face the heading 45 degrees within 1 second
+chassis.turnToHeading(-70, 4000);   // Tries to face the heading -70 degrees within 4 seconds
+chassis.turnToHeading(126, 3250);   // Tries to face the heading 126 degrees within 3.25 seconds
+```
 ## Drivetrain properties
 This section will talk about drivetrains and what you can do with them for driver control.
 
@@ -197,7 +249,7 @@ pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 **Note: There are more examples which may end up with this configuration, these are not the only way that these happen.**
 
 ## Downloading code
-To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "N/A 1", "N/A 2", click A on your controller to continue.\
+To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "None","N/A 1", "N/A 2", etc—this will eventually be your autonomous selector—click A on your controller to continue.\
 For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move forward/backward while the right joystick should move left/right.If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
 >[!IMPORTANT]
 >Currently, there can be issues where clangd says things are wrong and highlights them red, it CAN be incorrect. If you are unsure about clangd's error message, type `pros build` into your terminal and see if you get an error. If not, your code is fine.
@@ -722,11 +774,172 @@ Now download it and test it! Does pressing your first button open the claw? Does
 >If your open instead closes, flip your attatched hoses on the pneumatic.
 
 ## Autonomous programs
-In this section, you'll learn about the auton selector and making autonomous programs
+In this section, you'll learn about the auton selector and making autonomous programs.\
+**Note: It is highly recommended that you first code a full and working driver control system for your robot before moving to autonomous.**
 
-### Defining an auton
+### Defining autonomous sensors
+For a robot to do an autonomous program, you'll need the following 3 sensors:
+1. An IMU
+2. A horizontal tracking wheel (wheel parallel to drivetrain wheels)
+3. A vertical tracking wheel (wheel perpendicular to drivetrain wheels)
+To start, your IMU should be placed flat and protected for best results. Then your tracking wheels must be placed firmly against the ground but able to smoothly roll with your robot (this is usually done through the use of rubber bands). Once these have been set up properly by your builder, we can define them. Move into the `globals.hpp` file and find the code that looks like this:
+```
+//Sensors
+	pros::Imu imu(1);
+
+//Tracking Wheels
+	pros::Rotation verticalEncoder(1);
+	lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, 0);
+
+	pros::Rotation horizontalEncoder(1);
+	lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, 0);
+```
+These are your 3 main sensors. We need to change those number 1's to the corresponding ports. Then for the following line where it says\
+`lemlib::Omniwheel::NEW_2`\
+please refer to [the libraries section](#tracking-wheels-library) and ask your builder which is the correct one.\
+**Note: If you're unsure, try NEW_2.**\
+Finally, the `0` is the signed distance of how far away the wheel is (in inches) from the center of your robot on the opposite axis.\
+**Examples:**
+```
+lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -5);    // Vertical tracking wheel 5 inches to the left
+lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, 3);    // Vertical tracking wheel 3 inches to the right
+lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, 2);   // Horizontal tracking wheel 2 inches forward
+lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, -7);   // Horizontal tracking wheel 7 inches back
+```
+Once you've done this, you've successfully declared your sensors!
+
+### Defining an autonomous program
+So now you've got a working driver control system, or at least an idea on how to make one. Now we need an autonomous for skills and the 15 second auton in teamwork! Let's start by coding a simple program to help us calibrate our robot. First, go to the `autons.hpp` folder, there should be something that looks similar to this:
+```
+//Auton functions
+    void autonRoute1();
+    void autonRoute2();
+    void autonRoute3();
+```
+This is where we will be declaring any autonomous functions we make. Let's change the name of `autonRoute1` to something more fitting, like `calibrationAuton`. Our end result should be this:
+```
+//Auton functions
+    void calibrationAuton();
+    void autonRoute2();
+    void autonRoute3();
+```
+Now we need to add code to it! Go to `autons.cpp` and find the original function:
+```
+//Route 1
+    void autonRoute1() {
+
+    }
+```
+Now rename it to match our other. Your final should look like this:
+```
+//Route 1
+    void calibrationAuton() {
+
+    }
+```
+Though, it's still missing from the autonomous selector! Let's add it there, go to `autonSelector.cpp` and look for the block of code that looks similar to this:
+```
+std::array<std::string, 10> autons = {
+    //Stays none
+    "None",
+    //Set to name of corresponding function
+    "autonRoute1",
+    "autonRoute2",
+    "autonRoute3",
+    "N/A 4",
+    "N/A 5",
+    "N/A 6",
+    "N/A 7",
+    "N/A 8",
+    "N/A 9"
+};
+
+void (*autonFunctions[])() = {
+    //Stays nullptr
+    nullptr,
+    //Set to name of corresponding function
+    autonRoute1,
+    autonRoute2,
+    autonRoute3,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr
+};
+```
+We are going to change the display name from "autonRoute1" to "Calibration auton", we will then change the function call name from `autonRoute1` to `calibrationAuton` so that it matches our newly defined function. Now our code should look as follows:
+```
+std::array<std::string, 10> autons = {
+    //Stays none
+    "None",
+    //Set to name of corresponding function
+    "Calibration auton",
+    "autonRoute2",
+    "autonRoute3",
+    "N/A 4",
+    "N/A 5",
+    "N/A 6",
+    "N/A 7",
+    "N/A 8",
+    "N/A 9"
+};
+
+void (*autonFunctions[])() = {
+    //Stays nullptr
+    nullptr,
+    //Set to name of corresponding function
+    calibrationAuton,
+    autonRoute2,
+    autonRoute3,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr
+};
+```
+You've now defined an autonomous program! Now let's add some simple code to the function.
 
 ### Simple auton program
+We've define an autonomous program, but it currently does nothing. Let's first use it to test our tracking wheels. Go to `autons.cpp` and find your newly defined function, we're going to add some code. First, we'll set the position to be (0, 0) and facing a heading of 0 degrees, we'll do this using the [`chassis.setPose` function](#chassissetpose-function). Then we can tell the robot to move to (0, 15), we'll use the [`chassis.moveToPoint` function](#chassismovetopoint-function) for this. Our current code should look as follows:
+```
+//Route 1
+    void calibrationAuton() {
+        chassis.setPose(0, 0, 0);
+        chassis.moveToPoint(0, 15, 5000);
+    }
+```
+Let's now [download](#downloading-code) this and run the code. When we run the code, a menu should appear and prompt us to select an autonomous. Use the up/down arrows on the controller to get the ">" arrow pointing at our new calibration autonomous, then click A to select it. The robot should begin moving forwards and stop near the value (0, 15)! If it instead keeps going forwards and reports a negative y-value, try flipping your vertical tracking wheel port to a negative number. If the issue persists, ensure you've follow the directions properly.
+
+### Calibration auton program
+While this is a good start, this isn't a square. we're then going to move to (15, 15) within 5 seconds. For (0, 15), we'll use the [`chassis.moveToPose` function](#chassismovetopose-function) and tell it to move to (0, 15) with a theta value of 180 (yours may be -180). Now we have code that looks as follows:
+```
+//Route 1
+    void calibrationAuton() {
+        chassis.setPose(0, 0, 0);
+        chassis.moveToPoint(0, 15, 5000);
+        chassis.moveToPoint(15, 15, 5000);
+        chassis.moveToPose(0, 15, 180, 5000);
+    }
+```
+We will then finish it with two more lines, returning it to (0, 0) and spinning it to face a theta of 0 degrees once more. Turning the robot to a heading can be done using the [`chassis.turnToHeading` function](#chassisturntoheading-function) and we already know how to move the robot. Our final will look like this:
+```
+//Route 1
+    void calibrationAuton() {
+        chassis.setPose(0, 0, 0);
+        chassis.moveToPoint(0, 15, 5000);
+        chassis.moveToPoint(15, 15, 5000);
+        chassis.moveToPose(0, 15, 180, 5000);
+        chassis.moveToPoint(0, 0, 5000);
+        chassis.turnToHeading(0, 5000);
+    }
+```
+Now download and test this, hopefully it runs roughly in a square. If not, ensure that you followed the steps properly. If it did work, you've coded a clibration program!
+
+### Calibrating PID values
 
 # The pros commands you'll use
 (Coming soon)
@@ -763,3 +976,5 @@ This is the second value of the drive speed, it should be between 0 and 1 at all
 ### motorVelocity function
 The motorVelocity function is a function which takes `motor.move();` values in the -127 to 127 domain and restructures them into the -100 to 100 domain, effectively making your entered value a percentage rather than a standalone number. It has one restriction, it only takes integer values, but you normally shouldn't need decimal percentage values. To use it, rather than writing `motor.move(127);` you would write `motor.move(motorVelocity(100));`. While it does seem annoying, it can come in handy for autonomous and other functions. Unlike some other functions, if this function is written, you **have** to provide a parameter.\
 **Note: Because this function is meant to return a value, you should normally only call it inside the .move**
+
+[^1]: Theta values are the direction which the robot faces, it can be both positive or negative. 0/360 directly forward, 180/-180 are directly backward, and so forth.
