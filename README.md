@@ -102,7 +102,41 @@ The referenced "buttons" are part of a pros class, you will always use one of th
 `pros::E_CONTROLLER_DIGITAL_Y`\
 `pros::E_CONTROLLER_DIGITAL_A`\
 `pros::E_CONTROLLER_DIGITAL_R1`\
-`pros::E_CONTROLLER_DIGITAL_R2`\
+`pros::E_CONTROLLER_DIGITAL_R2`
+
+## Button press types library
+The referenced "press types" are part of a custom class, you will always use one of the following as your type:\
+`buttonPressTypes::HELD`\
+`buttonPressTypes::NEW_PRESS`\
+`buttonPressTypes::NEW_RELEASE`
+
+## Functions you'll use
+The referenced functions are functions which will handle things for you, ensuring you understand them is crucial.
+
+### motorVelocity function
+The motorVelocity function is a function which takes `motor.move();` values in the -127 to 127 domain and restructures them into the -100 to 100 domain, effectively making your entered value a percentage rather than a standalone number. It has one restriction, it only takes integer values, but you normally shouldn't need decimal percentage values. To use it, rather than writing `motor.move(127);` you would write `motor.move(motorVelocity(100));`. While it does seem annoying, it can come in handy for autonomous and other functions. Unlike some other functions, if this function is written, you **have** to provide a parameter.
+**Note: Because this function is meant to return a value, you should normally only call it inside the .move**
+
+### buttonStatus function
+The buttonStatus function is a function which takes an input of an optional button type (`std::optional<pros::controller_digital_e_t>`) and outputs a boolean (true/false) value in return. To use it, write `buttonStatus(pros::E_CONTROLLER_DIGITAL_A)` or some other allowed [button](#pros-controller-button-library). You may also include a second parameter, this parameter tells it whether to process all presses or only new presses/releases. For instance,
+```
+buttonStatus(pros::E_CONTROLLER_DIGITAL_UP);    // Defaults to buttonPressTypes::HELD
+buttonStatus(pros::E_CONTROLLER_DIGITAL_Left, buttonPressTypes::HELD);  // Sends signal if held/pressed
+buttonStatus(pros::E_CONTROLLER_DIGITAL_B, buttonPressTypes::NEW_PRESS);    // Sends signal only when newly pressed
+buttonStatus(pros::E_CONTROLLER_DIGITAL_X, buttonPressTypes::NEW_RELEASE);  // Sends signal only when newly released
+```
+Are all valid function calls and will return a boolean (true/false) value.
+**Note: Because this function is meant to return a value, you should normally only call it whenever trying to get a button's state for a function or conditional**
+
+### drivetrainSpeedModifier function
+**Note: This is also somewhat covered in the docs under the [drivetrain properties section](#drivetrain-speed-modifier)**
+The drivetrainSpeedModifier function is a function which takes a selected button and uses it to either slow down or speed up the robot while holding a chosen button. You should *not* be writing this function on your own and should only use it in its preplaced spots. The first parameter entered will be your [button](#pros-controller-button-library) of choice and the second is an optional boolean which inverses the default system. The system is defaulted to slow down when the button is pressed, but by writing `drivetrainSpeedModifier([button of choice], true)` the true boolean will make it so that your drivetrain will run at the selected speed value until you press the button, at which point it will run at full speed.\
+**Examples:**
+```
+drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_A);  // Defaults to false (not inverted)
+drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_X, false);   // Drives at full speed until button (in this case, X) held
+drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_A, true);    // Drives at custom speed until button (in this case, A) held
+```
 
 ## Drivetrain properties
 This section will talk about drivetrains and what you can do with them for driver control.
@@ -143,7 +177,7 @@ pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 >[!CAUTION]
 >This is a QoL feature, for new programmers it may be harder to understand. This is not essential, so don't worry if you don't touch it. It is also recommended that you try this after testing ONLY your drivetrain.
 
-Has your team or driver ever needed to be fast but then slow down for moments to get accurate placement? Maybe even vice versa and you only want to be fast at certain times? Built into your drivetrain is a speed modifier!\
+Has your team or driver ever needed to be fast but then slow down for moments to get accurate placement? Maybe even vice versa and you only want to be fast at certain times? Built into your drivetrain is a [speed modifier function!](#drivetrainspeedmodifier-function)\
 **Note: This feature is for holding a button, currently it doesn't support a toggle system.**\
 Navigate to `main.cpp` and scroll down until you find the lines that look like this:
 ```
