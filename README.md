@@ -250,7 +250,7 @@ pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 
 ## Downloading code
 To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "None","N/A 1", "N/A 2", etc—this will eventually be your autonomous selector—click A on your controller to continue.\
-For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move forward/backward while the right joystick should move left/right.If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
+For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move forward/backward while the right joystick should move left/right. If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
 >[!IMPORTANT]
 >Currently, there can be issues where clangd says things are wrong and highlights them red, it CAN be incorrect. If you are unsure about clangd's error message, type `pros build` into your terminal and see if you get an error. If not, your code is fine.
 
@@ -265,7 +265,7 @@ Now let's define some motors. Navigate back to `globals.hpp` and find the motors
 `extern pros::Motor Motor1;`\
 These will be motors on your robot. It follows the same declaration format as the drivetrain but now we declare a single motor rather than a motorgroup.  To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, `intake`, or whatever else you may have. Now navigate back to the `globals.cpp` file and find the line that looks like\
 `pros::Motor Motor1(1, pros::v5::MotorGearset::green);`\
-This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}` because there's only one port for a motor. Once this makes sense, change the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port number to that part of your robot.
+This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}` because there's only one port for a motor. Once this makes sense, change the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port number to that part of your robot.\
 **Example:**
 ```
 In globals.hpp file:
@@ -284,7 +284,14 @@ Finally, we need to actually test it; let's start by going to `main.cpp` and scr
 void opcontrol () {
     //temporary code
 ```
-Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the auton selector, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors. Now you can add/remove these motor definitions/declarations (remove both, not just one or the other) so that you only have the motors you're using!
+Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127).\
+**Example:**
+```
+void opcontrol() {
+    //temporary code
+        claw.move(127);
+```
+Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the autonomous selector, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors.
 
 ### Making motor helper functions
 Helper functions are the foundation for your code, they allow us to tell the robot what to do and when. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\

@@ -16,7 +16,7 @@
     extern pros::MotorGroup drivetrainRight;
 
 //Motors
-    extern pros::Motor Motor1;
+    extern pros::Motor claw;
     extern pros::Motor Motor2;
     extern pros::Motor Motor3;
     extern pros::Motor Motor4;

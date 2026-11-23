@@ -91,7 +91,7 @@ void autonomous() {
  */
 void opcontrol() {
   //Temporary code
-
+    claw.move(127);
   //Permanent code
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	//All of the robot controls
