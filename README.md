@@ -116,6 +116,14 @@ In this section, I will explain how to actually use the template, features it ha
 ## Libraries you'll use
 This section has a bank of the libraries you'll be using so when writing controls and such you know what you can call.
 
+### Motor brake types library
+The referenced brake types are part of a pros class, you will always use one of the following as your buttons:\
+`pros::E_MOTOR_BRAKE_HOLD`\
+`pros::E_MOTOR_BRAKE_BRAKE`\
+`pros::E_MOTOR_BRAKE_COAST`\
+These will be used in the [motor.set_brake_mode function](#motorset_brake_type-function)
+
+
 ### Pros controller button library
 The referenced "buttons" are part of a pros class, you will always use one of the following as your buttons:\
 `pros::E_CONTROLLER_DIGITAL_UP`\
@@ -167,6 +175,24 @@ intake.move(127);   // Moves forward at full speed
 claw.move(-100);    // Moves backward at 100/127 speed
 lift.move(35);  // Moves forward at 35/127 speed
 ```
+
+### motor.set_brake_type function
+The motor.set_brake_type function is a function which tells motors which braking method to use. Some examples are
+```
+intake.set_brake_type(pros::E_MOTOR_BRAKE_HOLD);    // Tells the motor to hold exactly where it was when told to brake
+claw.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);    // Tells the motor to completely stop movement and then allow spin
+lift.set_brake_type(pros:E_MOTOR_BRAKE_COAST);    // Tells the motor to just turn off and allow spin
+```
+The available options are listed in the [motor brake types class](#motor-brake-types-library)
+
+### motor.brake function
+The motor.brake function is a function which tells motors to brake based off a previously defined choice. Some examples are
+```
+intake.brake(); // Intake motor stops moving
+claw.brake();   // Claw motor stops moving
+lift.brake();   // Lift motor stops moving
+```
+To choose the brake type, use the [motor brake types class](#motor-brake-types-library) in the [motor set brake type function](#motorset_brake_type-function).
 
 ### buttonStatus function
 The buttonStatus function is a function which takes an input of an optional button type (`std::optional<pros::controller_digital_e_t>`) and outputs a boolean (true/false) value in return. To use it, write `buttonStatus(pros::E_CONTROLLER_DIGITAL_A)` or some other allowed [button](#pros-controller-button-library). You may also include a second parameter, this parameter tells it whether to process all presses or only new presses/releases. For instance,
@@ -1001,6 +1027,23 @@ If it's too far:\
 If it's not far enough:\
 -Turn up your kP value slightly\
 Repeat until it aligns with the right angle almost perfectly.
+
+### Autonomous clarifications and examples
+When configuring an autonomous, remember that unless you set position with the proper offset and heading, everything you do will be relative to the robot's starting position. This isn't ideal when coding larger autonomous projects, so please attempt to figure out the actual coordinates you'll be starting at based off your own determined orientation.\
+\
+**Examples:**
+```
+void rightHalf() {
+    chassis.setPose(0, -25, 0); // Sets starting position
+    chassis.moveToPoint(10, 15, 2000);  // Tells the robot to move forward/right within 2 seconds
+    chassis.turnToHeading(75, 1500);  // Tells the robot to turn and face 75 degrees within 1.5 seconds
+    intake.move(127);   // Tells the robot to start spinning the intake motor at full speed
+    chassis.moveToPoint(15, 20, 2000);   // Tells the robot to move further up/left within 2 seconds
+                                         // For our example, imagine this is it picking up a piece
+    intake.brake(); // Tells the intake motor to stop spinning
+}
+```
+
 # The pros commands you'll use
 (Coming soon)
 
@@ -1037,7 +1080,8 @@ This is the second value of the drive speed, it should be between 0 and 1 at all
 The motorVelocity function is a function which takes `motor.move();` values in the -127 to 127 domain and restructures them into the -100 to 100 domain, effectively making your entered value a percentage rather than a standalone number. It has one restriction, it only takes integer values, but you normally shouldn't need decimal percentage values. To use it, rather than writing `motor.move(127);` you would write `motor.move(motorVelocity(100));`. While it does seem annoying, it can come in handy for autonomous and other functions. Unlike some other functions, if this function is written, you **have** to provide a parameter.\
 **Note: Because this function is meant to return a value, you should normally only call it inside the .move**
 
-[^1]: Theta values are the direction which the robot faces, it can be both positive or negative. 0/360 directly forward, 180/-180 are directly backward, and so forth.
-
 ## PID explained
 This 
+
+
+[^1]: Theta values are the direction which the robot faces, it can be both positive or negative. 0/360 directly forward, 180/-180 are directly backward, and so forth.
