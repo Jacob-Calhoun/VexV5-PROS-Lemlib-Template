@@ -137,7 +137,7 @@ These ask for the state of the button, it then must be passed through the [`butt
 The referenced "press types" are part of a custom class, you will always use one of the following as your type:\
 `buttonPressTypes::HELD`\
 `buttonPressTypes::NEW_PRESS`\
-`buttonPressTypes::NEW_RELEASE`
+`buttonPressTypes::NEW_RELEASE`\
 These tell the [`buttonStatus` function](#buttonStatus-function) when to return a true/false value for a specified button.
 
 ### Tracking wheels library
@@ -154,7 +154,7 @@ The referenced "tracking wheel types" are as follows:\
 `NEW_4`\
 `OLD_4`\
 `NEW_4_HALF`\
-`OLD_4_HALF`
+`OLD_4_HALF`\
 These will be used in [autonomous sensor definitions](#defining-autonomous-sensors) for your tracking wheels.
 
 ## Functions you'll use
@@ -989,6 +989,7 @@ If it's too far:\
 -Turn up your kD value slightly\
 If it's not far enough:\
 -Turn up your kP value slightly\
+Repeat until it aligns with the right angle almost perfectly.
 # The pros commands you'll use
 (Coming soon)
 
