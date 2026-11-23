@@ -134,6 +134,14 @@ The referenced "press types" are part of a custom class, you will always use one
 ## Functions you'll use
 The referenced functions are functions which will handle things for you, ensuring you understand them is crucial.
 
+### motor.move function
+The motor.move function is a function which tells motors to move based off a signed input from the domain of -127 to 127. The function requires you to write the name of the motor before being followed by `.move(n)` (where -127<\n<127). Some examples are
+```
+intake.move(127);   // Moves forward at full speed
+claw.move(-100);    // Moves backward at 100/127 speed
+lift.move(35);  // Moves forward at 35/127 speed
+```
+
 ### motorVelocity function
 The motorVelocity function is a function which takes `motor.move();` values in the -127 to 127 domain and restructures them into the -100 to 100 domain, effectively making your entered value a percentage rather than a standalone number. It has one restriction, it only takes integer values, but you normally shouldn't need decimal percentage values. To use it, rather than writing `motor.move(127);` you would write `motor.move(motorVelocity(100));`. While it does seem annoying, it can come in handy for autonomous and other functions. Unlike some other functions, if this function is written, you **have** to provide a parameter.\
 **Note: Because this function is meant to return a value, you should normally only call it inside the .move**
@@ -169,7 +177,7 @@ These are motor group declarations. A declaration is what goes in your .hpp file
 `pros::MotorGroup drivetrainLeft({1,1}, pros::v5::MotorGearset::green);`\
 The `{1,1}` is the list of ports for the motors in this group. Let's change it to reflect your actual drivetrain ports on the left side. If you have 3 motors on each side, no worries, add another comma and port number (example: `{1,2,3}`). Then look at the `pros::v5::MotorGearset::green`, this is your cartridge. Set it to whatever your drivetrain uses (you should be using the same cartridge for your entire drivetrain), if you use blue then it would be `pros::v5::MotorGearset::blue`. Now do the same for your right side in\
 `pros::MotorGroup drivetrainRight({1,1}, pros::v5::MotorGearset::green)`\
-We're not done, though! Motors on opposite sides need to spin opposite ways, if your motors on the left and right all face the same way, they would be `{1,2}`/`{1,2,3}` and `{-3,-4}`/`{-4,-5,-6}` respectively. A negative number for a port number means inverted, forward becomes backward and vice versa. In a moment when we test, if the drivetrain drives incorrectly, that's okay! Just change the negative/positive ports until it begins working, you should be able to figure out which should be negative and positive by talking to your builder and experimenting.\
+We're not done, though! Motors on opposite sides need to spin in the same direction, if your motors on the left and right all face the same way, they would be `{1,2}`/`{1,2,3}` and `{-3,-4}`/`{-4,-5,-6}` respectively. A negative number for a port number means inverted, forward becomes backward and vice versa. In a moment when we test, if the drivetrain drives incorrectly, that's okay! Just change the negative/positive ports until it begins working, you should be able to figure out which should be negative and positive by talking to your builder and experimenting.\
 **Examples:**\
 **1. 4-motor drivetrain with motors facing opposite ways**
 ```
@@ -246,7 +254,7 @@ Finally, we need to actually test it; let's start by going to `main.cpp` and scr
 void opcontrol () {
     //temporary code
 ```
-Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Now download this by following the same [download instructions](#downloading-code) from before. Once done, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors. Now you can add/remove these motor definitions/declarations (remove both, not just one or the other) so that you only have the motors you're using!
+Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the auton selector, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors. Now you can add/remove these motor definitions/declarations (remove both, not just one or the other) so that you only have the motors you're using!
 
 ### Making motor helper functions
 Helper functions are the foundation for your code, they allow us to tell the robot what to do and when. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
@@ -288,6 +296,7 @@ motorHelper1(
 );
 ```
 This must be renamed to the same name as your new function. This will be where your function is eventually going to be used. But for now, you've made a helper function!
+
 ### Writing a simple program inside our motor helper function
 Since you've created the helper function, now you need to write code inside it. Look back at your function *definition*, it should currently look something like
 ```
@@ -300,32 +309,32 @@ void intakeControls(const bool in, const bool out, const float speed) {
 
 We're now going to add code here, let's start on a simple idea: We want a motor to spin forwards when you click the `in` button and backwards when we click the `out` button (for preface, these boolean inputs are buttons that we will define in [the next section](#defining-motor-controls)). Let's start this by writing our `in` conditional, we will write
 ```
-if (up) {
+if (in) {
     intake.move(speed);
     return;
 }
 ```
 This may seem like a jump, but this can be broken apart.\
-The `if (up)` is asking if the `up` boolean is set to true, in the exmaple code's context, this will eventually mean "is the selected button being held?"\
+The `if (in)` is asking if the `in` boolean is set to true, in the exmaple code's context, this will eventually mean "is the selected button being held?"\
 The `intake.move(speed);` line is simply saying "the intake motor must start spinning at the value of `speed`."\
 The `return;` tells the function that it is done doing what it must and can immediately leave.\
-Now what about when it should move down? Let's write something similar, under our new code block, we will write something like
+Now what about when it should move out? Let's write something similar, under our new code block, we will write something like
 ```
-if (down) {
+if (out) {
     intake.move(-speed);
     return;
 }
 ```
-This is almost exactly the same, except now the code is asking about the `down` button and is spinning in the opposite direction (due to it being the negative speed value). Finally, what if it should brake when not being pressed? Under the other two block codes, we will write `intake.brake();`. Now the `return;` line has meaning, without it, our robot would see that we pressed a button, move the motor, and then immediately brake the motor. With this `return;` line, we tell the function that once it's activated from a button, it can stop looking for more code to run.\
-In the example, the final code looks as follows:
+This is almost exactly the same, except now the code is asking about the `out` button and is spinning in the opposite direction (due to it being the negative speed value). Finally, what if it should brake when not being pressed? Under the other two block codes, we will write `intake.brake();`. Now the `return;` line has meaning, without it, our robot would see that we pressed a button, move the motor, and then immediately brake the motor. With this `return;` line, we tell the function that once it's activated from a button, it can stop looking for more code to run.\
+The final code looks as follows:
 ```
 void intakeControls(const bool in, const bool out, const float speed) {
-    if (up) {
+    if (in) {
         intake.move(speed);
         return;
     }
 
-    if (down) {
+    if (out) {
         intake.move(-speed);
         return;
     }
@@ -337,7 +346,7 @@ void intakeControls(const bool in, const bool out, const float speed) {
 Now you've written a simple program inside your helper function! But to make it run, we have to define motor controls.
 
 ### Defining motor controls
-Defining motor controls is probably one of the silliest looking parts, but with practice (and if you read [the section on it](#extra-syntax)), it should make sense. To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
+Defining motor controls is probably one of the silliest looking parts, but with practice (and if you read [the bonus section on it](#extra-syntax)), it should make sense. To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
 ```
 struct motorControlOptions {
     /*
@@ -358,7 +367,7 @@ struct motorControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-The comments directly instruct you on what to do, for our intake function let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively.\
+The comments directly instruct you on what to do, for our intake function let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively (you can make your own function with your own names).\
 **Example:**
 ```
 struct motorControlOptions {
@@ -392,7 +401,7 @@ void motorControls(const struct motorControlOptions& options, const struct motor
     [other code here]
 }
 ```
-Change the names of the two parameters from `options.NA1` to `options.intakeIn` and `options.NA2` to `options.intakeOut`.\
+Change the names of the two parameters from `options.NA1` to `options.intakeIn` and `options.NA2` to `options.intakeOut` (put your own names in place if you're making your own).\
 **Example:**
 ```
 void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
@@ -425,7 +434,7 @@ motorControls({
     .NA3 = 127
 });
 ```
-For now, we will only change `.NA1` and `.NA2`. Start by changing their names to match the same ones you typed out earlier, for our example it would be:
+For now, we will only change `.NA1` and `.NA2`. Start by changing their names to match the same ones you typed out earlier, for our example our intake function would be:
 ```
 motorControls({
     //Controls options for motors
@@ -445,7 +454,7 @@ motorControls({
     .NA3 = 127
 });
 ```
-Finally, we can assign controller buttons to these! To start, assign your first one to some [button](#pros-controller-button-library), for our example, we will assign `.intakeIn` to `pros::E_CONTROLLER_DIGITAL_UP` which is the up-arrow [button](#pros-controller-button-library) on the controller, and `.intakeOut` will be assigned to `pros::E_CONTROLLER_DIGITAL_DOWN`, the controller down-arrow. Your final should look something like this:
+Finally, we can assign controller buttons to these! To start, assign your first one to some [button](#pros-controller-button-library), for our example, we will assign `.intakeIn` to `pros::E_CONTROLLER_DIGITAL_UP` which is the up-arrow [button](#pros-controller-button-library) on the controller. Then for our example, `.intakeOut` will be assigned to `pros::E_CONTROLLER_DIGITAL_DOWN`, the controller down-arrow. Your final should look something like this (with your own naming, of course):
 ```
 motorControls({
     //Controls options for motors
@@ -516,12 +525,13 @@ motorControls({
 ```
 Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. Now change 127 to be whatever speed you prefer. Now check if it builds and test it, if it works, you've succesfully created a working helper function with customizable speed!
 >[!TIP]
->There is a `motorVelocity` function which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:\
+>There is a [`motorVelocity` function](#motorvelocity-function) which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:\
 >`.intakeSpeed = motorVelocity(80);`\
 >This will run the motor at 80% speed.
 
 ## Pneumatics
 This section will focus on pneumatics and what you can do with them, extras may be located in the [extra syntax section](#extra-syntax)
+
 ### Define your pneumatics
 Similar to earlier, we're now going to define our pneumatic parts. Navigate back to `globals.hpp` and find the motors lines similar to\
 `extern pros::adi::Pneumatics Pneumatic1;`\
@@ -589,14 +599,14 @@ void clawToggleControls(const bool open, const bool closed) {
 >[!NOTE]
 >Yours may have different names, that's okay, you can copy the project if it makes more sense that way, but the lesson can be adapted to a different/unique function.
 
-We're now going to add code here, let's start on a simple idea: We want a pneumatic to open the claw when you click the `open` button and close it when we click the `close` button (for preface, these boolean inputs are buttons that we will define in [the next section](#defining-pneumatic-controls)). Let's start this by writing our `open` conditional, we will write
+We're now going to add code here, let's start on a simple idea: We want a pneumatic to open the claw when you click the `open` button and close it when we click the `close` button (for preface, these boolean inputs are buttons that we will define in [the next section](#defining-pneumatic-controls)). For our example, let's start this by writing our `open` conditional, we will write
 ```
 if (open) {
     clawToggle.extend();
     return;
 }
 ```
-This may seem like a jump, but this can be broken apart.\
+This may seem like a jump, but this can be broken apart, similarly to the motors helper function.\
 The `if (open)` is asking if the `open` boolean is set to true, in the exmaple code's context, this will eventually mean "was the selected button pressed?"\
 The `clawToggle,extend();` line is simply saying "the pneumatic should now extend."\
 The `return;` tells the function that it is done doing what it must and can immediately leave.\
@@ -606,8 +616,8 @@ if (close) {
     clawToggle.retract();
 }
 ```
-This is almost exactly the same, except now the code is asking about the `close` button and retracting the piston. Now the `return;` line in the "open" statement has meaning, without it, if someone pressed both buttons, our robot would instantly extend and retract the piston, wasting air. Now the function ends early so that this doesn't happen.\
-In the example, the final code looks as follows:
+This is almost exactly the same, except now the code is asking about the `close` button and retracting the piston. Now the `return;` line in the "open" statement has meaning, without it, if someone pressed both buttons, our robot would instantly extend and retract the piston, wasting air; now the function ends early so that this doesn't happen.\
+The final example code looks as follows:
 ```
 void clawToggleControls(const bool open, const bool close) {
     if (open) {
@@ -645,7 +655,7 @@ struct pneumaticControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-The comments directly instruct you on what to do, for our clawToggle function let's rename `NA1` and `NA2` to `clawOpen` and `clawClose` respectively.\
+The comments directly instruct you on what to do, for our clawToggle example function let's rename `NA1` and `NA2` to `clawOpen` and `clawClose` respectively (replace with your own names).\
 **Example:**
 ```
 struct pneumaticControlOptions {
@@ -678,7 +688,7 @@ void pneumaticControls(const struct pneumaticControlOptions& options) {
     [other code here]
 }
 ```
-Change the names of the two parameters from `options.NA1` to `options.clawOpen` and `options.NA2` to `options.clawClose`. Then, add a new parameter to the buttonStatus function by putting a comma after the first parameter, now type `buttonPressTypes::NEW_PRESS`. This is telling the buttonStatus function to look for a new press of the [button](#pros-controller-button-library), so if the [button](#pros-controller-button-library) is held it will only activate once.\
+Change the names of the two parameters from `options.NA1` to `options.clawOpen` and `options.NA2` to `options.clawClose` (or whatever names you've chosen). Then, add a new parameter to the [buttonStatus function](#buttonstatus-function) by putting a comma after the first parameter, now type `buttonPressTypes::NEW_PRESS`. This is telling the buttonStatus function to look for a new press of the [button](#pros-controller-button-library), so if the [button](#pros-controller-button-library) is held it will only activate once.\
 **Example:**
 ```
 void pneumaticControls(const struct pneumaticControlOptions& options) {
@@ -716,7 +726,7 @@ pneumaticControls({
     .NA6 = std::nullopt
 });
 ```
-Finally, we can assign controller [buttons](#pros-controller-button-library) to these! To start, assign your first one to some [button](#pros-controller-button-library), for our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller, and `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
+Finally, we can assign controller [buttons](#pros-controller-button-library) to these! To start, assign your first one to some [button](#pros-controller-button-library), for our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller. Then for our example, `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
 ```
 pneumaticControls({
     //Controls options for motors
@@ -731,7 +741,7 @@ pneumaticControls({
 ```
 Now download it and test it! Does pressing your first button open the claw? Does pressing the second [button](#pros-controller-button-library) close the claw? If so, you've successfully coded a pneumatic helper function and its controls!
 >[!NOTE]
->If your open instead does close, flip your attatched hoses on the pneumatic.
+>If your open instead closes, flip your attatched hoses on the pneumatic.
 
 # The pros commands you'll use
 (Coming soon)
