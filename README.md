@@ -124,7 +124,9 @@ For those coming from [the drivetrain section](#define-your-drivetrain), use the
 >[!TIP]
 >To install code to other slots, write `pros mu --slot n` where n is an integer number 1 through 8.
 
-## Define your motors
+## Motors
+This section will focus on motors and what you can do with them, extras may be located in the [extra syntax section](#extra-syntax)
+### Define your motors
 Now let's define some motors. Navigate back to `globals.hpp` and find the motors lines similar to\
 `extern pros::Motor Motor1;`\
 These will be motors on your robot. It follows the same declaration format as the drivetrain but now we declare a single motor rather than a motorgroup.  To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, or `intake`. Now navigate back to the `globals.cpp` file and fine the line that looks like\
@@ -150,7 +152,7 @@ void opcontrol () {
 ```
 Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Now download this by following the same [download instructions](#downloading-code) from before. Once done, the motor should start spinning. If the motor does spin, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors. Now you can add/remove these motor definitions/declarations (remove both, not just one or the other) so that you only have the motors you're using!
 
-## Making motor helper functions
+### Making motor helper functions
 Helper functions are the foundation for your code, they allow us to tell the robot what to do and when. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
 `void motorHelper1(const bool forward, const bool backward, const float speed);`\
 Change the name to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`. Then, we need to make sure the parameters make sense, ask "does this motor move your part forward/backward, up/down, in/out, open/close, etc?" Once you've decided, change the names of `forward` and `backward` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
@@ -190,7 +192,7 @@ motorHelper1(
 );
 ```
 This must be renamed to the same name as your new function. This will be where your function is eventually going to be used. But for now, you've made a helper function!
-## Writing a simple program inside our motor helper function
+### Writing a simple program inside our motor helper function
 Since you've created the helper function, now you need to write code inside it. Look back at your function *definition*, it should currently look something like
 ```
 void intakeControls(const bool in, const bool out, const float speed) {
@@ -238,7 +240,7 @@ void intakeControls(const bool in, const bool out, const float speed) {
 **Again, your code may look slightly different or have different names, that's okay. However, if your code isn't working as desired, follow the example's steps.**\
 Now you've written a simple program inside your helper function! But to make it run, we have to define motor controls.
 
-## Defining motor controls
+### Defining motor controls
 Defining motor controls is probably one of the silliest looking parts, but with practice (and if you read [the section on it](#extra-syntax)), it should make sense. To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
 ```
 struct motorControlOptions {
@@ -350,7 +352,7 @@ Now download it and test it! Does holding your first button move it forward/up/i
 >If your forward/up/in goes backward/down/out, flip your motor port to be negative.
 
 But what if your motor intake is spinning too fast? How do we turn it down? Using the speedOptions struct we can set speeds other than the default 100%!
-## Defining motor speeds
+### Defining motor speeds
 Following similar steps as before, move back to the `helpers.hpp` file and find the `motorSpeedOptions` struct. Change `NA1` to be a name suitable for you, in the case of the example, a good name would be `intakeSpeed`. Now move to the `helpers.cpp` file and go to the `motorControls` function, inside of it is your function which still calls `speedOptions.NA1`, change `NA1` to your new name. For our example project, it will now look as follows:
 ```
 In helpers.hpp:
@@ -399,7 +401,9 @@ Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. No
 >`.intakeSpeed = motorVelocity(80);`\
 >This will run the motor at 80% speed.
 
-## Define your pneumatics
+## Pneumatic
+This section will focus on pneumatics and what you can do with them, extras may be located in the [extra syntax section](#extra-syntax)
+### Define your pneumatics
 Similar to earlier, we're now going to define our pneumatic parts. Navigate back to `globals.hpp` and find the motors lines similar to\
 `extern pros::adi::Pneumatics Pneumatic1;`\
 These will be pneumatic pistons on your robot. To start, let's change the pneumatic's name from `Pneumatic1` to something on your robot, try replacing it with `clawToggle` or `intakeToggle`. Now navigate back to the `globals.cpp` file and fine the line that looks like\
@@ -416,7 +420,7 @@ In globals.cpp:
 >[!TIP]
 >To test if your pneumatic configuration is proper, set its starting position to extended and [download the code](#downloading-code), if it starts extended then everything works! If not, try flipping the hoses around first. If it still fails, check your definition.
 
-## Making pneumatic helper functions
+### Making pneumatic helper functions
 Navigate to `helpers.hpp` and find the line which says\
 `void pneumaticHelper1(const bool out, const bool in);`\
 Change the name to something fitting for what your declared motor is going to do, something like `intakeToggleControls` or `clawToggleControls`. Then, we need to make sure the parameters make sense, ask "does this pneumatic open/close a part, change it's function, etc?" Once you've decided, change the names of `out` and `in` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
@@ -456,7 +460,7 @@ Inside of it, you should find something similar to the following:
 ```
 This must be renamed to the same name as your new function. This will be where your function is eventually going to be used.
 
-## Writing a simple program inside our pneumatic helper function
+### Writing a simple program inside our pneumatic helper function
 Since you've created the helper function, now you need to write code inside it. Look back at your function *definition*, it should currently look something like
 ```
 void clawToggleControls(const bool open, const bool closed) {
@@ -500,7 +504,7 @@ void clawToggleControls(const bool open, const bool close) {
 **Again, your code may look slightly different or have different names, that's okay. However, if your code isn't working as desired, follow the example's steps.**\
 Now you've written a simple program inside your helper function! But to make it run, we have to define pneumatic controls.
 
-## Defining pneumatic controls
+### Defining pneumatic controls
 To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
 ```
 struct pneumaticControlOptions {
