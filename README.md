@@ -132,7 +132,7 @@ Navigate to `main.cpp` and scroll down until you find the lines that look like t
 int leftY = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 int rightX = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 ```
-pick a button for holding to slow down, for our example, let's pick Y. Inside the empty parentheses we will write our button. So in our case it is `pros::E_CONTROLLER_DIGITAL_Y`. Afterwards, it should look something like this:
+pick a button[^1] for holding to slow down, for our example, let's pick Y. Inside the empty parentheses we will write our button[^1]. So in our case it is `pros::E_CONTROLLER_DIGITAL_Y`. Afterwards, it should look something like this:
 ```
 int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
@@ -350,7 +350,7 @@ motorControls({
     .NA3 = 127
 });
 ```
-Finally, we can assign controller buttons to these! To start, assign your first one to some button, for our example, we will assign `.intakeIn` to `pros::E_CONTROLLER_DIGITAL_UP` which is the up-arrow button on the controller, and `.intakeOut` will be assigned to `pros::E_CONTROLLER_DIGITAL_DOWN`, the controller down-arrow. Your final should look something like this:
+Finally, we can assign controller buttons to these! To start, assign your first one to some button[^1], for our example, we will assign `.intakeIn` to `pros::E_CONTROLLER_DIGITAL_UP` which is the up-arrow button[^1] on the controller, and `.intakeOut` will be assigned to `pros::E_CONTROLLER_DIGITAL_DOWN`, the controller down-arrow. Your final should look something like this:
 ```
 motorControls({
     //Controls options for motors
@@ -370,7 +370,7 @@ motorControls({
     .NA3 = 127
 });
 ```
-Now download it and test it! Does holding your first button move it forward/up/in and your second button moves it backward/down/out? If so, you've succesfully coded a working helper function with defined controls!
+Now download it and test it! Does holding your first button[^1] move it forward/up/in and your second button[^1] moves it backward/down/out? If so, you've succesfully coded a working helper function with defined controls!
 >[!NOTE]
 >If your forward/up/in goes backward/down/out, flip your motor port to be negative.
 
@@ -560,7 +560,7 @@ void pneumaticControls(const struct pneumaticControlOptions& options) {
     [other code here]
 }
 ```
-Change the names of the two parameters from `options.NA1` to `options.clawOpen` and `options.NA2` to `options.clawClose`. Then, add a new parameter to the buttonStatus function by putting a comma after the first parameter, now type `buttonPressTypes::NEW_PRESS`. This is telling the buttonStatus function to look for a new press of the button, so if the button is held it will only activate once.\
+Change the names of the two parameters from `options.NA1` to `options.clawOpen` and `options.NA2` to `options.clawClose`. Then, add a new parameter to the buttonStatus function by putting a comma after the first parameter, now type `buttonPressTypes::NEW_PRESS`. This is telling the buttonStatus function to look for a new press of the button[^1], so if the button[^1] is held it will only activate once.\
 **Example:**
 ```
 void pneumaticControls(const struct pneumaticControlOptions& options) {
@@ -598,7 +598,7 @@ pneumaticControls({
     .NA6 = std::nullopt
 });
 ```
-Finally, we can assign controller buttons to these! To start, assign your first one to some button, for our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller, and `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
+Finally, we can assign controller buttons[^1] to these! To start, assign your first one to some button[^1], for our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller, and `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
 ```
 motorControls({
 pneumaticControls({
@@ -612,7 +612,7 @@ pneumaticControls({
     .NA6 = std::nullopt
 });
 ```
-Now download it and test it! Does pressing your first button open the claw? Does pressing the second button close the claw? If so, you've successfully coded a pneumatic helper function and its controls!
+Now download it and test it! Does pressing your first button open the claw? Does pressing the second button[^1] close the claw? If so, you've successfully coded a pneumatic helper function and its controls!
 >[!NOTE]
 >If your open instead does close, flip your attatched hoses on the pneumatic.
 
@@ -624,3 +624,30 @@ Now download it and test it! Does pressing your first button open the claw? Does
 
 # Extra syntax
 (Coming soon)
+
+[^1]: The referenced "buttons" are part of a pros class, you will always use one of the following as your buttons:\
+E_CONTROLLER_DIGITAL_UP\
+E_CONTROLLER_DIGITAL_DOWN\
+E_CONTROLLER_DIGITAL_LEFT\
+E_CONTROLLER_DIGITAL_RIGHT\
+E_CONTROLLER_DIGITAL_L1\
+E_CONTROLLER_DIGITAL_L2\
+E_CONTROLLER_DIGITAL_X\
+E_CONTROLLER_DIGITAL_B\
+E_CONTROLLER_DIGITAL_Y\
+E_CONTROLLER_DIGITAL_A\
+E_CONTROLLER_DIGITAL_R1\
+E_CONTROLLER_DIGITAL_R2\
+pros::E_CONTROLLER_DIGITAL_UP\
+pros::E_CONTROLLER_DIGITAL_DOWN\
+pros::E_CONTROLLER_DIGITAL_LEFT\
+pros::E_CONTROLLER_DIGITAL_RIGHT\
+pros::E_CONTROLLER_DIGITAL_L1\
+pros::E_CONTROLLER_DIGITAL_L2\
+pros::E_CONTROLLER_DIGITAL_X\
+pros::E_CONTROLLER_DIGITAL_B\
+pros::E_CONTROLLER_DIGITAL_Y\
+pros::E_CONTROLLER_DIGITAL_A\
+pros::E_CONTROLLER_DIGITAL_R1\
+pros::E_CONTROLLER_DIGITAL_R2\
+Including the pros:: is based on the context of when you're writing it.
