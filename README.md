@@ -1,5 +1,9 @@
 Hello! This file contains all the directions that should get you started and teach you how to use the template!
-# Installing VSCode
+
+# Getting set up
+This section will give directions on how to install the needed programs and the template itself so you can begin working.
+
+## Installing VSCode
 >[!CAUTION]
 >These steps are from Windows installtion, MacOS users may need to adapt some names for Mac apps.
 
@@ -10,7 +14,7 @@ Hello! This file contains all the directions that should get you started and tea
 5. Once installed, open it and click "sign in through Github"
 6. Sign in with your Github information
 
-# Installing git
+## Installing git
 >[!CAUTION]
 >These steps are from Windows installtion, MacOS users may need to adapt some names for Mac apps.
 
@@ -26,11 +30,11 @@ Hello! This file contains all the directions that should get you started and tea
    -If it returns something, then you're all set!
    -If you get nothing in return, troubleshoot through the community and ensure you followed the steps.
 
-# Installing the template for your own repo
+## Installing the template for your own repo
 >[!CAUTION]
 >These steps are from Windows installtion, MacOS users may need to adapt some names for Mac apps.
 
-## Method 1: Installing the .zip folder and making your own repo
+### Method 1: Installing the .zip folder and making your own repo
 1. Make a github account
 2. Go to "My repositories"
 3. Click "Create"
@@ -54,7 +58,7 @@ Hello! This file contains all the directions that should get you started and tea
 21. Type `git branch -M main` and hit enter
 22. Type `git push -u origin main --force` and hit enter
 
-## Method 2: Cloning the repo and changing the origin to your repo
+### Method 2: Cloning the repo and changing the origin to your repo
 1. Make a github account
 2. Go to "My repositories"
 3. Click "Create"
@@ -85,18 +89,18 @@ Hello! This file contains all the directions that should get you started and tea
 25. Type `git branch -M main` and hit enter
 26. Type `git push -u origin main --force` and hit enter
 
-# Installing required/desired extentions:
+## Installing required/desired extentions:
 1. Looking at the sidebar of VSCode, select the square of 4 blocks labeled "extensions"
 2. Search for the following listed extensions
-## Required:
+### Required:
 1. Lemlib Extension Pack
-## Desired:
+### Desired:
 1. Better C++ Syntax
 2. Clangd
 3. Symbolizer for VEX V5
 4. Material Icon Theme
 
-# Installing the required PROS CLI & Toolchain
+## Installing the required PROS CLI & Toolchain
 1. Please follow [this link for installing on Windows](https://pros.cs.purdue.edu/v5/getting-started/windows.html) or [this link for installing for MacOS](https://pros.cs.purdue.edu/v5/getting-started/macos.html) to be given the directions on what to do
 2. Open terminal once more and run `pros build-compile-commands`
 3. Once those directions are followed, please close the folder and then VSCode itself
@@ -123,13 +127,16 @@ The referenced "buttons" are part of a pros class, you will always use one of th
 `pros::E_CONTROLLER_DIGITAL_Y`\
 `pros::E_CONTROLLER_DIGITAL_A`\
 `pros::E_CONTROLLER_DIGITAL_R1`\
-`pros::E_CONTROLLER_DIGITAL_R2`
+`pros::E_CONTROLLER_DIGITAL_R2`\
+These ask for the state of the button, it then must be passed through the [`buttonStatus` function](#buttonstatus-function) (or the\
+`master.get_digital` function for those more advanced).
 
 ### Button press types library
 The referenced "press types" are part of a custom class, you will always use one of the following as your type:\
 `buttonPressTypes::HELD`\
 `buttonPressTypes::NEW_PRESS`\
 `buttonPressTypes::NEW_RELEASE`
+These tell the [`buttonStatus` function](#buttonStatus-function) when to return a true/false value for a specified button.
 
 ## Functions you'll use
 The referenced functions are functions which will handle things for you, ensuring you understand them is crucial.
@@ -142,10 +149,6 @@ claw.move(-100);    // Moves backward at 100/127 speed
 lift.move(35);  // Moves forward at 35/127 speed
 ```
 
-### motorVelocity function
-The motorVelocity function is a function which takes `motor.move();` values in the -127 to 127 domain and restructures them into the -100 to 100 domain, effectively making your entered value a percentage rather than a standalone number. It has one restriction, it only takes integer values, but you normally shouldn't need decimal percentage values. To use it, rather than writing `motor.move(127);` you would write `motor.move(motorVelocity(100));`. While it does seem annoying, it can come in handy for autonomous and other functions. Unlike some other functions, if this function is written, you **have** to provide a parameter.\
-**Note: Because this function is meant to return a value, you should normally only call it inside the .move**
-
 ### buttonStatus function
 The buttonStatus function is a function which takes an input of an optional button type (`std::optional<pros::controller_digital_e_t>`) and outputs a boolean (true/false) value in return. To use it, write `buttonStatus(pros::E_CONTROLLER_DIGITAL_A)` or some other allowed [button](#pros-controller-button-library). You may also include a second parameter, this parameter tells it whether to process all presses or only new presses/releases. For instance,
 ```
@@ -156,16 +159,8 @@ buttonStatus(pros::E_CONTROLLER_DIGITAL_X, buttonPressTypes::NEW_RELEASE);  // S
 ```
 Are all valid function calls and will return a boolean (true/false) value.\
 **Note: Because this function is meant to return a value, you should normally only call it whenever trying to get a button's state for a function or conditional**
-
-### drivetrainSpeedModifier function
-**Note: This is also somewhat covered in the docs under the [drivetrain properties section](#drivetrain-speed-modifier)**\
-The drivetrainSpeedModifier function is a function which takes a selected button and uses it to either slow down or speed up the robot while holding a chosen button. You should *not* be writing this function on your own and should only use it in its preplaced spots. The first parameter entered will be your [button](#pros-controller-button-library) of choice and the second is an optional boolean which inverses the default system. The system is defaulted to slow down when the button is pressed, but by writing `drivetrainSpeedModifier([button of choice], true)` the true boolean will make it so that your drivetrain will run at the selected speed value until you press the button, at which point it will run at full speed.\
-**Examples:**
-```
-drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_A);  // Defaults to false (not inverted)
-drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_X, false);   // Drives at full speed until button (in this case, X) held
-drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_A, true);    // Drives at custom speed until button (in this case, A) held
-```
+>[!TIP]
+>To make a "when *not* pressed/released/held" function, pass `!buttonStatus([chosen button], [optional param])"
 
 ## Drivetrain properties
 This section will talk about drivetrains and what you can do with them for driver control.
@@ -199,43 +194,26 @@ In globals.cpp file:
 pros::MotorGroup drivetrainLeft({-4,-8,-3}, pros::v5::MotorGearset::green);
 pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 ```
->[!NOTE]
->There are more examples which may end up with this configuration, these are not the only way that these happen.
-
-### Drivetrain speed modifier
->[!CAUTION]
->This is a QoL feature, for new programmers it may be harder to understand. This is not essential, so don't worry if you don't touch it. It is also recommended that you try this after testing ONLY your drivetrain.
-
-Has your team or driver ever needed to be fast but then slow down for moments to get accurate placement? Maybe even vice versa and you only want to be fast at certain times? Built into your drivetrain is a [speed modifier function!](#drivetrainspeedmodifier-function)\
-**Note: This feature is for holding a button, currently it doesn't support a toggle system.**\
-Navigate to `main.cpp` and scroll down until you find the lines that look like this:
-```
-int leftY = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-int rightX = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-```
-pick a [button](#pros-controller-button-library) for holding to slow down, for our example, let's pick Y. Inside the empty parentheses we will write our [button](#pros-controller-button-library). So in our case it is `pros::E_CONTROLLER_DIGITAL_Y`. Afterwards, it should look something like this:
-```
-int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-```
-Now navigate to `helpers.cpp` and near the top should be something like\
-`float drivetrainSpeedConstant = 0.85;`\
-This is the second value of the drive speed, it should be between 0 and 1 at all times. Set it to whatever value you like. Now download the code using [the below section](#downloading-code) and test it.
+**Note: There are more examples which may end up with this configuration, these are not the only way that these happen.**
 
 ## Downloading code
 To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "N/A 1", "N/A 2", click A on your controller to continue.\
 For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move forward/backward while the right joystick should move left/right.If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
+>[!IMPORTANT]
+>Currently, there can be issues where clangd says things are wrong and highlights them red, it CAN be incorrect. If you are unsure about clangd's error message, type `pros build` into your terminal and see if you get an error. If not, your code is fine.
+
 >[!TIP]
 >To install code to other slots, write `pros mu --slot n` where n is an integer number 1 through 8.
 
 ## Motors
 This section will focus on motors and what you can do with them, extras may be located in the [extra syntax section](#extra-syntax)
+
 ### Define your motors
 Now let's define some motors. Navigate back to `globals.hpp` and find the motors lines similar to\
 `extern pros::Motor Motor1;`\
-These will be motors on your robot. It follows the same declaration format as the drivetrain but now we declare a single motor rather than a motorgroup.  To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, or `intake`. Now navigate back to the `globals.cpp` file and fine the line that looks like\
+These will be motors on your robot. It follows the same declaration format as the drivetrain but now we declare a single motor rather than a motorgroup.  To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, `intake`, or whatever else you may have. Now navigate back to the `globals.cpp` file and find the line that looks like\
 `pros::Motor Motor1(1, pros::v5::MotorGearset::green);`\
-This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}` because there's only one port for a motor. Once this makes sense, change the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port to this part of your robot.
+This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}` because there's only one port for a motor. Once this makes sense, change the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port number to that part of your robot.
 **Example:**
 ```
 In globals.hpp file:
@@ -743,6 +721,13 @@ Now download it and test it! Does pressing your first button open the claw? Does
 >[!NOTE]
 >If your open instead closes, flip your attatched hoses on the pneumatic.
 
+## Autonomous programs
+In this section, you'll learn about the auton selector and making autonomous programs
+
+### Defining an auton
+
+### Simple auton program
+
 # The pros commands you'll use
 (Coming soon)
 
@@ -751,3 +736,30 @@ Now download it and test it! Does pressing your first button open the claw? Does
 
 # Extra syntax
 (Coming soon)
+
+## Libraries you can use
+(Coming soon)
+
+## Functions you can use
+This section will talk about extra functions at your disposal within the template and how to use them.
+
+### Drivetrain speed modifier function
+Has your team or driver ever needed to be fast but then slow down for moments to get accurate placement? Maybe even vice versa and you only want to be fast at certain times? Built into your drivetrain is a speed modifier function!
+**Note: This feature is for holding a button, currently it doesn't support a toggle system.**\
+Navigate to `main.cpp` and scroll down until you find the lines that look like this:
+```
+int leftY = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+int rightX = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+```
+pick a [button](#pros-controller-button-library) for holding to slow down, for our example, let's pick Y. Inside the empty parentheses we will write our [button](#pros-controller-button-library). So in our case it is `pros::E_CONTROLLER_DIGITAL_Y`. Afterwards, it should look something like this:
+```
+int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+```
+Now navigate to `helpers.cpp` and near the top should be something like\
+`float drivetrainSpeedConstant = 0.85;`\
+This is the second value of the drive speed, it should be between 0 and 1 at all times. Set it to whatever value you like. Now download the code using [the download section](#downloading-code) and test it.
+
+### motorVelocity function
+The motorVelocity function is a function which takes `motor.move();` values in the -127 to 127 domain and restructures them into the -100 to 100 domain, effectively making your entered value a percentage rather than a standalone number. It has one restriction, it only takes integer values, but you normally shouldn't need decimal percentage values. To use it, rather than writing `motor.move(127);` you would write `motor.move(motorVelocity(100));`. While it does seem annoying, it can come in handy for autonomous and other functions. Unlike some other functions, if this function is written, you **have** to provide a parameter.\
+**Note: Because this function is meant to return a value, you should normally only call it inside the .move**

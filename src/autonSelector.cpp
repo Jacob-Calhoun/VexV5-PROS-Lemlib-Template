@@ -22,9 +22,9 @@
         //Stays nullptr
         nullptr,
         //Set to name of corresponding function
-        nullptr,
-        nullptr,
-        nullptr,
+        autonRoute1,
+        autonRoute2,
+        autonRoute3,
         nullptr,
         nullptr,
         nullptr,
@@ -32,6 +32,7 @@
         nullptr,
 		nullptr
     };
+
 /*
 Print available autons
 */
