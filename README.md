@@ -20,13 +20,13 @@ This section will give directions on how to install the needed programs and the 
 
 1. Follow [this link](https://git-scm.com/install/windows) for download options
 2. Install the setup program for you
-3. Open the setup program and install github
+3. Open the setup program and install git
    -When prompted with the questions, go slowly.
    -Ensure you pick to use VSCode as your default, *not* Vim or VSCode insiders edition
 4. Open VSCode
 5. Go to "Terminal"
 6. Select "New terminal"
-7. Run `git -v`
+7. Run `git --version`
    -If it returns something, then you're all set!
    -If you get nothing in return, troubleshoot through the community and ensure you followed the steps.
 
@@ -166,7 +166,7 @@ The referenced "tracking wheel types" are as follows:\
 These will be used in [autonomous sensor definitions](#defining-autonomous-sensors) for your tracking wheels.
 
 ## Functions you'll use
-The referenced functions are functions which will handle things for you, ensuring you understand them is crucial.
+The referenced functions are functions which will handle things for you. ensuring you understand them is crucial.
 
 ### motor.move function
 The motor.move function is a function which tells motors to move based off a signed input from the domain of -127 to 127. The function requires you to write the name of the motor before being followed by `.move(n)` (where `-127<=n<=127`). Some examples are
@@ -179,9 +179,9 @@ lift.move(35);  // Moves forward at 35/127 speed
 ### motor.set_brake_mode function
 The motor.set_brake_mode function is a function which tells motors which braking method to use. Some examples are
 ```
-intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);    // Tells the motor to hold exactly where it was when told to brake
-claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);    // Tells the motor to completely stop movement and then allow spin
-lift.set_brake_mode(pros:E_MOTOR_BRAKE_COAST);    // Tells the motor to just turn off and allow spin
+intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);    // Tells the motor to try and hold exactly where it was when told to brake
+claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);    // Tells the motor to come to a stop but not hold position
+lift.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);    // Tells the motor to just turn off and allow spin
 ```
 The available options are listed in the [motor brake modes class](#motor-brake-modes-library)
 
@@ -198,7 +198,7 @@ To choose the brake mode, use the [motor brake modes class](#motor-brake-modes-l
 The buttonStatus function is a function which takes an input of an optional button type (`std::optional<pros::controller_digital_e_t>`) and outputs a boolean[^3] value in return. To use it, write `buttonStatus(pros::E_CONTROLLER_DIGITAL_A)` or some other allowed [button](#pros-controller-button-library). You may also include a second parameter, this parameter tells it whether to process all presses or only new presses/releases. For instance,
 ```
 buttonStatus(pros::E_CONTROLLER_DIGITAL_UP);    // Defaults to buttonPressTypes::HELD
-buttonStatus(pros::E_CONTROLLER_DIGITAL_Left, buttonPressTypes::HELD);  // Sends signal if held/pressed
+buttonStatus(pros::E_CONTROLLER_DIGITAL_LEFT, buttonPressTypes::HELD);  // Sends signal if held/pressed
 buttonStatus(pros::E_CONTROLLER_DIGITAL_B, buttonPressTypes::NEW_PRESS);    // Sends signal only when newly pressed
 buttonStatus(pros::E_CONTROLLER_DIGITAL_X, buttonPressTypes::NEW_RELEASE);  // Sends signal only when newly released
 ```
@@ -208,7 +208,7 @@ Are all valid function calls and will return a boolean[^3] value.\
 >To make a "when *not* pressed/released/held" function, pass `!buttonStatus([chosen button], [optional param])"
 
 ### chassis.setPose function
-The chassis.setPose function is a function which tells the robot what to set its new position to, it will then base any future instructions off the new position as if it was always there. This can be useful for 'checkpoints' in autonomous programs, checkpoints are places where the robot is forced into a specific position every time. There should always be a set.pose function at the start of your autonomous programs unless you want everything to be relative to the robot starting position. When using it, it takes 3 parameters, an x value, y value, and theta[^1] value. Your function call should be structured somewhat like this:
+The chassis.setPose function is a function which tells the robot what to set its new position to, it will then base any future instructions off the new position as if it was always there. This can be useful for 'checkpoints' in autonomous programs, checkpoints are places where the robot is forced into a specific position every time. There should always be a `set.pose` function at the start of your autonomous programs unless you want everything to be relative to the robot starting position. When using it, it takes 3 parameters, an x value, y value, and theta[^1] value. Your function call should be structured somewhat like this:
 ```
 chassis.setPose(0, 0, 0);   // Sets the position to (0,0) while facing straight forward
 chassis.setPose(10, 1, 45); // Sets the position to (10,1) while facing 45 degrees
@@ -216,7 +216,7 @@ chassis.setPose(10, 1, 45); // Sets the position to (10,1) while facing 45 degre
 For positional values, x and y should be in inches while the theta[^1] value should be in degrees.
 
 ### chassis.moveToPoint function
-The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate without any desired theta[^1] value. This means that the robot does not consider the theta value when trying to get to the point, so theta can be any number. It requires 3 arguments to run, an x value, y value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before continuing in the code. Your function call should be structured somewhat like this:
+The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate, unlike the [moveToPose function](#chassismovetopose-function), it doesn't allow you to specify a final heading for the robot. It requires 3 arguments to run, an x value, y value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before continuing in the code. Your function call should be structured somewhat like this:
 ```
 chassis.moveToPoint(10, 10, 3000);  // Tries to move to the point (10,10) with any theta value within 3 seconds
 chassis.moveToPoint(-10, 10, 4700);  // Tries to move to the point (-10,10) with any theta value within 4.7 seconds
@@ -225,11 +225,11 @@ chassis.moveToPoint(3, -7, 8000);  // Tries to move to the point (3,-7) with any
 For positional values, x and y should be in inches while the timeout value should be in milliseconds.
 
 ### chassis.moveToPose function
-The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate with a desired theta[^1] value. It requires 4 arguments to run, an x value, y value, a theta[^1] value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before continuing in the code. Your function call should be structured somewhat like this:
+The chassis.moveToPose function is a function which tells the robot to move to a specific coordinate with a desired theta[^1] value. It requires 4 arguments to run, an x value, y value, a theta[^1] value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before continuing in the code. Your function call should be structured somewhat like this:
 ```
-chassis.moveToPoint(10, 10, 0, 3200);  // Tries to move to the point (10,10) with a theta value of 0 within 3.2 seconds
-chassis.moveToPoint(-10, 10, 75, 8100);  // Tries to move to the point (-10,10) with a theta value of 75 within 8.1 seconds
-chassis.moveToPoint(3, -7, -53, 700);  // Tries to move to the point (3,-7) with a theta value of -53 within 0.7 seconds
+chassis.moveToPose(10, 10, 0, 3200);  // Tries to move to the point (10,10) with a theta value of 0 within 3.2 seconds
+chassis.moveToPose(-10, 10, 75, 8100);  // Tries to move to the point (-10,10) with a theta value of 75 within 8.1 seconds
+chassis.moveToPose(3, -7, -53, 700);  // Tries to move to the point (3,-7) with a theta value of -53 within 0.7 seconds
 ```
 For positional values, x and y should be in inches, theta[^1] should be in degrees. The timeout value should be in milliseconds.
 
@@ -296,7 +296,7 @@ To download code, first grab a download cord and plug it into your brain (or a p
 >[!TIP]
 >To install code to other slots, write `pros mu --slot n` where n is an integer number 1 through 8.
 
-**For those coming from the drivetrain section:** Use the joysticks. The left joystick should move the drivetrain forward/backward while the right joystick should move the drivetrain left/right. If this is correct and works, move to the next section. If your drivetrain appears to be doing something wrong, check your ports and return to the drivetrain section.
+**For those coming from the drivetrain section:** Use the joysticks. The left joystick should move the drivetrain forward/backward while the right joystick should turn the drivetrain left/right. If this is correct and works, move to the next section. If your drivetrain appears to be doing something wrong, check your ports and return to the drivetrain section.
 
 ## Motors
 This section will focus on motors and what you can do with them, extra coding options and abilities may be located in the [extra syntax section](#extra-stuff)
@@ -325,7 +325,7 @@ In globals.cpp file:
 ```
 **Notice:** Unlike the template, the Motor4 and Motor5 lines are missing, this is because we can delete them if they're not being used. However, the contrary is also true, if you require more than just 5 motors, you may create your own motors on new lines by copying the same format. But be cautious, if you remove the motor declaration and definition, ensure you remove any other areas where it is used.\
 \
-Now let's give it a brake type using the [motor.set_brake_mode function](#motorset_brake_mode-function), navigate to `main.cpp` and scroll until you find something like
+Now let's give it a brake mode using the [motor.set_brake_mode function](#motorset_brake_mode-function), navigate to `main.cpp` and scroll until you find something like
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
     Motor1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -336,7 +336,7 @@ Now let's give it a brake type using the [motor.set_brake_mode function](#motors
 ```
 **Explanation:** This section is referring to our template motors, notice how they are using the name to call the function. Because we changed the name of the motor in the definition and declaration, we also have to change it wherever else it's mentioned.\
 \
-We're going to rename `Motor1` to our chosen name and pick a new brake type from the [brake modes library](#motor-brake-modes-library), for our example, we'll pick one for each option (if you're following with your own choices, you can use any combination), so our new code will look like this:
+We're going to rename `Motor1` to our chosen name and pick a new brake mode from the [brake modes library](#motor-brake-modes-library), for our example, we'll pick one for each option (if you're following with your own choices, you can use any combination), so our new code will look like this:
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
     intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -352,7 +352,7 @@ Now that we have all of this defined, let's test it! Find something in `main.cpp
 void opcontrol () {
     //temporary code
 ```
-Under the temporary code section, write `[your motor's name].move(127);`. This is using the [motor.move function](#motormove-function) to tell the computer to move your motor at full speed. Then we will write the [pros delay function](#prosdelay-function) `pros::delay(2500);` which tells the computer to wait 2.5 seconds before continuing to the next step. Finally, we can use the [motor.brake function](#motorbrake-function) by writing `[you motor's name].brake();`, this will tell the motor to brake using our newly selected brake option.\
+Under the temporary code section, write `[your motor's name].move(127);`. This is using the [motor.move function](#motormove-function) to tell the computer to move your motor at full speed. Then we will write the [pros delay function](#prosdelay-function) `pros::delay(2500);` which tells the computer to wait 2.5 seconds before continuing to the next step. Finally, we can use the [motor.brake function](#motorbrake-function) by writing `[your motor's name].brake();`, this will tell the motor to brake using our newly selected brake option.\
 **Example:**
 ```
 void opcontrol() {
@@ -432,7 +432,7 @@ In helpers.cpp:
 \
 Once you've finished that, you're going to scroll further down in your `helpers.cpp` file until you find the `motorControls` function, which should look like\
 `void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {`\
-**Explanation:** This is the larger motorControls function just to keep later things grouped into one area, you should never touch it's definition line (the one above). The function parameters may be new to you, a structure (struct) is a large blueprint which allows us to input multiple related values and assign them defaults. More details on structs will be found later on.\
+**Explanation:** This is the larger motorControls function just to keep later things grouped into one area, you should never touch its definition line (the one above). The function parameters may be new to you, a structure (struct) is a large blueprint which allows us to input multiple related values and assign them defaults. More details on structs will be found later on.\
 \
 Inside of it, you should find something similar to the following:
 ```
@@ -442,7 +442,7 @@ motorHelper1(
     speedOptions.NA1
 );
 ```
-**Explanation:** This is where we call the motorHelper1 function that we've just customized to our own liking. While formatted on multiple lines, you can imagine it as if the parameters were all on one line. As stated earlier, parameters one and two were buttons, so what is happening here is as follows: we pull `options.NA1` from the struct (which will eventually be renamed and assigned a button on the controller) and pass it into the buttonSatus function, the buttonStatus function will then return a boolean[^3] value based on the state of the button. We then repeat these steps for the second parameter. The third parameter doesn't require the buttonStatus function because it's a speed value.\
+**Explanation:** This is where we call the motorHelper1 function that we've just customized to our own liking. While formatted on multiple lines, you can imagine it as if the parameters were all on one line. As stated earlier, parameters one and two were buttons, so what is happening here is as follows: we pull `options.NA1` from the struct (which will eventually be renamed and assigned a button on the controller) and pass it into the buttonStatus function, the buttonStatus function will then return a boolean[^3] value based on the state of the button. We then repeat these steps for the second parameter. The third parameter doesn't require the buttonStatus function because it's a speed value.\
 \
 This must be renamed to the same name as your new function, to do this, simply replace `motorHelper1` with your new function name. This will be where your function is called and soon will run a program. But for now, you've made a helper function!
 **Example:**
@@ -494,7 +494,7 @@ if (in) {
 }
 ```
 This may seem like a jump, but this can be broken apart.\
-The `if (in)` is asking if the `in` boolean[^3] is set to true, in the exmaple code's context, this will eventually mean "is the selected button being held?"\
+The `if (in)` is asking if the `in` boolean[^3] is set to true, in the example code's context, this will eventually mean "is the selected button being held?"\
 The `intake.move(speed);` line is simply saying "the intake motor must start spinning at the value of `speed`."\
 The `return;` tells the function that it is done doing what it must and can immediately leave.\
 Now what about when it should move out? Let's write something similar, under our new code block, we will write something like
@@ -680,7 +680,7 @@ motorControls({
 ```
 **Explanation:** Earlier, we made `intakeIn` and `intakeOut` part of our struct, now we need to tell our function that they're going to be buttons in the controller (remember earlier we saw that they're all defaulted to `std::nullopt`). Also notice how only up to `.NA6` is written, earlier you saw that the struct has up to `.NA12`. The reasoning is that the struct has defaults already given, so if you delete `.NA3` through `.NA6` everything would still work since they were also defaulted to `std::nullopt` in the struct definition. Similarly to the extra motor helper functions (`motorHelper2` and `motorHelper3`), if you don't use these other NA values, they can be deleted in the struct definition (Hint: The large code block in helpers.hpp is the struct definition, struct definitions are different and go in header files).\
 \
-Now download it and test it! Does holding your first [button](#pros-controller-button-library) move it forward/up/in and your second [button](#pros-controller-button-library) moves it backward/down/out? If so, you've succesfully coded a working helper function with defined controls!
+Now download it and test it! Does holding your first [button](#pros-controller-button-library) move it forward/up/in and your second [button](#pros-controller-button-library) moves it backward/down/out? If so, you've successfully coded a working helper function with defined controls!
 >[!NOTE]
 >If your forward/up/in goes backward/down/out, flip your motor port to be negative.
 
@@ -771,7 +771,7 @@ motorControls({
     .NA3 = 127
 });
 ```
-Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. Now change 127 to be whatever speed you prefer. Now check if it builds and test it, if it works, you've succesfully created a working helper function with customizable speed!
+Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. Now change 127 to be whatever speed you prefer. Now check if it builds and test it, if it works, you've successfully created a working helper function with customizable speed!
 >[!TIP]
 >There is a [motorVelocity function](#motorvelocity-function) which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:\
 >`.intakeSpeed = motorVelocity(80);`\
@@ -818,9 +818,9 @@ Similar to earlier, we're now going to define our pneumatic parts. Navigate back
 `extern pros::adi::Pneumatics Pneumatic1;`\
 **Explanation:** This is the same idea as the motor declaration from earlier. It's telling the computer that a pneumatic named Pneumatic1 exists and is defined elsewhere. Notice how we call `pros::adi::Pneumatics` instead of `pros::Motor`.\
 \
-These will be pneumatic pistons on your robot. To start, let's change the pneumatic's name from `Pneumatic1` to something on your robot, try replacing it with `clawToggle` or `intakeToggle`. Now navigate back to the `globals.cpp` file and fine the line that looks like\
+These will be pneumatic pistons on your robot. To start, let's change the pneumatic's name from `Pneumatic1` to something on your robot, try replacing it with `clawToggle` or `intakeToggle`. Now navigate back to the `globals.cpp` file and find the line that looks like\
 `pros::adi::Pneumatics Pneumatic1('A', startRetracted);`\
-**Explanation:** Pneumatic definitions are also very similar to motor definitions, notice it's in the same format but the type has changed to `pros::adi::Pneumatics` just like the earlier declaration. Unlike motors, pneumatics use a single capital letter as input for their port. This line declares a pneumatic named Pneumatic1 in port A. It also details if the pneumatic starts extended; in our case, it doesn't because we've written `startRetracted`. Different from motors, you don't flip pneumatic directions in the code, you flip the hoses attatched to the pneumatic.\
+**Explanation:** Pneumatic definitions are also very similar to motor definitions, notice it's in the same format but the type has changed to `pros::adi::Pneumatics` just like the earlier declaration. Unlike motors, pneumatics use a single capital letter as input for their port. This line declares a pneumatic named Pneumatic1 in port A. It also details if the pneumatic starts extended; in our case, it doesn't because we've written `startRetracted`. Different from motors, you don't flip pneumatic directions in the code, you flip the hoses attached to the pneumatic.\
 \
 Now let's define our new pneumatic. Give it a port letter and choose `startExtended` or `startRetracted`. For our example, we'll pick to start retracted. Our final should look something like the following:
 ```
@@ -847,10 +847,10 @@ Change the name from `pneumaticHelper1` to match the name in your `helpers.hpp` 
 **1. A claw which toggles between open and closed**
 ```
 In helpers.hpp:
-    void clawToggleControls(const bool open, const bool closed);
+    void clawToggleControls(const bool open, const bool close);
 
 In helpers.cpp:
-    void clawToggleControls(const bool open, const bool closed) {
+    void clawToggleControls(const bool open, const bool close) {
         [Code here]
     }
 ```
@@ -868,7 +868,7 @@ In helpers.cpp:
 \
 Once you've finished that, you're going to scroll further down in your `helpers.cpp` file until you find the `pneumaticControls` function, which should look like\
 `void pneumaticControls(const struct pneumaticControlOptions& options) {`\
-**Explanation:** This is the larger pneumaticControls function just to keep later things grouped into one area, you should never touch it's definition line (the one above). The function parameters may be new to you, a structure (struct) is a large blueprint which allows us to input multiple related values and assign them defaults. More details on structs will be found later on.\
+**Explanation:** This is the larger pneumaticControls function just to keep later things grouped into one area, you should never touch its definition line (the one above). The function parameters may be new to you, a structure (struct) is a large blueprint which allows us to input multiple related values and assign them defaults. More details on structs will be found later on.\
 \
 Inside of it, you should find something similar to the following:
 ```
@@ -877,7 +877,7 @@ pneumaticHelper1(
     buttonStatus(options.NA2),
 );
 ```
-**Explanation:** This is where we call the pneumaticHelper1 function that we've just customized to our own liking. While formatted on multiple lines, you can imagine it as if the parameters were all on one line. As stated earlier, parameters one and two were buttons, so what is happening here is as follows: we pull `options.NA1` from the struct (which will eventually be renamed and assigned a button on the controller) and pass it into the buttonSatus function, the buttonStatus function will then return a boolean[^3] value based on the state of the button. We then repeat these steps for the second parameter.\
+**Explanation:** This is where we call the pneumaticHelper1 function that we've just customized to our own liking. While formatted on multiple lines, you can imagine it as if the parameters were all on one line. As stated earlier, parameters one and two were buttons, so what is happening here is as follows: we pull `options.NA1` from the struct (which will eventually be renamed and assigned a button on the controller) and pass it into the buttonStatus function, the buttonStatus function will then return a boolean[^3] value based on the state of the button. We then repeat these steps for the second parameter.\
 \
 This must be renamed to the same name as your new function, to do this, simply replace `pneumaticHelper1` with your new function name. This will be where your function is called and soon will run a program. But for now, you've made a helper function!\
 \
@@ -896,7 +896,7 @@ In helpers.cpp:
     void pneumaticControls(const struct pneumaticControlOptions& options) {
         clawToggleControls(
             buttonStatus(options.NA1),
-            buttonStatus(options.NA2),
+            buttonStatus(options.NA2)
         );
     }
 ```
@@ -920,8 +920,8 @@ if (open) {
 }
 ```
 This may seem like a jump, but this can be broken apart, similarly to the motors helper function.\
-The `if (open)` is asking if the `open` boolean[^3] is set to true, in the exmaple code's context, this will eventually mean "was the selected button pressed?"\
-The `clawToggle,extend();` line is simply saying "the pneumatic should now extend."\
+The `if (open)` is asking if the `open` boolean[^3] is set to true, in the example code's context, this will eventually mean "was the selected button pressed?"\
+The `clawToggle.extend();` line is simply saying "the pneumatic should now extend."\
 The `return;` tells the function that it is done doing what it must and can immediately leave.\
 Now what about when it should close? Let's write something similar, under our new code block, we will write something like
 ```
@@ -929,7 +929,7 @@ if (close) {
     clawToggle.retract();
 }
 ```
-This is almost exactly the same, except now the code is asking about the `close` button and retracting the piston. Now the `return;` line in the "open" statement has meaning, without it, if someone pressed both buttons, our robot would instantly extend and retract the piston, wasting air; now the function ends early so that this doesn't happen.\
+This is almost exactly the same, except now the code is asking about the `close` button and retracting the piston. Now the `return;` line in the "open" statement has meaning; without it, if someone pressed both buttons, our robot would instantly extend and retract the piston, wasting air; now the function ends early so that this doesn't happen.\
 The final example code looks as follows:
 ```
 void clawToggleControls(const bool open, const bool close) {
@@ -993,7 +993,7 @@ struct pneumaticControlOptions {
 **Explanation:** Remember those `options.NA1`/`options.NA2` lines from the helpers.cpp file? This is where they come from. This is a structure (when we make them, we only write struct) and it allows us to create a large input of multiple data types, these values are called members. In our case, all of these data types are the same because they're all going to be buttons. The `= std::nullopt` tells us that the value will be defaulted to nothing unless we tell it otherwise. In a moment, we'll overwrite the default with controller buttons.\
 **Note:** For these, we can similarly delete and add more as needed, though, any that are deleted need to be removed everywhere. (Hint: `main.cpp` and `helpers.cpp` both have references to `NA1` through `NA6`).\
 \
-These will soon be our new controls for our claw helper function. To do this, move back to `helpers.cpp` and scroll down to our the `pneumaticControls` function, you should see something like:
+These will soon be our new controls for our claw helper function. To do this, move back to `helpers.cpp` and scroll down to the `pneumaticControls` function, you should see something like:
 ```
 void pneumaticControls(const struct pneumaticControlOptions& options) {
     clawToggleControls(
@@ -1021,7 +1021,7 @@ void pneumaticControls(const struct pneumaticControlOptions& options) {
 You've now told your code which values to use through more clarified naming conventions! Though, the controls haven't actually been defined yet. To do this, go your `main.cpp` file and scroll until you find the `pneumaticControls` function in main, it should look as follows:
 ```
 pneumaticControls({
-    //Controls options for motors
+    //Controls options for pneumatics
     //remove entire line for no control of said motor
     .NA1 = std::nullopt,
     .NA2 = std::nullopt,
@@ -1036,7 +1036,7 @@ pneumaticControls({
 For now, we will only change `.NA1` and `.NA2`. Start by changing their names to match the same ones you typed out earlier, for our example it would be:
 ```
 pneumaticControls({
-    //Controls options for motors
+    //Controls options for pneumatics
     //remove entire line for no control of said motor
     .clawOpen = std::nullopt,
     .clawClose = std::nullopt,
@@ -1049,7 +1049,7 @@ pneumaticControls({
 Finally, we can assign controller [buttons](#pros-controller-button-library) to these! To start, assign your first one to some [button](#pros-controller-button-library). For our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller. Then for our example, `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
 ```
 pneumaticControls({
-    //Controls options for motors
+    //Controls options for pneumatics
     //remove entire line for no control of said motor
     .clawOpen = pros::E_CONTROLLER_DIGITAL_LEFT,
     .clawClose = pros::E_CONTROLLER_DIGITAL_RIGHT,
@@ -1061,7 +1061,7 @@ pneumaticControls({
 ```
 Now download it and test it! Does pressing your first button open the claw? Does pressing the second [button](#pros-controller-button-library) close the claw? If so, you've successfully coded a pneumatic helper function and its controls!
 >[!NOTE]
->If your open instead closes, flip your attatched hoses on the pneumatic.
+>If your open instead closes, flip your attached hoses on the pneumatic.
 
 **Final code for our example:**
 ```
@@ -1087,7 +1087,7 @@ In helpers.cpp:
 
 In main.cpp:
     pneumaticControls({
-        //Controls options for motors
+        //Controls options for pneumatics
         //remove entire line for no control of said motor
         .clawOpen = pros::E_CONTROLLER_DIGITAL_LEFT,
         .clawClose = pros::E_CONTROLLER_DIGITAL_RIGHT
@@ -1103,7 +1103,7 @@ For a robot to do an autonomous program, you'll need the following 3 sensors:
 1. An IMU
 2. A horizontal tracking wheel (wheel parallel to drivetrain wheels)
 3. A vertical tracking wheel (wheel perpendicular to drivetrain wheels)
-To start, your IMU should be placed flat and protected for best results. Then your tracking wheels must be placed firmly against the ground but able to smoothly roll with your robot (this is usually done through the use of rubber bands). Once these have been set up properly by your builder, we can define them. Move into the `globals.hpp` file and find the code that looks like this:
+To start, your IMU should be placed flat and protected for best results. Then your tracking wheels must be placed firmly against the ground but able to smoothly roll with your robot (this is usually done through the use of rubber bands). Once these have been set up properly by your builder, we can define them. Move into the `globals.cpp` file and find the code that looks like this:
 ```
 //Sensors
 	pros::Imu imu(1);
@@ -1236,7 +1236,7 @@ We've define an autonomous program, but it currently does nothing. Let's first u
 Let's now [download](#downloading-code) this and run the code. When we run the code, a menu should appear and prompt us to select an autonomous. Use the up/down arrows on the controller to get the ">" arrow pointing at our new calibration autonomous, then click A to select it. The robot should begin moving forwards and stop near the value (0, 15)! If it instead keeps going forwards and reports a negative y-value, try flipping your vertical tracking wheel port to a negative number. If the issue persists, ensure you've follow the directions properly.
 
 ### Calibration auton program
-While this is a good start, this isn't a square. we're then going to point to a heading of 90 using the [chassis.turnToHeading function](#chassisturntoheading-function), then moving to (15, 15) within 5 seconds. For (0, 15), we'll combine the heading and point using the [chassis.moveToPose function](#chassismovetopose-function) and tell it to move to (0, 15) with a theta value of -180. Now we have code that looks as follows:
+While this is a good start, this isn't a square yet. We're then going to point to a heading of 90 using the [chassis.turnToHeading function](#chassisturntoheading-function), then moving to (15, 15) within 5 seconds. For (0, 15), we'll combine the heading and point using the [chassis.moveToPose function](#chassismovetopose-function) and tell it to move to (0, 15) with a theta value of -180. Now we have code that looks as follows:
 ```
 //Route 1
     void calibrationAuton() {
@@ -1247,7 +1247,7 @@ While this is a good start, this isn't a square. we're then going to point to a 
         chassis.moveToPose(0, 15, -180, 5000);
     }
 ```
-We will then finish it with three more lines, returning it to (0, 0) and spinning it to face a theta of 0 degrees once more. Turning the robot to a heading can be done using the [chassis.turnToHeading function](#chassisturntoheading-function) and we already know how to move the robot. Our final will look like this:
+We will then finish it with three more lines, facing (0, 0), returning to (0, 0), and spinning it to face a theta of 0 degrees once more. Turning the robot to a heading can be done using the [chassis.turnToHeading function](#chassisturntoheading-function) and we already know how to move the robot. Our final will look like this:
 ```
 //Route 1
     void calibrationAuton() {
@@ -1261,7 +1261,7 @@ We will then finish it with three more lines, returning it to (0, 0) and spinnin
         chassis.turnToHeading(0, 5000);
     }
 ```
-Now download and test this, hopefully it runs roughly in a square. If not, ensure that you followed the steps properly. If it did work, you've coded a clibration program!
+Now download and test this, hopefully it runs roughly in a square. If not, ensure that you followed the steps properly. If it did work, you've coded a calibration program!
 
 ### Calibrating PID values
 Now we have a calibrating program, but what are we calibrating? Put simply, we're calibrating the values for how the robot moves. These values are called the PID values because those are the 3 we work with. Their full names are proportional, integral, and derivative, but that won't be discussed here (it's in [the extras area](#extra-stuff)). For our basics, we won't even modify I.\
@@ -1335,7 +1335,7 @@ When doing things with pros, you should rarely use more than `pros mu`, but here
 The `pros make` command is a simple command which tells pros to compile your project without actually attempting to download it, as mentioned in an earlier tip, this can be useful to see if you have any real errors while writing code.
 
 ## pros upload
-The `pros upload` command is a simple command which tells pros to download your compiled project, requiring you to run `pros make` to download anything new. Though, as mentioned in a tip, writing `--slot n` (where n is an integer: 1<=n<=8) after your command will download it to the specified slot rather than the default.
+The `pros upload` command is a simple command which tells pros to download your compiled project, requiring you to run `pros make` to download anything new with the `pros upload` command. Though, as mentioned in a tip, writing `--slot n` (where n is an integer: 1<=n<=8) after your command will download it to the specified slot rather than the default.
 
 # The git commands you'll use
 You'll use a few git commands, these commands may seem somewhat confusing so they'll be covered in this section.
@@ -1347,7 +1347,7 @@ This section will detail how to send code to github and how to pull it from gith
 The `git add .` command tells git that you want to add all of your changes to a list, this is used before submitting changes to a commit[^2].
 
 ### git commit -m
-The `git commit -m` command tells git that you're committing your changes with an attatched message, this is done after the [git add . command](#git-add-.). To write the message, use quotations after the `-m` and write your save message.\
+The `git commit -m` command tells git that you're committing your changes with an attached message, this is done after the [git add . command](#git-add-.). To write the message, use quotations after the `-m` and write your save message.\
 **Examples:**
 ```
 git commit -m "This is my first save"
@@ -1359,7 +1359,7 @@ git commit -m "Fixed the lift bug"
 The `git push` command tells git to send the new commit to github, this step comes after the [git commit command](#git-commit--m).
 
 ### git pull
-The `git pull` command tells git that you want to take everything from github and write it on your code. This is normally used by teams coding on more than one device.
+The `git pull` command downloads changes from your remote repository and integrates them into your current branch. This is useful when another team member has uploaded changes that you need on your computer.
 
 # Extra stuff
 (Coming soon)
