@@ -137,7 +137,7 @@ The referenced "buttons" are part of a pros class, you will always use one of th
 `pros::E_CONTROLLER_DIGITAL_A`\
 `pros::E_CONTROLLER_DIGITAL_R1`\
 `pros::E_CONTROLLER_DIGITAL_R2`\
-These ask for the button, it then must be passed through the [`buttonStatus` function](#buttonstatus-function) (or the\
+These ask for the button, it then must be passed through the [buttonStatus function](#buttonstatus-function) (or the\
 `master.get_digital`/`master.get_digital_new_press`/`master.get_digital_new_release`\
 function family for those more advanced) to get the button's state as a boolean[^3] value.
 
@@ -146,7 +146,7 @@ The referenced "press types" are part of a custom class, you will always use one
 `buttonPressTypes::HELD`\
 `buttonPressTypes::NEW_PRESS`\
 `buttonPressTypes::NEW_RELEASE`\
-These tell the [`buttonStatus` function](#buttonStatus-function) what boolean[^3] value to return for a specified button's behavior.
+These tell the [buttonStatus function](#buttonStatus-function) what boolean[^3] value to return for a specified button's behavior.
 
 ### Tracking wheels library
 The referenced "tracking wheel types" are as follows:\
@@ -216,11 +216,11 @@ chassis.setPose(10, 1, 45); // Sets the position to (10,1) while facing 45 degre
 For positional values, x and y should be in inches while the theta[^1] value should be in degrees.
 
 ### chassis.moveToPoint function
-The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate without any desired theta[^1] value. It requires 3 arguments to run, an x value, y value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before continuing in the code. Your function call should be structured somewhat like this:
+The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate without any desired theta[^1] value. This means that the robot does not consider the theta value when trying to get to the point, so theta can be any number. It requires 3 arguments to run, an x value, y value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before continuing in the code. Your function call should be structured somewhat like this:
 ```
-chassis.moveToPoint(10, 10, 3000);  // Tries to move to the point (10,10) within 3 seconds
-chassis.moveToPoint(-10, 10, 4700);  // Tries to move to the point (-10,10) within 4.7 seconds
-chassis.moveToPoint(3, -7, 8000);  // Tries to move to the point (3,-7) within 8 seconds
+chassis.moveToPoint(10, 10, 3000);  // Tries to move to the point (10,10) with any theta value within 3 seconds
+chassis.moveToPoint(-10, 10, 4700);  // Tries to move to the point (-10,10) with any theta value within 4.7 seconds
+chassis.moveToPoint(3, -7, 8000);  // Tries to move to the point (3,-7) with any theta value within 8 seconds
 ```
 For positional values, x and y should be in inches while the timeout value should be in milliseconds.
 
@@ -295,7 +295,7 @@ To download code, first grab a download cord and plug it into your brain (or a p
 >[!TIP]
 >To install code to other slots, write `pros mu --slot n` where n is an integer number 1 through 8.
 
-For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move the drivetrain forward/backward while the right joystick should move the drivetrain left/right. If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
+For those coming from the drivetrain section, use the joysticks, the left joystick should move the drivetrain forward/backward while the right joystick should move the drivetrain left/right. If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to the drivetrain section.
 
 ## Motors
 This section will focus on motors and what you can do with them, extra coding options and abilities may be located in the [extra syntax section](#extra-stuff)
@@ -320,7 +320,7 @@ In globals.cpp file:
 ```
 **Notice:** Unlike the template, the Motor4 and Motor5 lines are missing, this is because we can delete them if they're not being used. However, the contrary is also true, if you require more than just 5 motors, you may create your own motors on new lines by copying the same format. But be cautious, if you remove the motor declaration and definition, ensure you remove any other areas where it is used.\
 \
-Now let's give it a brake type using the [`motor.set_brake_type` function](#motorset_brake_type-function), navigate to `main.cpp` and scroll until you find something like
+Now let's give it a brake type using the [motor.set_brake_type function](#motorset_brake_type-function), navigate to `main.cpp` and scroll until you find something like
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
     Motor1.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
@@ -359,7 +359,7 @@ Now download this by following the same [download instructions](#downloading-cod
 ### Making motor helper functions
 Helper functions are the foundation for your code, they allow us to tell the robot what to do and when. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
 `void motorHelper1(const bool forward, const bool backward, const float speed);`\
-Change the name to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`. Then, we need to make sure the parameters make sense, ask "does this motor move your part forward/backward, up/down, in/out, open/close, etc?" Once you've decided, change the names of `forward` and `backward` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
+This is a helper function that's part of the template. It serves to show you the structure of helper functions and how you'll write them. In the case of motor helper functions, they'll normally be structured to take an input of two buttons (in our case they're the forward/backward variables) and one speed value (in our case it's called speed). Let's use the template to make our helper function! Change the name of this function to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`. Then we need to make sure the parameters make sense, ask "does this motor move your part forward/backward, up/down, in/out, open/close, etc?" Once you've decided, change the names of `forward` and `backward` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
 `void motorHelper1(const bool forward, const bool backward, const float speed) {`\
 Change the name from `motorHelper1` to match the name in your `helpers.hpp` folder, then change the `forward`/`backward` to the new names you picked in your `helpers.hpp`.\
 **Examples:**\
@@ -477,7 +477,7 @@ struct motorControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-The comments directly instruct you on what to do, for our intake function let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively. Though, you can also make your own names\
+The comments directly instruct you on what to do. For our intake function, let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively. Though, you can also make your own names\
 **Example:**
 ```
 struct motorControlOptions {
@@ -545,7 +545,8 @@ motorControls({
     .NA3 = 127
 });
 ```
-**Note:** You can remove .NA3 through .NA6 if you're not using them, you can also add more, but if you add more, make sure you also create them in the struct (Hint: The large )
+**Note:** You can remove .NA3 through .NA6 if you're not using them, you can also add more, but if you add more, make sure you also create them in the struct (Hint: The large `struct motorControlOptions` code block in `helpers.hpp` is where you add/delete lines)\
+\
 For now, we will only change `.NA1` and `.NA2`. Start by changing their names to match the same ones you typed out earlier, for our example our intake function would be:
 ```
 motorControls({
@@ -637,7 +638,7 @@ motorControls({
 ```
 Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. Now change 127 to be whatever speed you prefer. Now check if it builds and test it, if it works, you've succesfully created a working helper function with customizable speed!
 >[!TIP]
->There is a [`motorVelocity` function](#motorvelocity-function) which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:\
+>There is a [motorVelocity function](#motorvelocity-function) which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:\
 >`.intakeSpeed = motorVelocity(80);`\
 >This will run the motor at 80% speed.
 
@@ -664,7 +665,7 @@ In globals.cpp:
 ### Making pneumatic helper functions
 Navigate to `helpers.hpp` and find the line which says\
 `void pneumaticHelper1(const bool out, const bool in);`\
-Change the name to something fitting for what your declared motor is going to do, something like `intakeToggleControls` or `clawToggleControls`. Then, we need to make sure the parameters make sense, ask "does this pneumatic open/close a part, change it's function, etc?" Once you've decided, change the names of `out` and `in` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
+This is a helper function that's part of the template. It serves to show you the structure of helper functions and how you'll write them. In the case of motor helper functions, they'll normally be structured to take an input of two buttons (in our case they're the forward/backward variables) and one speed value (in our case it's called speed). Let's use the template to make our helper function! Change the name to something fitting for what your declared motor is going to do, something like `intakeToggleControls` or `clawToggleControls`. Then, we need to make sure the parameters make sense, ask "does this pneumatic open/close a part, change it's function, etc?" Once you've decided, change the names of `out` and `in` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
 `void pneumaticHelper1(const bool out, const bool in) {`\
 Change the name from `pneumaticHelper1` to match the name in your `helpers.hpp` folder, then change the `out`/`in` to the new names you picked in your `helpers.hpp`.\
 **Examples:**\
@@ -711,7 +712,7 @@ void clawToggleControls(const bool open, const bool closed) {
 >[!NOTE]
 >Yours may have different names, that's okay, you can copy the project if it makes more sense that way, but the lesson can be adapted to a different/unique function.
 
-We're now going to add code here, let's start on a simple idea: We want a pneumatic to open the claw when you click the `open` button and close it when we click the `close` button (for preface, these boolean[^3] inputs are buttons that we will define in [the next section](#defining-pneumatic-controls)). For our example, let's start this by writing our `open` conditional, we will write
+We're now going to add code here, let's start on a simple idea: We want a pneumatic to open the claw when you click the `open` button and close it when we click the `close` button (for preface, these boolean[^3] inputs are buttons that we will define in the next section. For our example, let's start this by writing our `open` conditional, we will write
 ```
 if (open) {
     clawToggle.extend();
@@ -986,7 +987,7 @@ void (*autonFunctions[])() = {
 You've now defined an autonomous program! Now let's add some simple code to the function.
 
 ### Simple auton program
-We've define an autonomous program, but it currently does nothing. Let's first use it to test our tracking wheels. Go to `autons.cpp` and find your newly defined function, we're going to add some code. First, we'll set the position to be (0, 0) and facing a heading of 0 degrees, we'll do this using the [`chassis.setPose` function](#chassissetpose-function). Then we can tell the robot to move to (0, 15), we'll use the [`chassis.moveToPoint` function](#chassismovetopoint-function) for this. Our current code should look as follows:
+We've define an autonomous program, but it currently does nothing. Let's first use it to test our tracking wheels. Go to `autons.cpp` and find your newly defined function, we're going to add some code. First, we'll set the position to be (0, 0) and facing a heading of 0 degrees, we'll do this using the [chassis.setPose function](#chassissetpose-function). Then we can tell the robot to move to (0, 15), we'll use the [chassis.moveToPoint function](#chassismovetopoint-function) for this. Our current code should look as follows:
 ```
 //Route 1
     void calibrationAuton() {
@@ -997,7 +998,7 @@ We've define an autonomous program, but it currently does nothing. Let's first u
 Let's now [download](#downloading-code) this and run the code. When we run the code, a menu should appear and prompt us to select an autonomous. Use the up/down arrows on the controller to get the ">" arrow pointing at our new calibration autonomous, then click A to select it. The robot should begin moving forwards and stop near the value (0, 15)! If it instead keeps going forwards and reports a negative y-value, try flipping your vertical tracking wheel port to a negative number. If the issue persists, ensure you've follow the directions properly.
 
 ### Calibration auton program
-While this is a good start, this isn't a square. we're then going to point to a heading of 90 using the [`chassis.turnToHeading` function](#chassisturntoheading-function), then moving to (15, 15) within 5 seconds. For (0, 15), we'll combine the heading and point using the [`chassis.moveToPose` function](#chassismovetopose-function) and tell it to move to (0, 15) with a theta value of -180. Now we have code that looks as follows:
+While this is a good start, this isn't a square. we're then going to point to a heading of 90 using the [chassis.turnToHeading function](#chassisturntoheading-function), then moving to (15, 15) within 5 seconds. For (0, 15), we'll combine the heading and point using the [chassis.moveToPose function](#chassismovetopose-function) and tell it to move to (0, 15) with a theta value of -180. Now we have code that looks as follows:
 ```
 //Route 1
     void calibrationAuton() {
@@ -1008,7 +1009,7 @@ While this is a good start, this isn't a square. we're then going to point to a 
         chassis.moveToPose(0, 15, -180, 5000);
     }
 ```
-We will then finish it with three more lines, returning it to (0, 0) and spinning it to face a theta of 0 degrees once more. Turning the robot to a heading can be done using the [`chassis.turnToHeading` function](#chassisturntoheading-function) and we already know how to move the robot. Our final will look like this:
+We will then finish it with three more lines, returning it to (0, 0) and spinning it to face a theta of 0 degrees once more. Turning the robot to a heading can be done using the [chassis.turnToHeading function](#chassisturntoheading-function) and we already know how to move the robot. Our final will look like this:
 ```
 //Route 1
     void calibrationAuton() {
