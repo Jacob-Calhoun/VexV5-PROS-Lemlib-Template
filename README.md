@@ -5,7 +5,7 @@ This section will give directions on how to install the needed programs and the 
 
 ## Installing VSCode
 >[!CAUTION]
->These steps are from Windows installtion, MacOS users may need to adapt some names for Mac apps.
+>These steps are from Windows installation, MacOS users may need to adapt some names for Mac apps.
 
 1. Make a Github account
 2. Follow [this link](https://code.visualstudio.com/download) for download options
@@ -16,12 +16,12 @@ This section will give directions on how to install the needed programs and the 
 
 ## Installing git
 >[!CAUTION]
->These steps are from Windows installtion, MacOS users may need to adapt some names for Mac apps.
+>These steps are from Windows installation, MacOS users may need to adapt some names for Mac apps.
 
 1. Follow [this link](https://git-scm.com/install/windows) for download options
 2. Install the setup program for you
-3. Open the setup progam and install github
-   -When propmted with the questions, go slowly.
+3. Open the setup program and install github
+   -When prompted with the questions, go slowly.
    -Ensure you pick to use VSCode as your default, *not* Vim or VSCode insiders edition
 4. Open VSCode
 5. Go to "Terminal"
@@ -32,7 +32,7 @@ This section will give directions on how to install the needed programs and the 
 
 ## Installing the template for your own repo
 >[!CAUTION]
->These steps are from Windows installtion, MacOS users may need to adapt some names for Mac apps.
+>These steps are from Windows installation, MacOS users may need to adapt some names for Mac apps.
 
 ### Method 1: Installing the .zip folder and making your own repo
 1. Make a github account
@@ -71,7 +71,7 @@ This section will give directions on how to install the needed programs and the 
 10. Go to VSCode and make sure no folder/files are open
 11. Go to terminal and click "New terminal"
 12. Type `cd [desired file location]` and hit enter
-    - Ensure that it is somewhere convienient
+    - Ensure that it is somewhere convenient
     - An example could be `C:/Users/[your name]`
     - An easy way to get this is to open the file explorer app and then copy the address bar at the top
 13. Type `git clone -b main --single-branch [copied repo link here]` and hit enter
@@ -89,7 +89,7 @@ This section will give directions on how to install the needed programs and the 
 25. Type `git branch -M main` and hit enter
 26. Type `git push -u origin main --force` and hit enter
 
-## Installing required/desired extentions:
+## Installing required/desired extensions:
 1. Looking at the sidebar of VSCode, select the square of 4 blocks labeled "extensions"
 2. Search for the following listed extensions
 ### Required:
@@ -111,7 +111,7 @@ This section will give directions on how to install the needed programs and the 
 # Working with the template
 In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the ["Extra stuff" section](#Extra-stuff)
 >[!WARNING]
->For this documentation, you can NOT use port 1 until you've gotten to [autonomous programs](#defining-autonomous-sensors), this is because the auton sensors are defaulted to port 1 and your brain will be confused if anything is in port 1. If you really want to use port 1 then go to `globals.cpp` and change the port numbers on `pros::Imu imu(1);`,`pros::Rotation verticalEncoder(1);`, and `pros::Rotation horizontalEncoder(1);` to an unused port on your robot.
+>For this documentation, you can NOT use port 1 until you've gotten to [autonomous programs](#defining-autonomous-sensors), this is because the autonomous sensors are defaulted to port 1 and your brain will be confused if anything is in port 1. If you really want to use port 1 then go to `globals.cpp` and change the port numbers on `pros::Imu imu(1);`,`pros::Rotation verticalEncoder(1);`, and `pros::Rotation horizontalEncoder(1);` to an unused port on your robot.
 
 ## Libraries you'll use
 This section has a bank of the libraries you'll be using so when writing code you know what you can call and where.
@@ -261,10 +261,9 @@ Near the top of this file, you should see lines like\
 `extern pros::MotorGroup drivetrainLeft;`\
 These are motor group declarations[^4]. A declaration[^4] is what goes in your .hpp files, it tells your code that this group of motors exist and are named drivetrainLeft, but it will not be defined in this file. Now navigate to the `globals.cpp` file, in there you should find\
 `pros::MotorGroup drivetrainLeft({1,1}, pros::v5::MotorGearset::green);`\
-The `{1,1}` is the list of ports for the motors in this group. Let's change it to reflect your actual drivetrain ports on the left side. If you have 3 motors on each side, no worries, add another comma and port number (example: `{1,2,3}`). Then look at the `pros::v5::MotorGearset::green`, this is your cartridge. Set it to whatever your drivetrain uses (you should be using the same cartridge for your entire drivetrain), if you use blue then it would be `pros::v5::MotorGearset::blue`. Now do the same for your right side in\
+This is where we can define our drivetrain. The `{1,1}` is the list of ports for the motors in this group. Let's change it to reflect your actual drivetrain ports on the left side. If you have 3 motors on each side, no worries, add another comma and port number (example: `{1,2,3}`). Then look at the `pros::v5::MotorGearset::green`, this is your cartridge. Set it to whatever your drivetrain uses (you should be using the same cartridge for your entire drivetrain), if you use blue then it would be `pros::v5::MotorGearset::blue`. Now do the same for your right side in\
 `pros::MotorGroup drivetrainRight({1,1}, pros::v5::MotorGearset::green)`\
-We're not done, though! Motors on opposite sides of your drivetrain need to spin in the same direction (both spinning forwards should move your drivetrain forward), if your motors on the left are oriented the same and motors on the right are oriented the same, they would be `{1,2}`/`{1,2,3}` and `{-3,-4}`/`{-4,-5,-6}` respectively. A negative number for a port number means inverted, forward becomes backward and vice versa. When we test it in a moment, if the drivetrain drives incorrectly, that's okay! Just change the negative/positive ports until it begins working, you should be able to figure out which should be negative and positive by talking to your builder and experimenting.\
-**Examples:**\
+We're not done, though! Motors on opposite sides of your drivetrain need to spin in the same direction (both spinning forwards should move your drivetrain forward), if your motors on the left are oriented the same and motors on the right are oriented the same, they would be `{1,2}`/`{1,2,3}` and `{-3,-4}`/`{-4,-5,-6}` respectively. A negative number for a port number means inverted, forward becomes backward and vice versa. When we test it in a moment, if the drivetrain drives incorrectly, that's okay! Just change the negative/positive ports until it begins working, you should be able to figure out which should be negative and positive by talking to your builder and experimenting. Some examples are the following:\
 **1. 4-motor drivetrain with motors facing opposite ways**
 ```
 In globals.cpp file:
@@ -285,6 +284,7 @@ In globals.cpp file:
 pros::MotorGroup drivetrainLeft({-4,-8,-3}, pros::v5::MotorGearset::green);
 pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 ```
+\
 **Note:** There are more examples which may end up with this configuration, these are not the only way that these happen.
 
 ## Downloading code
@@ -295,17 +295,21 @@ To download code, first grab a download cord and plug it into your brain (or a p
 >[!TIP]
 >To install code to other slots, write `pros mu --slot n` where n is an integer number 1 through 8.
 
-For those coming from the drivetrain section, use the joysticks, the left joystick should move the drivetrain forward/backward while the right joystick should move the drivetrain left/right. If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to the drivetrain section.
+**For those coming from the drivetrain section:** Use the joysticks. The left joystick should move the drivetrain forward/backward while the right joystick should move the drivetrain left/right. If this is correct and works, move to the next section. If your drivetrain appears to be doing something wrong, check your ports and return to the drivetrain section.
 
 ## Motors
 This section will focus on motors and what you can do with them, extra coding options and abilities may be located in the [extra syntax section](#extra-stuff)
 
 ### Define your motors
-Now let's define some motors. Navigate back to `globals.hpp` and find the motors lines similar to\
+Now let's define some motors. Navigate back to `globals.hpp` and find the motor lines similar to\
 `extern pros::Motor Motor1;`\
-These will be motors on your robot. It follows the same declaration[^4] format as the drivetrain but now we declare[^4] a single motor rather than a motor group.  To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, `intake`, or whatever else you may have. Now navigate back to the `globals.cpp` file and find the line that looks like\
+**Explanation:** This is a motor declaration[^4]. It follows a similar declaration format to the drivetrain. Unlike from the drivetrain, we declare a single motor rather than a motor group. `extern pros::Motor` tells us that this is a motor which will be defined elsewhere. `Motor1` is the name of our declared motor.\
+\
+To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, `intake`, or whatever else you may have. Now navigate back to the `globals.cpp` file and find the line that looks like\
 `pros::Motor Motor1(1, pros::v5::MotorGearset::green);`\
-This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}`, this is because there's only one port for our motor. Continue on by changing the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port number to that part of your robot.\
+**Explanation:** This is a motor definition. It follows a similar definition format to the drivetrain. Unlike from the drivetrain, we're defining a single motor rather than multiple. `pros::Motor` tells us that this is a motor, and `Motor1` is the name of our defined motor. `1` is the motor's port number. `pros::v5::MotorGearset::green` specifies the motor's cartridge (55-watt motors are considered green).\
+\
+This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}`. Continue on by changing the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port number to that part of your robot. Then make sure your motor gearset matches the motor cartridge you're using.\
 **Example:**
 ```
 In globals.hpp file:
@@ -338,7 +342,7 @@ We're going to rename `Motor1` to our chosen name and pick a new brake type from
     Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
     Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
 ```
-**Notice:** If you had removed the definitions and declarations of motors 2 through 4, you would also need to remove their corresponding lines here.\
+**Notice:** If you removed the definitions and declarations of motors 2 through 5, you would also need to remove their corresponding lines. In this case, the corresponding lines are setting the brake type for the motor.\
 \
 Now that we have all of this defined, let's test it! Find something in `main.cpp` that looks similar to the following:
 ```
@@ -357,12 +361,15 @@ void opcontrol() {
 Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the autonomous selector, the motor should start spinning. If the motor spins for 2.5 seconds before stopping, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors.
 
 ### Making motor helper functions
-Helper functions are the foundation for your code, they allow us to tell the robot what to do and when. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
+Helper functions are extremely important, they allow us to tell the robot what to do and when. They also allow us to make code more legible and keep it sorted into nicer groupings which make bugs easier to spot/isolate. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
 `void motorHelper1(const bool forward, const bool backward, const float speed);`\
-This is a helper function that's part of the template. It serves to show you the structure of helper functions and how you'll write them. In the case of motor helper functions, they'll normally be structured to take an input of two buttons (in our case they're the forward/backward variables) and one speed value (in our case it's called speed). Let's use the template to make our helper function! Change the name of this function to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`. Then we need to make sure the parameters make sense, ask "does this motor move your part forward/backward, up/down, in/out, open/close, etc?" Once you've decided, change the names of `forward` and `backward` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
+**Explanation:** This is a helper function declaration included in the template. It serves to show you the structure of helper functions and how you'll write them. In the case of motor helper functions, they'll normally be structured to take two button inputs (in our case they're the forward and backward parameters) and one speed value (in our case it's called speed). As stated before, declarations tell the computer that this function exists somewhere. Special to the case of functions, though, it also tells the computer what parameters (things like `const bool forward`) the function expects, the parameter types (like `bool` and `float`), and the parameter names (like `forward`,`backward`, and `speed`).\
+\
+Let's use the template to make our helper function! Change the name of this function to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`. Then we need to make sure the parameters make sense, ask "does this motor move your part forward/backward, up/down, in/out, open/close, etc?" Once you've decided, change the names of `forward` and `backward` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
 `void motorHelper1(const bool forward, const bool backward, const float speed) {`\
-Change the name from `motorHelper1` to match the name in your `helpers.hpp` folder, then change the `forward`/`backward` to the new names you picked in your `helpers.hpp`.\
-**Examples:**\
+**Explanation:** This is the helper function's matching definition. Notice it has the same name and contains the same parameter types in the same order as the original declaration, this is what allows the computer to recognize them as the same function. They work together to tell the computer what this function is (declaration) and what it does (definition). We need to make sure we do the same thing and replicate our new name and function parameter names. Finally, the opening curly brackets ({) tell the computer that everything between it and the closing curly bracket (}) is part of our function's code.\
+\
+Change the name from `motorHelper1` to match the name in your `helpers.hpp` folder, then change the `forward`/`backward` to the new names you picked in your `helpers.hpp`. Some examples are as follows:\
 **1. Lift system which moves up/down**
 ```
 In helpers.hpp:
@@ -477,8 +484,9 @@ struct motorControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-The comments directly instruct you on what to do. For our intake function, let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively. Though, you can also make your own names\
-**Example:**
+**Explanation:** Remember those `options.NA1`/`options.NA2` lines? This is where they come from. This is a structure (when we make them, we only write struct) and it allows us to create a large input of multiple data types. In our case, all of these data types are the same because they're all going to be buttons. The `= std::nullopt` tells us that the value will be defaulted to nothing unless we tell it otherwise. In a moment, we'll overwrite the default with controller buttons.\
+\
+For our intake function, let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively. Though, you can also make your own names. Our example code should look something like the following:
 ```
 struct motorControlOptions {
     /*
