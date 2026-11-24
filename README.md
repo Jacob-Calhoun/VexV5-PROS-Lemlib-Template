@@ -444,7 +444,7 @@ motorHelper1(
 ```
 **Explanation:** This is where we call the motorHelper1 function that we've just customized to our own liking. While formatted on multiple lines, you can imagine it as if the parameters were all on one line. As stated earlier, parameters one and two were buttons, so what is happening here is as follows: we pull `options.NA1` from the struct (which will eventually be renamed and assigned a button on the controller) and pass it into the buttonSatus function, the buttonStatus function will then return a boolean[^3] value based on the state of the button. We then repeat these steps for the second parameter. The third parameter doesn't require the buttonStatus function because it's a speed value.\
 \
-This must be renamed to the same name as your new function, to do this, simply replace `MotorHelper1` with your new function name. This will be where your function is called and soon will run a program. But for now, you've made a helper function!
+This must be renamed to the same name as your new function, to do this, simply replace `motorHelper1` with your new function name. This will be where your function is called and soon will run a program. But for now, you've made a helper function!
 **Example:**
 ```
 intakeControls(
@@ -464,7 +464,7 @@ In helpers.cpp:
 
     }
 
-    [other code]
+    [Other code]
 
     void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
         intakeControls(
@@ -588,7 +588,7 @@ struct motorControlOptions {
 };
 ```
 **Explanation:** Remember those `options.NA1`/`options.NA2` lines from the helpers.cpp file? This is where they come from. This is a structure (when we make them, we only write struct) and it allows us to create a large input of multiple data types, these values are called members. In our case, all of these data types are the same because they're all going to be buttons. The `= std::nullopt` tells us that the value will be defaulted to nothing unless we tell it otherwise. In a moment, we'll overwrite the default with controller buttons.\
-**Note:** For these, we can similarly delete and add more as needed, though, any that are deleted need to be removed everywhere. (Hint: `main.cpp` and `helpers.cpp` both have references to NA1 through NA6)\
+**Note:** For these, we can similarly delete and add more as needed, though, any that are deleted need to be removed everywhere. (Hint: `main.cpp` and `helpers.cpp` both have references to `NA1` through `NA6`).\
 \
 These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to the `motorControls` function, you should see something like:
 ```
@@ -599,7 +599,7 @@ void motorControls(const struct motorControlOptions& options, const struct motor
         speedOptions.NA1
     );
 
-    [other code here]
+    [Other code here]
 }
 ```
 Change the names of the two parameters from `options.NA1` and `options.NA2` to your newly chosen names. For our example project, it would look as follows:
@@ -611,7 +611,7 @@ void motorControls(const struct motorControlOptions& options, const struct motor
         speedOptions.NA1
     );
 
-    [other code here]
+    [Other code here]
 }
 ```
 **Explanation:** You know our `intakeControls` function and how we declared a boolean named `in` and then called it? We're doing something very similar here. Structures (structs) have many related variables, so writing only the structure's name when calling it wouldn't be useful. To call the specific values of the struct, we call the struct by name (our struct names are `options` and `speedOptions`) and then put a period and the specific struct value we're calling. In our case, the 2 struct values we're calling for our intake helper function are the `intakeIn` button and `intakeOut` button. Putting the notation together, we get `options.intakeIn` and `options.intakeOut`.\
@@ -706,7 +706,7 @@ In helpers.cpp:
         speedOptions.NA1
     );
 
-    [other code here]
+    [Other code here]
     }
 
 In main.cpp:
@@ -746,7 +746,7 @@ In helpers.cpp:
             speedOptions.intakeSpeed
         );
 
-        [other code]
+        [Other code]
     }
 ```
 **Notice:** Because we don't need the status of the button we simply call the struct's member which is named `intakeSpeed`.\
@@ -792,7 +792,7 @@ In helpers.cpp:
             speedOptions.intakeSpeed
         );
 
-        [other code]
+        [Other code]
     }
 
 In main.cpp:
@@ -822,8 +822,7 @@ These will be pneumatic pistons on your robot. To start, let's change the pneuma
 `pros::adi::Pneumatics Pneumatic1('A', startRetracted);`\
 **Explanation:** Pneumatic definitions are also very similar to motor definitions, notice it's in the same format but the type has changed to `pros::adi::Pneumatics` just like the earlier declaration. Unlike motors, pneumatics use a single capital letter as input for their port. This line declares a pneumatic named Pneumatic1 in port A. It also details if the pneumatic starts extended; in our case, it doesn't because we've written `startRetracted`. Different from motors, you don't flip pneumatic directions in the code, you flip the hoses attatched to the pneumatic.\
 \
-Now let's define our new pneumatic. Give it a port letter and choose `startExtended` or `startRetracted`. For our example, we'll pick to start retracted.
-**Example:**
+Now let's define our new pneumatic. Give it a port letter and choose `startExtended` or `startRetracted`. For our example, we'll pick to start retracted. Our final should look something like the following:
 ```
 In globals.hpp:
     extern pros::adi::Pneumatics clawToggle;
@@ -837,9 +836,13 @@ In globals.cpp:
 ### Making pneumatic helper functions
 Navigate to `helpers.hpp` and find the line which says\
 `void pneumaticHelper1(const bool out, const bool in);`\
-This is a helper function that's part of the template. It serves to show you the structure of helper functions and how you'll write them. In the case of motor helper functions, they'll normally be structured to take an input of two buttons (in our case they're the forward/backward variables) and one speed value (in our case it's called speed). Let's use the template to make our helper function! Change the name to something fitting for what your declared motor is going to do, something like `intakeToggleControls` or `clawToggleControls`. Then, we need to make sure the parameters make sense, ask "does this pneumatic open/close a part, change it's function, etc?" Once you've decided, change the names of `out` and `in` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
+**Explanation:** This is a helper function declaration included in the template. It serves to show you the structure of helper functions and how you'll write them. In the case of motor helper functions, they'll normally be structured to take two button inputs (in our case they're the in and out parameters). As stated before, declarations tell the computer that this function exists somewhere. Special to the case of functions, though, it also tells the computer what parameters (things like `const bool in`) the function expects, the parameter types (like `bool`), and the parameter names (like `in` and `out`).\
+\
+Change the name of this helper function to something fitting for what your declared motor is going to do, something like `clawToggleControls` or `intakeToggleControls`. Then we need to make sure the parameters make sense, ask "does this pneumatic move your part in/out, up/down, toggle, etc?" Once you've decided, change the names of `in` and `out` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
 `void pneumaticHelper1(const bool out, const bool in) {`\
-Change the name from `pneumaticHelper1` to match the name in your `helpers.hpp` folder, then change the `out`/`in` to the new names you picked in your `helpers.hpp`.\
+**Explanation:** This is the helper function's matching definition. Notice it has the same name and contains the same parameter types in the same order as the original declaration, this is what allows the computer to recognize them as the same function. They work together to tell the computer what this function is (declaration) and what it does (definition). We need to make sure we do the same thing and replicate our new name and function parameter names. Finally, the opening curly brackets (This: "{") tell the computer that everything between it and the closing curly bracket (This: "}") is part of our function's code.\
+\
+Change the name from `pneumaticHelper1` to match the name in your `helpers.hpp` folder, then change the `in`/`out` to the new names you picked in your `helpers.hpp`. Some examples are as follows:\
 **Examples:**\
 **1. A claw which toggles between open and closed**
 ```
@@ -848,7 +851,7 @@ In helpers.hpp:
 
 In helpers.cpp:
     void clawToggleControls(const bool open, const bool closed) {
-        [code here]
+        [Code here]
     }
 ```
 \
@@ -859,23 +862,48 @@ In helpers.hpp:
 
 In helpers.cpp:
     void intakeToLiftToggle(const bool intake, const bool lift) {
-        [code here]
+        [Code here]
     }
 ```
 \
 Once you've finished that, you're going to scroll further down in your `helpers.cpp` file until you find the `pneumaticControls` function, which should look like\
 `void pneumaticControls(const struct pneumaticControlOptions& options) {`\
+**Explanation:** This is the larger pneumaticControls function just to keep later things grouped into one area, you should never touch it's definition line (the one above). The function parameters may be new to you, a structure (struct) is a large blueprint which allows us to input multiple related values and assign them defaults. More details on structs will be found later on.\
+\
 Inside of it, you should find something similar to the following:
 ```
-    pneumaticHelper1(
-        buttonStatus(options.NA1),
-        buttonStatus(options.NA2)
-    );
+pneumaticHelper1(
+    buttonStatus(options.NA1),
+    buttonStatus(options.NA2),
+);
 ```
-This must be renamed to the same name as your new function. This will be where your function is eventually going to be used.
+**Explanation:** This is where we call the pneumaticHelper1 function that we've just customized to our own liking. While formatted on multiple lines, you can imagine it as if the parameters were all on one line. As stated earlier, parameters one and two were buttons, so what is happening here is as follows: we pull `options.NA1` from the struct (which will eventually be renamed and assigned a button on the controller) and pass it into the buttonSatus function, the buttonStatus function will then return a boolean[^3] value based on the state of the button. We then repeat these steps for the second parameter.\
+\
+This must be renamed to the same name as your new function, to do this, simply replace `pneumaticHelper1` with your new function name. This will be where your function is called and soon will run a program. But for now, you've made a helper function!\
+\
+**Final code for our example:**
+```
+In helpers.hpp:
+    void clawToggleControls(const bool open, const bool closed);
+
+In helpers.cpp:
+    void clawToggleControls(const bool open, const bool closed) {
+
+    }
+
+    [Other code]
+
+    void pneumaticControls(const struct pneumaticControlOptions& options) {
+        clawToggleControls(
+            buttonStatus(options.NA1),
+            buttonStatus(options.NA2),
+        );
+    }
+```
+**Notice:** Because our example project doesn't use `pneumaticHelper2` or `pneumaticHelper3` they were removed from the code completely.
 
 ### Writing a simple program inside our pneumatic helper function
-Since you've created the helper function, now you need to write code inside it. Look back at your function *definition*, it should currently look something like
+Since you've created the helper function, now you need to write code inside it. Look back at your function *definition*, it should currently look something like our example project:
 ```
 void clawToggleControls(const bool open, const bool closed) {
 
@@ -884,7 +912,7 @@ void clawToggleControls(const bool open, const bool closed) {
 >[!NOTE]
 >Yours may have different names, that's okay, you can copy the project if it makes more sense that way, but the lesson can be adapted to a different/unique function.
 
-We're now going to add code here, let's start on a simple idea: We want a pneumatic to open the claw when you click the `open` button and close it when we click the `close` button (for preface, these boolean[^3] inputs are buttons that we will define in the next section. For our example, let's start this by writing our `open` conditional, we will write
+We're now going to add code here, let's start on a simple idea: We want a pneumatic to open the claw when you click the `open` button and close it when we click the `close` button. For preface, these boolean[^3] inputs are buttons that we will define in the next section. For our example, let's start this by writing our `open` conditional, we will write
 ```
 if (open) {
     clawToggle.extend();
@@ -940,7 +968,7 @@ struct pneumaticControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-The comments directly instruct you on what to do, for our clawToggle example function let's rename `NA1` and `NA2` to `clawOpen` and `clawClose` respectively (replace with your own names).\
+The comments directly instruct you on what to do, for our clawToggle example function let's rename `NA1` and `NA2` to `clawOpen` and `clawClose` respectively (replace `NA1` and `NA2` with your own names).\
 **Example:**
 ```
 struct pneumaticControlOptions {
@@ -962,7 +990,10 @@ struct pneumaticControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to our the `pneumaticControls` function, you should see something like:
+**Explanation:** Remember those `options.NA1`/`options.NA2` lines from the helpers.cpp file? This is where they come from. This is a structure (when we make them, we only write struct) and it allows us to create a large input of multiple data types, these values are called members. In our case, all of these data types are the same because they're all going to be buttons. The `= std::nullopt` tells us that the value will be defaulted to nothing unless we tell it otherwise. In a moment, we'll overwrite the default with controller buttons.\
+**Note:** For these, we can similarly delete and add more as needed, though, any that are deleted need to be removed everywhere. (Hint: `main.cpp` and `helpers.cpp` both have references to `NA1` through `NA6`).\
+\
+These will soon be our new controls for our claw helper function. To do this, move back to `helpers.cpp` and scroll down to our the `pneumaticControls` function, you should see something like:
 ```
 void pneumaticControls(const struct pneumaticControlOptions& options) {
     clawToggleControls(
@@ -970,7 +1001,7 @@ void pneumaticControls(const struct pneumaticControlOptions& options) {
         buttonStatus(options.NA2)
     );
 
-    [other code here]
+    [Other code here]
 }
 ```
 Change the names of the two parameters from `options.NA1` to `options.clawOpen` and `options.NA2` to `options.clawClose` (or whatever names you've chosen). Then, add a new parameter to the [buttonStatus function](#buttonstatus-function) by putting a comma after the first parameter, now type `buttonPressTypes::NEW_PRESS`. This is telling the buttonStatus function to look for a new press of the [button](#pros-controller-button-library), so if the [button](#pros-controller-button-library) is held it will only activate once.\
@@ -982,9 +1013,11 @@ void pneumaticControls(const struct pneumaticControlOptions& options) {
         buttonStatus(options.clawClose, buttonPressTypes::NEW_PRESS)
     );
 
-    [other code here]
+    [Other code here]
 }
 ```
+**Explanation:** You know our `clawToggleControls` function and how we declared a boolean named `open` and then called it? We're doing something very similar here. Structures (structs) have many related variables, so writing only the structure's name when calling it wouldn't be useful. To call the specific values of the struct, we call the struct by name (our struct name is `options`) and then put a period and the specific struct value we're calling. In our example's case, the 2 struct values we're calling for our claw helper function are the `clawOpen` button and `clawClose` button. Putting the notation together, we get `options.clawOpen` and `options.clawClose`.\
+\
 You've now told your code which values to use through more clarified naming conventions! Though, the controls haven't actually been defined yet. To do this, go your `main.cpp` file and scroll until you find the `pneumaticControls` function in main, it should look as follows:
 ```
 pneumaticControls({
@@ -998,6 +1031,8 @@ pneumaticControls({
     .NA6 = std::nullopt
 });
 ```
+**Note:** You can remove .NA3 through .NA6 if you're not using them, you can also add more, but if you add more, make sure you also create them in the struct (Hint: The large `struct pneumaticControlOptions` code block in `helpers.hpp` is where you add/delete lines)\
+\
 For now, we will only change `.NA1` and `.NA2`. Start by changing their names to match the same ones you typed out earlier, for our example it would be:
 ```
 pneumaticControls({
@@ -1011,7 +1046,7 @@ pneumaticControls({
     .NA6 = std::nullopt
 });
 ```
-Finally, we can assign controller [buttons](#pros-controller-button-library) to these! To start, assign your first one to some [button](#pros-controller-button-library), for our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller. Then for our example, `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
+Finally, we can assign controller [buttons](#pros-controller-button-library) to these! To start, assign your first one to some [button](#pros-controller-button-library). For our example, we will assign `.clawOpen` to `pros::E_CONTROLLER_DIGITAL_LEFT` which is the left-arrow button on the controller. Then for our example, `.clawClose` will be assigned to `pros::E_CONTROLLER_DIGITAL_RIGHT`, the controller right-arrow. Your final should look something like this:
 ```
 pneumaticControls({
     //Controls options for motors
@@ -1027,6 +1062,37 @@ pneumaticControls({
 Now download it and test it! Does pressing your first button open the claw? Does pressing the second [button](#pros-controller-button-library) close the claw? If so, you've successfully coded a pneumatic helper function and its controls!
 >[!NOTE]
 >If your open instead closes, flip your attatched hoses on the pneumatic.
+
+**Final code for our example:**
+```
+In helpers.hpp:
+    struct pneumaticControlOptions {
+        /*
+        Do NOT touch the assigned type   |           | change amount and  | do not change
+                                            v           v names as needed    v given value
+        */
+        std::optional<pros::controller_digital_e_t> clawOpen = std::nullopt;
+        std::optional<pros::controller_digital_e_t> clawClose = std::nullopt;
+    };
+
+In helpers.cpp:
+    void pneumaticControls(const struct pneumaticControlOptions& options) {
+        clawToggleControls(
+            buttonStatus(options.clawOpen, buttonPressTypes::NEW_PRESS),
+            buttonStatus(options.clawClose, buttonPressTypes::NEW_PRESS)
+        );
+
+        [Other code here]
+    }
+
+In main.cpp:
+    pneumaticControls({
+        //Controls options for motors
+        //remove entire line for no control of said motor
+        .clawOpen = pros::E_CONTROLLER_DIGITAL_LEFT,
+        .clawClose = pros::E_CONTROLLER_DIGITAL_RIGHT
+    });
+```
 
 ## Autonomous programs
 In this section, you'll learn about the auton selector and making autonomous programs.\
