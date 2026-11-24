@@ -39,11 +39,11 @@ void initialize() {
 	});
 
     //Set encoder unit, brake mode, tare position, and zero position here
-        Motor1.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-        Motor2.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-        Motor3.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-        Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-        Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+        Motor1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+        Motor2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+        Motor3.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+        Motor4.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+        Motor5.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
 	
 	//MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md

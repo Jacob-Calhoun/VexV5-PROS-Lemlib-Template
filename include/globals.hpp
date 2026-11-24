@@ -7,7 +7,10 @@
 #include <string>
 #include <algorithm>
 #include <optional>
-  
+
+//Variables
+    extern const bool startExtended;
+    extern const bool startRetracted;
 //Controllers
     extern pros::Controller master;
 

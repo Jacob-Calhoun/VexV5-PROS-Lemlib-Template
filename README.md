@@ -116,8 +116,8 @@ In this section, I will explain how to actually use the template, features it ha
 ## Libraries you'll use
 This section has a bank of the libraries you'll be using so when writing code you know what you can call and where.
 
-### Motor brake types library
-The referenced "brake types" are part of a pros class, you will always use one of the following as your buttons:\
+### Motor brake modes library
+The referenced "brake modes" are part of a pros class, you will always use one of the following as your buttons:\
 `pros::E_MOTOR_BRAKE_HOLD`\
 `pros::E_MOTOR_BRAKE_BRAKE`\
 `pros::E_MOTOR_BRAKE_COAST`\
@@ -183,7 +183,7 @@ intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);    // Tells the motor to hold e
 claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);    // Tells the motor to completely stop movement and then allow spin
 lift.set_brake_mode(pros:E_MOTOR_BRAKE_COAST);    // Tells the motor to just turn off and allow spin
 ```
-The available options are listed in the [motor brake types class](#motor-brake-types-library)
+The available options are listed in the [motor brake modes class](#motor-brake-modes-library)
 
 ### motor.brake function
 The motor.brake function is a function which tells motors to brake based off a previously defined choice. Some examples are
@@ -192,7 +192,7 @@ intake.brake(); // Intake motor brakes
 claw.brake();   // Claw motor brakes
 lift.brake();   // Lift motor brakes
 ```
-To choose the brake type, use the [motor brake types class](#motor-brake-types-library) in the [motor set brake type function](#motorset_brake_mode-function).
+To choose the brake mode, use the [motor brake modes class](#motor-brake-modes-library) in the [motor set brake mode function](#motorset_brake_mode-function).
 
 ### buttonStatus function
 The buttonStatus function is a function which takes an input of an optional button type (`std::optional<pros::controller_digital_e_t>`) and outputs a boolean[^3] value in return. To use it, write `buttonStatus(pros::E_CONTROLLER_DIGITAL_A)` or some other allowed [button](#pros-controller-button-library). You may also include a second parameter, this parameter tells it whether to process all presses or only new presses/releases. For instance,
@@ -336,7 +336,7 @@ Now let's give it a brake type using the [motor.set_brake_mode function](#motors
 ```
 **Explanation:** This section is referring to our template motors, notice how they are using the name to call the function. Because we changed the name of the motor in the definition and declaration, we also have to change it wherever else it's mentioned.\
 \
-We're going to rename `Motor1` to our chosen name and pick a new brake type from the [brake types library](#motor-brake-types-library), for our example, we'll pick one for each option (if you're following with your own choices, you can use any combination), so our new code will look like this:
+We're going to rename `Motor1` to our chosen name and pick a new brake type from the [brake modes library](#motor-brake-modes-library), for our example, we'll pick one for each option (if you're following with your own choices, you can use any combination), so our new code will look like this:
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
     intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -345,7 +345,7 @@ We're going to rename `Motor1` to our chosen name and pick a new brake type from
     Motor4.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     Motor5.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 ```
-**Notice:** If you removed the definitions and declarations of some of these motors (like `Motor4` and `Motor5`), you would also need to remove their corresponding lines. In this case, the corresponding lines are setting the brake type for the motor.\
+**Notice:** If you removed the definitions and declarations of some of these motors (like `Motor4` and `Motor5`), you would also need to remove their corresponding lines. In this case, the corresponding lines are setting the brake mode for the motor.\
 \
 Now that we have all of this defined, let's test it! Find something in `main.cpp` that looks similar to the following:
 ```
@@ -816,16 +816,20 @@ This section will focus on pneumatics and what you can do with them, extras may 
 ### Define your pneumatics
 Similar to earlier, we're now going to define our pneumatic parts. Navigate back to `globals.hpp` and find the motors lines similar to\
 `extern pros::adi::Pneumatics Pneumatic1;`\
+**Explanation:** This is the same idea as the motor declaration from earlier. It's telling the computer that a pneumatic named Pneumatic1 exists and is defined elsewhere. Notice how we call `pros::adi::Pneumatics` instead of `pros::Motor`.\
+\
 These will be pneumatic pistons on your robot. To start, let's change the pneumatic's name from `Pneumatic1` to something on your robot, try replacing it with `clawToggle` or `intakeToggle`. Now navigate back to the `globals.cpp` file and fine the line that looks like\
-`pros::adi::Pneumatics Pneumatic1('A', false);`\
-This line is declaring your pneumatic in port A and the second conditional tells it whether to start extended or not (true = start extended). Unlike motors, you don't flip pneumatic directions in the code, you flip the hoses attatched to the pneumatic.\
+`pros::adi::Pneumatics Pneumatic1('A', startRetracted);`\
+**Explanation:** Pneumatic definitions are also very similar to motor definitions, notice it's in the same format but the type has changed to `pros::adi::Pneumatics` just like the earlier declaration. Unlike motors, pneumatics use a single capital letter as input for their port. This line declares a pneumatic named Pneumatic1 in port A. It also details if the pneumatic starts extended; in our case, it doesn't because we've written `startRetracted`. Different from motors, you don't flip pneumatic directions in the code, you flip the hoses attatched to the pneumatic.\
+\
+Now let's define our new pneumatic. Give it a port letter and choose `startExtended` or `startRetracted`. For our example, we'll pick to start retracted.
 **Example:**
 ```
 In globals.hpp:
     extern pros::adi::Pneumatics clawToggle;
 
 In globals.cpp:
-    pros::adi::Pneumatics clawToggle('C', false);
+    pros::adi::Pneumatics clawToggle('C', startRetracted);
 ```
 >[!TIP]
 >To test if your pneumatic configuration is proper, set its starting position to extended and [download the code](#downloading-code), if it starts extended then everything works! If not, try flipping the hoses around first. If it still fails, check your definition.

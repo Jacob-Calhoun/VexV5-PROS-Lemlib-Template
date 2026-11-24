@@ -3,7 +3,11 @@
 #include "pros/abstract_motor.hpp"
 #include "pros/motor_group.hpp"
 
-// INTAKE IS THE FRONT
+//Variables
+const bool startExtended = true;
+const bool startRetracted = false;
+
+//INTAKE IS THE FRONT
 
 //Controller
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
@@ -21,11 +25,11 @@
     pros::Motor Motor5(1, pros::v5::MotorGearset::green);
 
 //Pneumatics
-    pros::adi::Pneumatics Pneumatic1('A', false);
-    pros::adi::Pneumatics Pneumatic2('A', false);
-    pros::adi::Pneumatics Pneumatic3('A', false);
-    pros::adi::Pneumatics Pneumatic4('A', false);
-    pros::adi::Pneumatics Pneumatic5('A', false);
+    pros::adi::Pneumatics Pneumatic1('A', startRetracted);
+    pros::adi::Pneumatics Pneumatic2('A', startRetracted);
+    pros::adi::Pneumatics Pneumatic3('A', startRetracted);
+    pros::adi::Pneumatics Pneumatic4('A', startRetracted);
+    pros::adi::Pneumatics Pneumatic5('A', startRetracted);
 
 //Sensors
 	pros::Imu imu(1);
