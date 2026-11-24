@@ -24,7 +24,7 @@ This section will give directions on how to install the needed programs and the 
    -When propmted with the questions, go slowly.
    -Ensure you pick to use VSCode as your default, *not* Vim or VSCode insiders edition
 4. Open VSCode
-5. Go to "terminal"
+5. Go to "Terminal"
 6. Select "New terminal"
 7. Run `git -v`
    -If it returns something, then you're all set!
@@ -50,7 +50,7 @@ This section will give directions on how to install the needed programs and the 
 13. Go to VSCode and make sure no folder/files are open
 14. Click "file" and click "Open folder"
 15. Select the extracted folder and click "open folder"
-16. Go to "terminal" and click "New terminal"
+16. Go to "Terminal" and click "New terminal"
 17. Type `git init` into the terminal and hit enter
 18. Type `git remote add origin [paste your repo link here]` and hit enter
 19. Type `git add .` and hit enter
@@ -81,7 +81,7 @@ This section will give directions on how to install the needed programs and the 
 17. Go to your repo in your browser
 18. Copy the link offered to you
 19. Go to VSCode again
-20. Go to the terminal and type `Remove-Item -Recurse -Force .git` and hint enter
+20. Go to the terminal and type `Remove-Item -Recurse -Force .git` and hit enter
 21. Type `git init` and hit enter
 22. Type `git remote add origin [your repo link]` and hit enter
 23. Type `git add .` and hit enter
@@ -109,20 +109,19 @@ This section will give directions on how to install the needed programs and the 
 >Currently, there can be issues where clangd says things are wrong and highlights them red, it CAN be incorrect. If you are unsure about clangd's error message, type `pros build` into your terminal and see if you get an error. If not, your code is fine.
 
 # Working with the template
-In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the ["Extra syntax" section](#Extra-stuff)
+In this section, I will explain how to actually use the template, features it has, and what things do. For coders who are curious about learning, I will also try to explain what the more abstract syntax means and how you can use it in your own code; though, these sections of explanation and application may also come in the ["Extra stuff" section](#Extra-stuff)
 >[!WARNING]
 >For this documentation, you can NOT use port 1 until you've gotten to [autonomous programs](#defining-autonomous-sensors), this is because the auton sensors are defaulted to port 1 and your brain will be confused if anything is in port 1. If you really want to use port 1 then go to `globals.cpp` and change the port numbers on `pros::Imu imu(1);`,`pros::Rotation verticalEncoder(1);`, and `pros::Rotation horizontalEncoder(1);` to an unused port on your robot.
 
 ## Libraries you'll use
-This section has a bank of the libraries you'll be using so when writing controls and such you know what you can call.
+This section has a bank of the libraries you'll be using so when writing code you know what you can call and where.
 
 ### Motor brake types library
-The referenced brake types are part of a pros class, you will always use one of the following as your buttons:\
+The referenced "brake types" are part of a pros class, you will always use one of the following as your buttons:\
 `pros::E_MOTOR_BRAKE_HOLD`\
 `pros::E_MOTOR_BRAKE_BRAKE`\
 `pros::E_MOTOR_BRAKE_COAST`\
-These will be used in the [motor.set_brake_mode function](#motorset_brake_type-function)
-
+These will be used in the [motor.set_brake_mode function](#motorset_brake_type-function).
 
 ### Pros controller button library
 The referenced "buttons" are part of a pros class, you will always use one of the following as your buttons:\
@@ -138,15 +137,16 @@ The referenced "buttons" are part of a pros class, you will always use one of th
 `pros::E_CONTROLLER_DIGITAL_A`\
 `pros::E_CONTROLLER_DIGITAL_R1`\
 `pros::E_CONTROLLER_DIGITAL_R2`\
-These ask for the state of the button, it then must be passed through the [`buttonStatus` function](#buttonstatus-function) (or the\
-`master.get_digital` function for those more advanced).
+These ask for the button, it then must be passed through the [`buttonStatus` function](#buttonstatus-function) (or the\
+`master.get_digital`/`master.get_digital_new_press`/`master.get_digital_new_release`\
+function family for those more advanced) to get the button's state as a boolean[^3] value.
 
 ### Button press types library
 The referenced "press types" are part of a custom class, you will always use one of the following as your type:\
 `buttonPressTypes::HELD`\
 `buttonPressTypes::NEW_PRESS`\
 `buttonPressTypes::NEW_RELEASE`\
-These tell the [`buttonStatus` function](#buttonStatus-function) when to return a true/false value for a specified button.
+These tell the [`buttonStatus` function](#buttonStatus-function) what boolean[^3] value to return for a specified button's behavior.
 
 ### Tracking wheels library
 The referenced "tracking wheel types" are as follows:\
@@ -169,7 +169,7 @@ These will be used in [autonomous sensor definitions](#defining-autonomous-senso
 The referenced functions are functions which will handle things for you, ensuring you understand them is crucial.
 
 ### motor.move function
-The motor.move function is a function which tells motors to move based off a signed input from the domain of -127 to 127. The function requires you to write the name of the motor before being followed by `.move(n)` (where -127<\n<127). Some examples are
+The motor.move function is a function which tells motors to move based off a signed input from the domain of -127 to 127. The function requires you to write the name of the motor before being followed by `.move(n)` (where `-127<=n<=127`). Some examples are
 ```
 intake.move(127);   // Moves forward at full speed
 claw.move(-100);    // Moves backward at 100/127 speed
@@ -188,27 +188,27 @@ The available options are listed in the [motor brake types class](#motor-brake-t
 ### motor.brake function
 The motor.brake function is a function which tells motors to brake based off a previously defined choice. Some examples are
 ```
-intake.brake(); // Intake motor stops moving
-claw.brake();   // Claw motor stops moving
-lift.brake();   // Lift motor stops moving
+intake.brake(); // Intake motor brakes
+claw.brake();   // Claw motor brakes
+lift.brake();   // Lift motor brakes
 ```
 To choose the brake type, use the [motor brake types class](#motor-brake-types-library) in the [motor set brake type function](#motorset_brake_type-function).
 
 ### buttonStatus function
-The buttonStatus function is a function which takes an input of an optional button type (`std::optional<pros::controller_digital_e_t>`) and outputs a boolean (true/false) value in return. To use it, write `buttonStatus(pros::E_CONTROLLER_DIGITAL_A)` or some other allowed [button](#pros-controller-button-library). You may also include a second parameter, this parameter tells it whether to process all presses or only new presses/releases. For instance,
+The buttonStatus function is a function which takes an input of an optional button type (`std::optional<pros::controller_digital_e_t>`) and outputs a boolean[^3] value in return. To use it, write `buttonStatus(pros::E_CONTROLLER_DIGITAL_A)` or some other allowed [button](#pros-controller-button-library). You may also include a second parameter, this parameter tells it whether to process all presses or only new presses/releases. For instance,
 ```
 buttonStatus(pros::E_CONTROLLER_DIGITAL_UP);    // Defaults to buttonPressTypes::HELD
 buttonStatus(pros::E_CONTROLLER_DIGITAL_Left, buttonPressTypes::HELD);  // Sends signal if held/pressed
 buttonStatus(pros::E_CONTROLLER_DIGITAL_B, buttonPressTypes::NEW_PRESS);    // Sends signal only when newly pressed
 buttonStatus(pros::E_CONTROLLER_DIGITAL_X, buttonPressTypes::NEW_RELEASE);  // Sends signal only when newly released
 ```
-Are all valid function calls and will return a boolean (true/false) value.\
-**Note: Because this function is meant to return a value, you should normally only call it whenever trying to get a button's state for a function or conditional**
+Are all valid function calls and will return a boolean[^3] value.\
+**Note:** Because this function is meant to return a value, you should normally only call it whenever trying to get a button's state for a function or conditional
 >[!TIP]
 >To make a "when *not* pressed/released/held" function, pass `!buttonStatus([chosen button], [optional param])"
 
 ### chassis.setPose function
-The chassis.setPose function is a function which tells the robot what to set its new position to, it will then base any future instructions off the new position as if it was always there. This can be useful for checkpoints in autonomous programs and should always be at the start of your autonomous program unless you want everything to be relative to the robots starting position. When using it, it takes 3 parameters, an x value, y value, and theta[^1] value. Your function call should be structured somewhat like this:
+The chassis.setPose function is a function which tells the robot what to set its new position to, it will then base any future instructions off the new position as if it was always there. This can be useful for 'checkpoints' in autonomous programs, checkpoints are places where the robot is forced into a specific position every time. There should always be a set.pose function at the start of your autonomous programs unless you want everything to be relative to the robot starting position. When using it, it takes 3 parameters, an x value, y value, and theta[^1] value. Your function call should be structured somewhat like this:
 ```
 chassis.setPose(0, 0, 0);   // Sets the position to (0,0) while facing straight forward
 chassis.setPose(10, 1, 45); // Sets the position to (10,1) while facing 45 degrees
@@ -216,7 +216,7 @@ chassis.setPose(10, 1, 45); // Sets the position to (10,1) while facing 45 degre
 For positional values, x and y should be in inches while the theta[^1] value should be in degrees.
 
 ### chassis.moveToPoint function
-The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate without any desired theta[^1] value. It requires 3 arguments to run, an x value, y value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before moving on. Your function call should be structured somewhat like this:
+The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate without any desired theta[^1] value. It requires 3 arguments to run, an x value, y value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before continuing in the code. Your function call should be structured somewhat like this:
 ```
 chassis.moveToPoint(10, 10, 3000);  // Tries to move to the point (10,10) within 3 seconds
 chassis.moveToPoint(-10, 10, 4700);  // Tries to move to the point (-10,10) within 4.7 seconds
@@ -225,16 +225,16 @@ chassis.moveToPoint(3, -7, 8000);  // Tries to move to the point (3,-7) within 8
 For positional values, x and y should be in inches while the timeout value should be in milliseconds.
 
 ### chassis.moveToPose function
-The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate with a desired theta[^1] value. It requires 4 arguments to run, an x value, y value, a theta[^1] (direction) value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before moving on. Your function call should be structured somewhat like this:
+The chassis.moveToPoint function is a function which tells the robot to move to a specific coordinate with a desired theta[^1] value. It requires 4 arguments to run, an x value, y value, a theta[^1] value, and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before continuing in the code. Your function call should be structured somewhat like this:
 ```
-chassis.moveToPoint(10, 10, 0, 3200);  // Tries to move to the point (10,10) with a theta[^1] value of 0 within 3.2 seconds
-chassis.moveToPoint(-10, 10, 75, 8100);  // Tries to move to the point (-10,10) with a theta[^1] value of 75 within 8.1 seconds
-chassis.moveToPoint(3, -7, -53, 700);  // Tries to move to the point (3,-7) with a theta[^1] value of -53 within 0.7 seconds
+chassis.moveToPoint(10, 10, 0, 3200);  // Tries to move to the point (10,10) with a theta value of 0 within 3.2 seconds
+chassis.moveToPoint(-10, 10, 75, 8100);  // Tries to move to the point (-10,10) with a theta value of 75 within 8.1 seconds
+chassis.moveToPoint(3, -7, -53, 700);  // Tries to move to the point (3,-7) with a theta value of -53 within 0.7 seconds
 ```
 For positional values, x and y should be in inches, theta[^1] should be in degrees. The timeout value should be in milliseconds.
 
 ### chassis.turnToHeading function
-The chassis.turnToHeading function is a function which tells the robot to turn to a specific theta[^1] value. It requires 2 arguments to run, a theta value and a timeout value. The timeout value is the value which decides how long the robot will attempt this move command before moving on. Your function call should be structured somewhat like this:
+The chassis.turnToHeading function is a function which tells the robot to turn to a specific theta[^1] value. It requires 2 arguments to run, a theta value and a timeout value. The timeout value is the value which decides how long the robot will attempt this turn command before moving on. Your function call should be structured somewhat like this:
 ```
 chassis.turnToHeading(45,1000);    // Tries to face the heading 45 degrees within 1 second
 chassis.turnToHeading(-70, 4000);   // Tries to face the heading -70 degrees within 4 seconds
@@ -242,7 +242,7 @@ chassis.turnToHeading(126, 3250);   // Tries to face the heading 126 degrees wit
 ```
 
 ### pros::delay function
-The pros::delay function is a function which tells the robot to wait a specific amount of time before continuing to the next line. It requires 1 argument, an amount of time in milliseconds. Using it should look similar to this:\
+The pros::delay function is a function which tells the robot to wait a specific amount of time before continuing to the next line. It requires 1 argument, an amount of time in milliseconds. Using it should look similar to this:
 ```
 pros::delay(500);   // Waits 0.5 seconds
 pros::delay(8000);  // Waits 8 seconds
@@ -253,17 +253,17 @@ pros::delay(3520);  // Waits 3.52 seconds
 This section will talk about drivetrains and what you can do with them for driver control.
 
 ### Define your drivetrain
-When opening your project, you should see files in the "src" and "include" folder dropdowns, these files will be where you do all your coding. To start your project, click on `globals.hpp` file within the "include" dropdown and look around.
+When opening your project, you should see files in the "src" and "include" folder dropdowns, these files will be where you do all your coding. To start your project, click on the `globals.hpp` file within the "include" dropdown and look around.
 >[!TIP]
 >All of the .hpp files will be under the "include" dropdown, all of the .cpp files will be under the "src" dropdown.
 
 Near the top of this file, you should see lines like\
 `extern pros::MotorGroup drivetrainLeft;`\
-These are motor group declarations. A declaration is what goes in your .hpp files, it tells your code that this group of motors exist and are named drivetrainLeft, but it will not be defined in this file. Now navigate to the `globals.cpp` file, in there you should find\
+These are motor group declarations[^4]. A declaration[^4] is what goes in your .hpp files, it tells your code that this group of motors exist and are named drivetrainLeft, but it will not be defined in this file. Now navigate to the `globals.cpp` file, in there you should find\
 `pros::MotorGroup drivetrainLeft({1,1}, pros::v5::MotorGearset::green);`\
 The `{1,1}` is the list of ports for the motors in this group. Let's change it to reflect your actual drivetrain ports on the left side. If you have 3 motors on each side, no worries, add another comma and port number (example: `{1,2,3}`). Then look at the `pros::v5::MotorGearset::green`, this is your cartridge. Set it to whatever your drivetrain uses (you should be using the same cartridge for your entire drivetrain), if you use blue then it would be `pros::v5::MotorGearset::blue`. Now do the same for your right side in\
 `pros::MotorGroup drivetrainRight({1,1}, pros::v5::MotorGearset::green)`\
-We're not done, though! Motors on opposite sides need to spin in the same direction, if your motors on the left and right all face the same way, they would be `{1,2}`/`{1,2,3}` and `{-3,-4}`/`{-4,-5,-6}` respectively. A negative number for a port number means inverted, forward becomes backward and vice versa. In a moment when we test, if the drivetrain drives incorrectly, that's okay! Just change the negative/positive ports until it begins working, you should be able to figure out which should be negative and positive by talking to your builder and experimenting.\
+We're not done, though! Motors on opposite sides of your drivetrain need to spin in the same direction (both spinning forwards should move your drivetrain forward), if your motors on the left are oriented the same and motors on the right are oriented the same, they would be `{1,2}`/`{1,2,3}` and `{-3,-4}`/`{-4,-5,-6}` respectively. A negative number for a port number means inverted, forward becomes backward and vice versa. When we test it in a moment, if the drivetrain drives incorrectly, that's okay! Just change the negative/positive ports until it begins working, you should be able to figure out which should be negative and positive by talking to your builder and experimenting.\
 **Examples:**\
 **1. 4-motor drivetrain with motors facing opposite ways**
 ```
@@ -285,26 +285,27 @@ In globals.cpp file:
 pros::MotorGroup drivetrainLeft({-4,-8,-3}, pros::v5::MotorGearset::green);
 pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 ```
-**Note: There are more examples which may end up with this configuration, these are not the only way that these happen.**
+**Note:** There are more examples which may end up with this configuration, these are not the only way that these happen.
 
 ## Downloading code
-To download code, first grab a download cord and plug it into your brain (or a paired controller) and computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "None","N/A 1", "N/A 2", etc—this will eventually be your autonomous selector—click A on your controller to continue.\
-For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move forward/backward while the right joystick should move left/right. If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
+To download code, first grab a download cord and plug it into your brain (or a paired controller) and your computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "Terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "None","N/A 1", "N/A 2", etc—this will eventually be your autonomous selector—click A on your controller to continue into driver control.
 >[!IMPORTANT]
 >Currently, there can be issues where clangd says things are wrong and highlights them red, it CAN be incorrect. If you are unsure about clangd's error message, type `pros build` into your terminal and see if you get an error. If not, your code is fine.
 
 >[!TIP]
 >To install code to other slots, write `pros mu --slot n` where n is an integer number 1 through 8.
 
+For those coming from [the drivetrain section](#define-your-drivetrain), use the joysticks, the left joystick should move the drivetrain forward/backward while the right joystick should move the drivetrain left/right. If this is correct, amazing! Move to the next section, if your drivetrain appears to be doing something wrong, check your ports and return to [the above section](#Define-your-drivetrain).
+
 ## Motors
-This section will focus on motors and what you can do with them, extras may be located in the [extra syntax section](#extra-stuff)
+This section will focus on motors and what you can do with them, extra coding options and abilities may be located in the [extra syntax section](#extra-stuff)
 
 ### Define your motors
 Now let's define some motors. Navigate back to `globals.hpp` and find the motors lines similar to\
 `extern pros::Motor Motor1;`\
-These will be motors on your robot. It follows the same declaration format as the drivetrain but now we declare a single motor rather than a motorgroup.  To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, `intake`, or whatever else you may have. Now navigate back to the `globals.cpp` file and find the line that looks like\
+These will be motors on your robot. It follows the same declaration[^4] format as the drivetrain but now we declare[^4] a single motor rather than a motor group.  To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, `intake`, or whatever else you may have. Now navigate back to the `globals.cpp` file and find the line that looks like\
 `pros::Motor Motor1(1, pros::v5::MotorGearset::green);`\
-This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}` because there's only one port for a motor. Once this makes sense, change the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port number to that part of your robot.\
+This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}`, this is because there's only one port for our motor. Continue on by changing the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port number to that part of your robot.\
 **Example:**
 ```
 In globals.hpp file:
@@ -317,31 +318,34 @@ In globals.cpp file:
     pros::Motor lift(-7, pros::v5::MotorGearset::blue);
     pros::Motor claw(12, pros::v5::MotorGearset::red);
 ```
+**Notice:** Unlike the template, the Motor4 and Motor5 lines are missing, this is because we can delete them if they're not being used. However, the contrary is also true, if you require more than just 5 motors, you may create your own motors on new lines by copying the same format. But be cautious, if you remove the motor declaration and definition, ensure you remove any other areas where it is used.\
 \
 Now let's give it a brake type using the [`motor.set_brake_type` function](#motorset_brake_type-function), navigate to `main.cpp` and scroll until you find something like
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
-    Motor1.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
-    Motor2.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
-    Motor3.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
-    Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
-    Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+    Motor1.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor2.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor3.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
 ```
-We're going to rename `Motor1` to our chosen name and pick a new brake type from the [brake types library](#motor-brake-types-library), for our example, we'll pick the commonly used hold option (if you're following with your own choices, you can use hold or coast), so our new code will look like this:
+We're going to rename `Motor1` to our chosen name and pick a new brake type from the [brake types library](#motor-brake-types-library), for our example, we'll pick the commonly used hold option (if you're following with your own choices, you can use either of the 3), so our new code will look like this:
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
-    Motor1.set_brake_type(pros::E_MOTOR_BRAKE_HOLD)
-    Motor2.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
-    Motor3.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
-    Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
-    Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE)
+    intake.set_brake_type(pros::E_MOTOR_BRAKE_HOLD);
+    Motor2.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor3.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
 ```
-Now that we have all of this defined, let's test it! Find something that looks similar to the following:
+**Notice:** If you had removed the definitions and declarations of motors 2 through 4, you would also need to remove their corresponding lines here.\
+\
+Now that we have all of this defined, let's test it! Find something in `main.cpp` that looks similar to the following:
 ```
 void opcontrol () {
     //temporary code
 ```
-Under the temporary code section, write `[your motor's name].move(127);`. This is telling the computer to move your motor at full speed (speed is out of 127). Then we will write the [pros delay function](#prosdelay-function) `pros::delay(2500);` which tells the computer to wait 2.5 seconds before continuing to the next step. Finally, we can write `[you motor's name].brake();` to tell the motor to brake using our newly selected brake option.\
+Under the temporary code section, write `[your motor's name].move(127);`. This is using the [motor.move function](#motormove-function) to tell the computer to move your motor at full speed. Then we will write the [pros delay function](#prosdelay-function) `pros::delay(2500);` which tells the computer to wait 2.5 seconds before continuing to the next step. Finally, we can use the [motor.brake function](#motorbrake-function) by writing `[you motor's name].brake();`, this will tell the motor to brake using our newly selected brake option.\
 **Example:**
 ```
 void opcontrol() {
@@ -380,6 +384,7 @@ In helpers.cpp:
         [Code here]
     }
 ```
+**Note:** Similarly to the motors, if you do not plan on using these extra motor helper functions, you can delete them. If you need more, you can copy the format in the `helpers.hpp` file and in the `helpers.cpp` file (or directly from the documentation) and write them into the motorControls function with the same format as the other functions.\
 \
 Once you've finished that, you're going to scroll further down in your `helpers.cpp` file until you find the `motorControls` function, which should look like\
 `void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {`\
@@ -392,6 +397,14 @@ motorHelper1(
 );
 ```
 This must be renamed to the same name as your new function. This will be where your function is eventually going to be used. But for now, you've made a helper function!
+**Example:**
+```
+intakeControls(
+    buttonStatus(options.NA1),
+    buttonStatus(options.NA2),
+    speedOptions.NA1
+);
+```
 
 ### Writing a simple program inside our motor helper function
 Since you've created the helper function, now you need to write code inside it. Look back at your function *definition*, it should currently look something like
@@ -403,7 +416,7 @@ void intakeControls(const bool in, const bool out, const float speed) {
 >[!NOTE]
 >Yours may have different names, that's okay, you can copy the project if it makes more sense that way, but the lesson can be adapted to a different/unique function.
 
-We're now going to add code here, let's start on a simple idea: We want a motor to spin forwards when you click the `in` button and backwards when we click the `out` button (for preface, these boolean inputs are buttons that we will define in [the next section](#defining-motor-controls)). Let's start this by writing our `in` conditional, we will write
+We're now going to add code here, let's start on a simple idea: We want a motor to spin forwards when you click the `in` button and backwards when we click the `out` button (for preface, these boolean[^3] inputs are buttons that we will define in [the next section](#defining-motor-controls)). Let's start this by writing our `in` conditional, we will write
 ```
 if (in) {
     intake.move(speed);
@@ -411,7 +424,7 @@ if (in) {
 }
 ```
 This may seem like a jump, but this can be broken apart.\
-The `if (in)` is asking if the `in` boolean is set to true, in the exmaple code's context, this will eventually mean "is the selected button being held?"\
+The `if (in)` is asking if the `in` boolean[^3] is set to true, in the exmaple code's context, this will eventually mean "is the selected button being held?"\
 The `intake.move(speed);` line is simply saying "the intake motor must start spinning at the value of `speed`."\
 The `return;` tells the function that it is done doing what it must and can immediately leave.\
 Now what about when it should move out? Let's write something similar, under our new code block, we will write something like
@@ -421,8 +434,8 @@ if (out) {
     return;
 }
 ```
-This is almost exactly the same, except now the code is asking about the `out` button and is spinning in the opposite direction (due to it being the negative speed value). Finally, what if it should brake when not being pressed? Under the other two block codes, we will write `intake.brake();`. Now the `return;` line has meaning, without it, our robot would see that we pressed a button, move the motor, and then immediately brake the motor. With this `return;` line, we tell the function that once it's activated from a button, it can stop looking for more code to run.\
-The final code looks as follows:
+This is almost exactly the same, except now the code is asking about the `out` button and is spinning in the opposite direction (due to it being the negative speed value). Finally, what if it should brake when not being pressed? Under the other two block codes, we will write `intake.brake();`. Now the `return;` line has meaning, without it, our robot would see that we pressed a button, move the motor, and then immediately brake the motor. With this `return;` line, we tell the function that once it's activated from a button, it can stop looking for more code to run inside the function.\
+The final code for our example looks as follows:
 ```
 void intakeControls(const bool in, const bool out, const float speed) {
     if (in) {
@@ -438,11 +451,12 @@ void intakeControls(const bool in, const bool out, const float speed) {
     intake.brake();
 }
 ```
-**Again, your code may look slightly different or have different names, that's okay. However, if your code isn't working as desired, follow the example's steps.**\
+**Notice:** Again, your code may look slightly different or have different names, that's okay. However, if your code isn't working as desired, follow the example's steps.\
+\
 Now you've written a simple program inside your helper function! But to make it run, we have to define motor controls.
 
 ### Defining motor controls
-Defining motor controls is probably one of the silliest looking parts, but with practice (and if you read [the bonus section on it](#extra-stuff)), it should make sense. To begin, navigate to the `helpers.hpp` file and "struct" block of code. It should look close to this:
+Defining motor controls is probably one of the silliest looking parts, but with practice it should make sense. To begin, navigate to the `helpers.hpp` file and find this block of code:
 ```
 struct motorControlOptions {
     /*
@@ -463,7 +477,7 @@ struct motorControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-The comments directly instruct you on what to do, for our intake function let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively (you can make your own function with your own names).\
+The comments directly instruct you on what to do, for our intake function let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively. Though, you can also make your own names\
 **Example:**
 ```
 struct motorControlOptions {
@@ -485,7 +499,9 @@ struct motorControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to our the `motorControls` function, you should see something like:
+**Note:** For these, we can similarly delete and add more as needed, though, any that are deleted need to be removed everywhere. (Hint: `main.cpp` and `helpers.cpp` both have references to NA1 through NA6)\
+\
+These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to the `motorControls` function, you should see something like:
 ```
 void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
     intakeControls(
@@ -497,8 +513,7 @@ void motorControls(const struct motorControlOptions& options, const struct motor
     [other code here]
 }
 ```
-Change the names of the two parameters from `options.NA1` to `options.intakeIn` and `options.NA2` to `options.intakeOut` (put your own names in place if you're making your own).\
-**Example:**
+Change the names of the two parameters from `options.NA1` and `options.NA2` to your newly chosen names. For our example project, it would look as follows:
 ```
 void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
     intakeControls(
@@ -510,7 +525,7 @@ void motorControls(const struct motorControlOptions& options, const struct motor
     [other code here]
 }
 ```
-You've now told your code which values to use through more clarified naming conventions! Though, the controls haven't actually been defined yet. To do this, go your `main.cpp` file and scroll until you find the `motorControls` function in main, it should look as follows:
+You've now told your code which values to use through more clarified naming conventions! However, the controls haven't actually been defined yet. To do this, go your `main.cpp` file and scroll until you find the `motorControls` function in main, it should look as follows:
 ```
 motorControls({
     //Controls options for motors
@@ -530,6 +545,7 @@ motorControls({
     .NA3 = 127
 });
 ```
+**Note:** You can remove .NA3 through .NA6 if you're not using them, you can also add more, but if you add more, make sure you also create them in the struct (Hint: The large )
 For now, we will only change `.NA1` and `.NA2`. Start by changing their names to match the same ones you typed out earlier, for our example our intake function would be:
 ```
 motorControls({
@@ -695,7 +711,7 @@ void clawToggleControls(const bool open, const bool closed) {
 >[!NOTE]
 >Yours may have different names, that's okay, you can copy the project if it makes more sense that way, but the lesson can be adapted to a different/unique function.
 
-We're now going to add code here, let's start on a simple idea: We want a pneumatic to open the claw when you click the `open` button and close it when we click the `close` button (for preface, these boolean inputs are buttons that we will define in [the next section](#defining-pneumatic-controls)). For our example, let's start this by writing our `open` conditional, we will write
+We're now going to add code here, let's start on a simple idea: We want a pneumatic to open the claw when you click the `open` button and close it when we click the `close` button (for preface, these boolean[^3] inputs are buttons that we will define in [the next section](#defining-pneumatic-controls)). For our example, let's start this by writing our `open` conditional, we will write
 ```
 if (open) {
     clawToggle.extend();
@@ -703,7 +719,7 @@ if (open) {
 }
 ```
 This may seem like a jump, but this can be broken apart, similarly to the motors helper function.\
-The `if (open)` is asking if the `open` boolean is set to true, in the exmaple code's context, this will eventually mean "was the selected button pressed?"\
+The `if (open)` is asking if the `open` boolean[^3] is set to true, in the exmaple code's context, this will eventually mean "was the selected button pressed?"\
 The `clawToggle,extend();` line is simply saying "the pneumatic should now extend."\
 The `return;` tells the function that it is done doing what it must and can immediately leave.\
 Now what about when it should close? Let's write something similar, under our new code block, we will write something like
@@ -1074,10 +1090,37 @@ void rightHalf() {
 ```
 
 # The pros commands you'll use
-(Coming soon)
+When doing things with pros, you should rarely use more than `pros mu`, but here are a few other useful commands that may have been briefly covered.
+
+## pros make
+The `pros make` command is a simple command which tells pros to compile your project without actually attempting to download it, as mentioned in an earlier tip, this can be useful to see if you have any real errors while writing code.
+
+## pros upload
+The `pros upload` command is a simple command which tells pros to download your compiled project, requiring you to run `pros make` to download anything new. Though, as mentioned in a tip, writing `--slot n` (where n is an integer: 1<=n<=8) after your command will download it to the specified slot rather than the default.
 
 # The git commands you'll use
-(Coming soon)
+You'll use a few git commands, these commands may seem somewhat confusing so they'll be covered in this section.
+
+## Sending and getting code from github
+This section will detail how to send code to github and how to pull it from github and work on it.
+
+### git add .
+The `git add .` command tells git that you want to add all of your changes to a list, this is used before submitting changes to a commit[^2].
+
+### git commit -m
+The `git commit -m` command tells git that you're committing your changes with an attatched message, this is done after the [git add . command](#git-add-.). To write the message, use quotations after the `-m` and write your save message.\
+**Examples:**
+```
+git commit -m "This is my first save"
+git commit -m "Work in progress"
+git commit -m "Fixed the lift bug"
+```
+
+### git push
+The `git push` command tells git to send the new commit to github, this step comes after the [git commit command](#git-commit--m).
+
+### git pull
+The `git pull` command tells git that you want to take everything from github and write it on your code. This is normally used by teams coding on more than one device.
 
 # Extra stuff
 (Coming soon)
@@ -1114,3 +1157,6 @@ This
 
 
 [^1]: Theta values are the direction which the robot faces, it can be both positive or negative. 0/360 directly forward, 180/-180 are directly backward, and so forth.
+[^2]: Commits are git savestates of your code, they're meant to be pushed to github in order to allow you to work on multiple devices or have a saved copy of your code if needed.
+[^3]: Booleans are a type of data which is either set to true or false.
+[^4]: A statement that goes in .hpp files, it tells the compiler that an object exists and is defined within another file
