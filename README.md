@@ -121,7 +121,7 @@ The referenced "brake types" are part of a pros class, you will always use one o
 `pros::E_MOTOR_BRAKE_HOLD`\
 `pros::E_MOTOR_BRAKE_BRAKE`\
 `pros::E_MOTOR_BRAKE_COAST`\
-These will be used in the [motor.set_brake_mode function](#motorset_brake_type-function).
+These will be used in the [motor.set_brake_mode function](#motorset_brake_mode-function).
 
 ### Pros controller button library
 The referenced "buttons" are part of a pros class, you will always use one of the following as your buttons:\
@@ -176,12 +176,12 @@ claw.move(-100);    // Moves backward at 100/127 speed
 lift.move(35);  // Moves forward at 35/127 speed
 ```
 
-### motor.set_brake_type function
-The motor.set_brake_type function is a function which tells motors which braking method to use. Some examples are
+### motor.set_brake_mode function
+The motor.set_brake_mode function is a function which tells motors which braking method to use. Some examples are
 ```
-intake.set_brake_type(pros::E_MOTOR_BRAKE_HOLD);    // Tells the motor to hold exactly where it was when told to brake
-claw.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);    // Tells the motor to completely stop movement and then allow spin
-lift.set_brake_type(pros:E_MOTOR_BRAKE_COAST);    // Tells the motor to just turn off and allow spin
+intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);    // Tells the motor to hold exactly where it was when told to brake
+claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);    // Tells the motor to completely stop movement and then allow spin
+lift.set_brake_mode(pros:E_MOTOR_BRAKE_COAST);    // Tells the motor to just turn off and allow spin
 ```
 The available options are listed in the [motor brake types class](#motor-brake-types-library)
 
@@ -192,7 +192,7 @@ intake.brake(); // Intake motor brakes
 claw.brake();   // Claw motor brakes
 lift.brake();   // Lift motor brakes
 ```
-To choose the brake type, use the [motor brake types class](#motor-brake-types-library) in the [motor set brake type function](#motorset_brake_type-function).
+To choose the brake type, use the [motor brake types class](#motor-brake-types-library) in the [motor set brake type function](#motorset_brake_mode-function).
 
 ### buttonStatus function
 The buttonStatus function is a function which takes an input of an optional button type (`std::optional<pros::controller_digital_e_t>`) and outputs a boolean[^3] value in return. To use it, write `buttonStatus(pros::E_CONTROLLER_DIGITAL_A)` or some other allowed [button](#pros-controller-button-library). You may also include a second parameter, this parameter tells it whether to process all presses or only new presses/releases. For instance,
@@ -285,7 +285,8 @@ pros::MotorGroup drivetrainLeft({-4,-8,-3}, pros::v5::MotorGearset::green);
 pros::MotorGroup drivetrainRight({12,9,18}, pros::v5::MotorGearset::green);
 ```
 \
-**Note:** There are more examples which may end up with this configuration, these are not the only way that these happen.
+**Note:** There are more examples which may end up with this configuration, these are not the only way that these happen.\
+\
 
 ## Downloading code
 To download code, first grab a download cord and plug it into your brain (or a paired controller) and your computer, ensure that the brain/controller are turned on for this. When downloading code, we can use the terminal, if you don't have a terminal open, go to "Terminal" and click "New terminal", now type `pros mu`, if you got no errors, your code is downloaded onto the brain! Now that the code is downloaded, it should default to slot 1, on the brain navigate to "programs" and click the program in the first slot, then click "run". Your brain should show you a long list of "None","N/A 1", "N/A 2", etc—this will eventually be your autonomous selector—click A on your controller to continue into driver control.
@@ -324,25 +325,27 @@ In globals.cpp file:
 ```
 **Notice:** Unlike the template, the Motor4 and Motor5 lines are missing, this is because we can delete them if they're not being used. However, the contrary is also true, if you require more than just 5 motors, you may create your own motors on new lines by copying the same format. But be cautious, if you remove the motor declaration and definition, ensure you remove any other areas where it is used.\
 \
-Now let's give it a brake type using the [motor.set_brake_type function](#motorset_brake_type-function), navigate to `main.cpp` and scroll until you find something like
+Now let's give it a brake type using the [motor.set_brake_mode function](#motorset_brake_mode-function), navigate to `main.cpp` and scroll until you find something like
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
-    Motor1.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor2.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor3.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor3.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor4.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor5.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 ```
-We're going to rename `Motor1` to our chosen name and pick a new brake type from the [brake types library](#motor-brake-types-library), for our example, we'll pick the commonly used hold option (if you're following with your own choices, you can use either of the 3), so our new code will look like this:
+**Explanation:** This section is referring to our template motors, notice how they are using the name to call the function. Because we changed the name of the motor in the definition and declaration, we also have to change it wherever else it's mentioned.\
+\
+We're going to rename `Motor1` to our chosen name and pick a new brake type from the [brake types library](#motor-brake-types-library), for our example, we'll pick one for each option (if you're following with your own choices, you can use any combination), so our new code will look like this:
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
-    intake.set_brake_type(pros::E_MOTOR_BRAKE_HOLD);
-    Motor2.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor3.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor4.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor5.set_brake_type(pros::E_MOTOR_BRAKE_BRAKE);
+    intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+    lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor4.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    Motor5.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 ```
-**Notice:** If you removed the definitions and declarations of motors 2 through 5, you would also need to remove their corresponding lines. In this case, the corresponding lines are setting the brake type for the motor.\
+**Notice:** If you removed the definitions and declarations of some of these motors (like `Motor4` and `Motor5`), you would also need to remove their corresponding lines. In this case, the corresponding lines are setting the brake type for the motor.\
 \
 Now that we have all of this defined, let's test it! Find something in `main.cpp` that looks similar to the following:
 ```
@@ -358,7 +361,38 @@ void opcontrol() {
         pros::delay(2500);
         intake.brake();
 ```
-Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the autonomous selector, the motor should start spinning. If the motor spins for 2.5 seconds before stopping, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors.
+Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the autonomous selector, the motor should start spinning. If the motor spins for 2.5 seconds before stopping, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors.\
+**Note:** You can test your other motors doing the same thing, but for the sake of simplicity only one is shown.\
+\
+**Final code for our example:**
+```
+In globals.hpp:
+    extern pros::Motor intake;
+    extern pros::Motor lift;
+    extern pros::Motor claw;
+
+In globals.cpp:
+    pros::Motor intake(4, pros::v5::MotorGearset::green);
+    pros::Motor lift(-7, pros::v5::MotorGearset::blue);
+    pros::Motor claw(12, pros::v5::MotorGearset::red);
+
+In main.cpp:
+    //Set encoder unit, brake mode, tare position, and zero position here
+        intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+        lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+        claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    
+    [Other code]
+
+    void opcontrol() {
+        //temporary code
+            intake.move(127);
+            pros::delay(2500);
+            intake.brake();
+        
+        [Other code]
+    }
+```
 
 ### Making motor helper functions
 Helper functions are extremely important. They allow us to tell the robot what to do and when. They also allow us to make code more legible and keep it sorted into nicer groupings which make bugs easier to spot and isolate. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
@@ -416,15 +450,15 @@ intakeControls(
     speedOptions.NA1
 );
 ```
-
-**Final idea for our example:**
+\
+**Final code for our example:**
 ```
 In helpers.hpp:
     void intakeControls(const bool in, const bool out, const float speed);
 
 In helpers.cpp:
     void intakeControls(const bool in, const bool out, const float speed) {
-        [Future code here]
+
     }
 
     [other code]
@@ -485,9 +519,28 @@ void intakeControls(const bool in, const bool out, const float speed) {
     intake.brake();
 }
 ```
+**Explanation:** Notice what's happening here, we're asking if our function parameters are true or false. The `if (in)` line asks if the `in` boolean (our button's status) is set to true or false. If it is, then it tells the motor to spin, crucially, the `return;` line keeps the other code from running. Right now, the return line is mostly used to avoid the `intake.brake();` line, keeping our motor from immediately stopping.\
 **Notice:** Again, your code may look slightly different or have different names, that's okay. However, if your code isn't working as desired, follow the example's steps.\
 \
-Now you've written a simple program inside your helper function! But to make it run, we have to define motor controls.
+Now you've written a simple program inside your helper function! But to make it run, we have to define motor controls.\
+\
+**Final code for our example:**
+```
+In helpers.cpp:
+void intakeControls(const bool in, const bool out, const float speed) {
+    if (in) {
+        intake.move(speed);
+        return;
+    }
+
+    if (out) {
+        intake.move(-speed);
+        return;
+    }
+
+    intake.brake();
+}
+```
 
 ### Defining motor controls
 Defining motor controls is probably one of the silliest looking parts, but with practice it should make sense. To begin, navigate to the `helpers.hpp` file and find this block of code:
@@ -511,8 +564,6 @@ struct motorControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
-**Explanation:** Remember those `options.NA1`/`options.NA2` lines? This is where they come from. This is a structure (when we make them, we only write struct) and it allows us to create a large input of multiple data types. In our case, all of these data types are the same because they're all going to be buttons. The `= std::nullopt` tells us that the value will be defaulted to nothing unless we tell it otherwise. In a moment, we'll overwrite the default with controller buttons.\
-\
 For our intake function, let's rename `NA1` and `NA2` to `intakeIn` and `intakeOut` respectively. Though, you can also make your own names. Our example code should look something like the following:
 ```
 struct motorControlOptions {
@@ -534,6 +585,7 @@ struct motorControlOptions {
     std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
 };
 ```
+**Explanation:** Remember those `options.NA1`/`options.NA2` lines from the helpers.cpp file? This is where they come from. This is a structure (when we make them, we only write struct) and it allows us to create a large input of multiple data types, these values are called members. In our case, all of these data types are the same because they're all going to be buttons. The `= std::nullopt` tells us that the value will be defaulted to nothing unless we tell it otherwise. In a moment, we'll overwrite the default with controller buttons.\
 **Note:** For these, we can similarly delete and add more as needed, though, any that are deleted need to be removed everywhere. (Hint: `main.cpp` and `helpers.cpp` both have references to NA1 through NA6)\
 \
 These will soon be our new controls for our intake helper function. To do this, move back to `helpers.cpp` and scroll down to the `motorControls` function, you should see something like:
@@ -560,6 +612,8 @@ void motorControls(const struct motorControlOptions& options, const struct motor
     [other code here]
 }
 ```
+**Explanation:** You know our `intakeControls` function and how we declared a boolean called `in` and then called it? We're doing something very similar here. Strctures (structs) have many related variables, so writing only the structure's name when calling it wouldn't be useful. To call the specific values of the struct, we call the struct by name (our struct names are `options` and `speedOptions`) and then put a period and the specific struct value we're calling. In our case, the 2 struct values we're calling for our intake helper function are the `intakeIn` button and `intakeOut` button. Putting the notation together, we get `options.intakeIn` and `options.intakeOut`.\
+\
 You've now told your code which values to use through more clarified naming conventions! However, the controls haven't actually been defined yet. To do this, go your `main.cpp` file and scroll until you find the `motorControls` function in main, it should look as follows:
 ```
 motorControls({
@@ -622,11 +676,67 @@ motorControls({
     .NA3 = 127
 });
 ```
+**Explanation:** Earlier, we made `intakeIn` and `intakeOut` part of our struct, now we need to tell our function that they're going to be buttons in the controller (remember earlier we saw that they're all defaulted to `std::nullopt`). Also notice how only up to `.NA6` is written, earlier you saw that the struct has up to `.NA12`. The reasoning is that the struct has defaults already given, so if you delete `.NA3` through `.NA6` everything would still work since they were also defaulted to `std::nullopt` in the struct definition. Similarly to the extra motor helper functions (`motorHelper2` and `motorHelper3`), if you don't use these other NA values, they can be deleted in the struct definition (Hint: The large code block in helpers.hpp is the struct definition, struct definitions are different and go in header files).
+\
 Now download it and test it! Does holding your first [button](#pros-controller-button-library) move it forward/up/in and your second [button](#pros-controller-button-library) moves it backward/down/out? If so, you've succesfully coded a working helper function with defined controls!
 >[!NOTE]
 >If your forward/up/in goes backward/down/out, flip your motor port to be negative.
 
-But what if your motor intake is spinning too fast? How do we turn it down? Using the speedOptions struct we can set speeds other than the default 100%!
+But what if your motor intake is spinning too fast? How do we turn it down? Using the speedOptions struct we can set speeds other than the default 100%!\
+\
+**Final code for our example:**
+```
+In helpers.hpp:
+    struct motorControlOptions {
+        /*
+        Do NOT touch the assigned type   |           | change amount and  | do not change
+                                            v           v names as needed    v given value
+        */
+        std::optional<pros::controller_digital_e_t> intakeIn = std::nullopt;
+        std::optional<pros::controller_digital_e_t> intakeOut = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA3 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA4 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA5 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA6 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA7 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA8 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA9 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA10 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA11 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
+    };
+
+In helpers.cpp:
+    void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
+    intakeControls(
+        buttonStatus(options.intakeIn),
+        buttonStatus(options.intakeOut),
+        speedOptions.NA1
+    );
+
+    [other code here]
+    }
+
+In main.cpp:
+    motorControls({
+        //Controls options for motors
+        //remove entire line for no control of said motor
+        .intakeIn = pros::E_CONTROLLER_DIGITAL_UP,
+        .intakeOut = pros::E_CONTROLLER_DIGITAL_DOWN,
+        .NA3 = std::nullopt,
+        .NA4 = std::nullopt,
+        .NA5 = std::nullopt,
+        .NA6 = std::nullopt,
+
+    },{
+        //Speed options for the motors
+        //remove entire line for default speed of 100% for said motor
+        .NA1 = 127,
+        .NA2 = 127,
+        .NA3 = 127
+    });
+
+```
 
 ### Defining motor speeds
 Following similar steps as before, move back to the `helpers.hpp` file and find the `motorSpeedOptions` struct. Change `NA1` to be a name suitable for you, in the case of the example, a good name would be `intakeSpeed`. Now move to the `helpers.cpp` file and go to the `motorControls` function, inside of it is your function which still calls `speedOptions.NA1`, change `NA1` to your new name. For our example project, it will now look as follows:
@@ -651,6 +761,8 @@ In helpers.cpp:
         [other code]
     }
 ```
+**Notice:** Because we don't need the status of the button we simply call the struct's member which is named `intakeSpeed`.\
+\
 Now, we need to set the speed. Go to `main.cpp` and find your motorControls code, it should look something like this:
 ```
 motorControls({
@@ -676,6 +788,48 @@ Change `.NA1` to be your new name, in our case it will become `.intakeSpeed`. No
 >There is a [motorVelocity function](#motorvelocity-function) which can be called, it takes integer percentage values from -100 to 100 and converts them to the -127 to 127 range. To use it, you can write something like:\
 >`.intakeSpeed = motorVelocity(80);`\
 >This will run the motor at 80% speed.
+\
+**Final code for our example:**
+```
+In helpers.hpp:
+    struct motorSpeedOptions {
+        double intakeSpeed = 127;
+        double NA2 = 127;
+        double NA3 = 127;
+        double NA4 = 127;
+        double NA5 = 127;
+    };
+
+In helpers.cpp:
+	void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
+        motorHelper1(
+            buttonStatus(options.NA1),
+            buttonStatus(options.NA2),
+            speedOptions.intakeSpeed
+        );
+
+        [other code]
+    }
+
+In main.cpp:
+    motorControls({
+        //Controls options for motors
+        //remove entire line for no control of said motor
+        .intakeIn = pros::E_CONTROLLER_DIGITAL_UP,
+        .intakeOut = pros::E_CONTROLLER_DIGITAL_DOWN,
+        .NA3 = std::nullopt,
+        .NA4 = std::nullopt,
+        .NA5 = std::nullopt,
+        .NA6 = std::nullopt,
+
+    },{
+        //Speed options for the motors
+        //remove entire line for default speed of 100% for said motor
+        .NA1 = 127,
+        .NA2 = 127,
+        .NA3 = 127
+    });
+```
 
 ## Pneumatics
 This section will focus on pneumatics and what you can do with them, extras may be located in the [extra stuff section](#extra-stuff)
