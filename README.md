@@ -361,13 +361,13 @@ void opcontrol() {
 Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the autonomous selector, the motor should start spinning. If the motor spins for 2.5 seconds before stopping, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors.
 
 ### Making motor helper functions
-Helper functions are extremely important, they allow us to tell the robot what to do and when. They also allow us to make code more legible and keep it sorted into nicer groupings which make bugs easier to spot/isolate. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
+Helper functions are extremely important. They allow us to tell the robot what to do and when. They also allow us to make code more legible and keep it sorted into nicer groupings which make bugs easier to spot and isolate. Let's start by declaring a helper function. Navigate to `helpers.hpp` and find the line which says\
 `void motorHelper1(const bool forward, const bool backward, const float speed);`\
 **Explanation:** This is a helper function declaration included in the template. It serves to show you the structure of helper functions and how you'll write them. In the case of motor helper functions, they'll normally be structured to take two button inputs (in our case they're the forward and backward parameters) and one speed value (in our case it's called speed). As stated before, declarations tell the computer that this function exists somewhere. Special to the case of functions, though, it also tells the computer what parameters (things like `const bool forward`) the function expects, the parameter types (like `bool` and `float`), and the parameter names (like `forward`,`backward`, and `speed`).\
 \
 Let's use the template to make our helper function! Change the name of this function to something fitting for what your declared motor is going to do, something like `liftControls`,`clawControls`, or `intakeControls`. Then we need to make sure the parameters make sense, ask "does this motor move your part forward/backward, up/down, in/out, open/close, etc?" Once you've decided, change the names of `forward` and `backward` to match your function. Then navigate to your `helpers.cpp` and find the line that looks like\
 `void motorHelper1(const bool forward, const bool backward, const float speed) {`\
-**Explanation:** This is the helper function's matching definition. Notice it has the same name and contains the same parameter types in the same order as the original declaration, this is what allows the computer to recognize them as the same function. They work together to tell the computer what this function is (declaration) and what it does (definition). We need to make sure we do the same thing and replicate our new name and function parameter names. Finally, the opening curly brackets ({) tell the computer that everything between it and the closing curly bracket (}) is part of our function's code.\
+**Explanation:** This is the helper function's matching definition. Notice it has the same name and contains the same parameter types in the same order as the original declaration, this is what allows the computer to recognize them as the same function. They work together to tell the computer what this function is (declaration) and what it does (definition). We need to make sure we do the same thing and replicate our new name and function parameter names. Finally, the opening curly brackets (This: "{") tell the computer that everything between it and the closing curly bracket (This: "}") is part of our function's code.\
 \
 Change the name from `motorHelper1` to match the name in your `helpers.hpp` folder, then change the `forward`/`backward` to the new names you picked in your `helpers.hpp`. Some examples are as follows:\
 **1. Lift system which moves up/down**
@@ -388,13 +388,15 @@ In helpers.hpp:
 
 In helpers.cpp:
     void intakeControls(const bool in, const bool out, const float speed) {
-        [Code here]
+        [Future code here]
     }
 ```
 **Note:** Similarly to the motors, if you do not plan on using these extra motor helper functions, you can delete them. If you need more, you can copy the format in the `helpers.hpp` file and in the `helpers.cpp` file (or directly from the documentation) and write them into the motorControls function with the same format as the other functions.\
 \
 Once you've finished that, you're going to scroll further down in your `helpers.cpp` file until you find the `motorControls` function, which should look like\
 `void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {`\
+**Explanation:** This is the larger motorControls function just to keep later things grouped into one area, you should never touch it's definition line (the one above). The function parameters may be new to you, a structure (struct) is a large blueprint which allows us to input multiple related values and assign them defaults. More details on structs will be found later on.\
+\
 Inside of it, you should find something similar to the following:
 ```
 motorHelper1(
@@ -403,7 +405,9 @@ motorHelper1(
     speedOptions.NA1
 );
 ```
-This must be renamed to the same name as your new function. This will be where your function is eventually going to be used. But for now, you've made a helper function!
+**Explanation:** This is where we call the motorHelper1 function that we've just customized to our own liking. While formatted on multiple lines, you can imagine it as if the parameters were all on one line. As stated earlier, parameters one and two were buttons, so what is happening here is as follows: we pull `options.NA1` from the struct (which will eventually be renamed and assigned a button on the controller) and pass it into the buttonSatus function, the buttonStatus function will then return a boolean[^3] value based on the state of the button. We then repeat these steps for the second parameter. The third parameter doesn't require the buttonStatus function because it's a speed value.\
+\
+This must be renamed to the same name as your new function, to do this, simply replace `MotorHelper1` with your new function name. This will be where your function is called and soon will run a program. But for now, you've made a helper function!
 **Example:**
 ```
 intakeControls(
@@ -411,6 +415,29 @@ intakeControls(
     buttonStatus(options.NA2),
     speedOptions.NA1
 );
+```
+
+**Final idea for our example:**
+```
+In helpers.hpp:
+    void intakeControls(const bool in, const bool out, const float speed);
+
+In helpers.cpp:
+    void intakeControls(const bool in, const bool out, const float speed) {
+        [Future code here]
+    }
+
+    [other code]
+
+    void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
+        intakeControls(
+            buttonStatus(options.NA1),
+            buttonStatus(options.NA2),
+            speedOptions.NA1
+        );
+
+        [Other code]
+    }
 ```
 
 ### Writing a simple program inside our motor helper function
