@@ -44,6 +44,8 @@ void initialize() {
         Motor3.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
         Motor4.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
         Motor5.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    
+    //Set encoder unit, brake mode, tare position, and zero position here
         MotorGroup1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
         MotorGroup2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
         MotorGroup3.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -125,9 +127,27 @@ void opcontrol() {
             .NA3 = 127
 		});
 
+        motorGroupControls({
+			//Controls options for motor groups
+			//remove entire line for no control of said motor group
+            .NA1 = std::nullopt,
+            .NA2 = std::nullopt,
+            .NA3 = std::nullopt,
+            .NA4 = std::nullopt,
+            .NA5 = std::nullopt,
+            .NA6 = std::nullopt,
+
+		},{
+			//Speed options for the motor groups
+			//remove entire line for default speed of 100% for said motor group
+            .NA1 = 127,
+            .NA2 = 127,
+            .NA3 = 127
+		});
+
 		pneumaticControls({
-            //Controls options for motors
-			//remove entire line for no control of said motor
+            //Controls options for pneumatic
+			//remove entire line for no control of said pneumatic
             .NA1 = std::nullopt,
             .NA2 = std::nullopt,
             .NA3 = std::nullopt,

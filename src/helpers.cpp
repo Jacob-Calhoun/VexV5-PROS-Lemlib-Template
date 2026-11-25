@@ -101,6 +101,45 @@ assign controls in main.cpp
         );
 	}
 
+//motorGroupHelper1
+    void motorGroupHelper1(const bool forward, const bool backward, const float speed) {
+
+    }
+
+//motorGroupHelper2
+    void motorGroupHelper2(const bool forward, const bool backward, const float speed) {
+        
+    }
+
+//motorGroupHelper3
+    void motorGroupHelper3(const bool forward, const bool backward, const float speed) {
+        
+    }
+
+/*
+Motor group controls
+gives on main area where all motor functions go
+assign controls in main.cpp
+*/
+    void motorGroupControls(const struct motorGroupControlOptions& options, const struct motorGroupSpeedOptions& speedOptions) {
+        motorGroupHelper1(
+            buttonStatus(options.NA1),
+            buttonStatus(options.NA2),
+            speedOptions.NA1
+        );
+
+        motorGroupHelper2(
+            buttonStatus(options.NA3),
+            buttonStatus(options.NA4),
+            speedOptions.NA2
+        );
+
+        motorGroupHelper3(
+            buttonStatus(options.NA5),
+            buttonStatus(options.NA6),
+            speedOptions.NA3
+        );
+    }
 //pneumaticHelper1
 void pneumaticHelper1(const bool out, const bool in) {
 

@@ -35,6 +35,34 @@
         double NA6 = 127;
     };
     
+        struct motorGroupControlOptions {
+        /*
+        Do NOT touch the assigned type   |           | change amount and  | do not change
+                                         v           v names as needed    v given value
+        */
+        std::optional<pros::controller_digital_e_t> NA1 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA2 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA3 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA4 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA5 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA6 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA7 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA8 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA9 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA10 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA11 = std::nullopt;
+        std::optional<pros::controller_digital_e_t> NA12 = std::nullopt;
+    };
+
+    struct motorGroupSpeedOptions {
+        double NA1 = 127;
+        double NA2 = 127;
+        double NA3 = 127;
+        double NA4 = 127;
+        double NA5 = 127;
+        double NA6 = 127;
+    };
+
     struct pneumaticControlOptions {
         /*
         Do NOT touch the assigned type   |           | change amount and  | do not change
@@ -69,6 +97,11 @@
         void motorHelper1(const bool forward, const bool backward, const float speed);
         void motorHelper2(const bool forward, const bool backward, const float speed);
         void motorHelper3(const bool forward, const bool backward, const float speed);
+    //Related to motor groups (use motorControls, do not remove it)
+        void motorGroupControls(const struct motorGroupControlOptions& options = {}, const struct motorGroupSpeedOptions& speedOptions = {});
+        void motorGroupHelper1(const bool forward, const bool backward, const float speed);
+        void motorGroupHelper2(const bool forward, const bool backward, const float speed);
+        void motorGroupHelper3(const bool forward, const bool backward, const float speed);
     //Related to pneumatics (use pneumaticControls, do not remove it)
         void pneumaticControls(const struct pneumaticControlOptions& options = {});
         void pneumaticHelper1(const bool out, const bool in);
