@@ -24,7 +24,14 @@
     extern pros::Motor Motor3;
     extern pros::Motor Motor4;
     extern pros::Motor Motor5;
-  
+
+//Motor groups
+    extern pros::MotorGroup MotorGroup1;
+    extern pros::MotorGroup MotorGroup2;
+    extern pros::MotorGroup MotorGroup3;
+    extern pros::MotorGroup MotorGroup4;
+    extern pros::MotorGroup MotorGroup5;
+
 //Pneumatics
     extern pros::adi::Pneumatics Pneumatic1;
     extern pros::adi::Pneumatics Pneumatic2;

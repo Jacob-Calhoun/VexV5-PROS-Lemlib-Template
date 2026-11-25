@@ -24,6 +24,13 @@ const bool startRetracted = false;
     pros::Motor Motor4(1, pros::v5::MotorGearset::green);
     pros::Motor Motor5(1, pros::v5::MotorGearset::green);
 
+//Motor groups
+    pros::MotorGroup MotorGroup1({1,1}, pros::v5::MotorGearset::green);
+    pros::MotorGroup MotorGroup2({1,1}, pros::v5::MotorGearset::green);
+    pros::MotorGroup MotorGroup3({1,1}, pros::v5::MotorGearset::green);
+    pros::MotorGroup MotorGroup4({1,1}, pros::v5::MotorGearset::green);
+    pros::MotorGroup MotorGroup5({1,1}, pros::v5::MotorGearset::green);
+
 //Pneumatics
     pros::adi::Pneumatics Pneumatic1('A', startRetracted);
     pros::adi::Pneumatics Pneumatic2('A', startRetracted);

@@ -176,12 +176,29 @@ claw.move(-100);    // Moves backward at 100/127 speed
 lift.move(35);  // Moves forward at 35/127 speed
 ```
 
+### motorGroup.move function
+The motorGroup.move function is a function which tells motor groups to move based off a signed input from the domain of -127 to 127. The function requires you to write the name of the motor group before being followed by `.move(n)` (where `-127<=n<=127`). Some examples are
+```
+intakeGroup.move(127);   // Moves forward at full speed
+clawGroup.move(-100);    // Moves backward at 100/127 speed
+liftGroup.move(35);  // Moves forward at 35/127 speed
+```
+
 ### motor.set_brake_mode function
 The motor.set_brake_mode function is a function which tells motors which braking method to use. Some examples are
 ```
 intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);    // Tells the motor to try and hold exactly where it was when told to brake
 claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);    // Tells the motor to come to a stop but not hold position
 lift.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);    // Tells the motor to just turn off and allow spin
+```
+The available options are listed in the [motor brake modes class](#motor-brake-modes-library)
+
+### motorGroup.set_brake_mode function
+The motorGroup.set_brake_mode function is a function which tells motor groups which braking method to use. Some examples are
+```
+intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);    // Tells the motor group to try and hold exactly where it was when told to brake
+claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);    // Tells the motor group to come to a stop but not hold position
+lift.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);    // Tells the motor group to just turn off and allow spin
 ```
 The available options are listed in the [motor brake modes class](#motor-brake-modes-library)
 
@@ -193,6 +210,15 @@ claw.brake();   // Claw motor brakes
 lift.brake();   // Lift motor brakes
 ```
 To choose the brake mode, use the [motor brake modes class](#motor-brake-modes-library) in the [motor set brake mode function](#motorset_brake_mode-function).
+
+### motorGroup.brake function
+The motorGroup.brake function is a function which tells motors to brake based off a previously defined choice. Some examples are
+```
+intakeGroup.brake(); // Intake motor brakes
+clawGroup.brake();   // Claw motor brakes
+liftGroup.brake();   // Lift motor brakes
+```
+To choose the brake mode, use the [motor brake modes class](#motor-brake-modes-library) in the [motor group set brake mode function](#motorGroupset_brake_mode-function).
 
 ### buttonStatus function
 The buttonStatus function is a function which takes an input of an optional button type (`std::optional<pros::controller_digital_e_t>`) and outputs a boolean[^3] value in return. To use it, write `buttonStatus(pros::E_CONTROLLER_DIGITAL_A)` or some other allowed [button](#pros-controller-button-library). You may also include a second parameter, this parameter tells it whether to process all presses or only new presses/releases. For instance,
@@ -304,11 +330,11 @@ This section will focus on motors and what you can do with them, extra coding op
 ### Define your motors
 Now let's define some motors. Navigate back to `globals.hpp` and find the motor lines similar to\
 `extern pros::Motor Motor1;`\
-**Explanation:** This is a motor declaration[^4]. It follows a similar declaration format to the drivetrain. Unlike from the drivetrain, we declare a single motor rather than a motor group. `extern pros::Motor` tells us that this is a motor which will be defined elsewhere. `Motor1` is the name of our declared motor.\
+**Explanation:** This is a motor declaration[^4]. It follows a similar declaration format to the drivetrain. Unlike the drivetrain, we declare a single motor rather than a motor group. `extern pros::Motor` tells us that this is a motor which will be defined elsewhere. `Motor1` is the name of our declared motor.\
 \
 To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, `intake`, or whatever else you may have. Now navigate back to the `globals.cpp` file and find the line that looks like\
 `pros::Motor Motor1(1, pros::v5::MotorGearset::green);`\
-**Explanation:** This is a motor definition. It follows a similar definition format to the drivetrain. Unlike from the drivetrain, we're defining a single motor rather than multiple. `pros::Motor` tells us that this is a motor, and `Motor1` is the name of our defined motor. `1` is the motor's port number. `pros::v5::MotorGearset::green` specifies the motor's cartridge (55-watt motors are considered green).\
+**Explanation:** This is a motor definition. It follows a similar definition format to the drivetrain. Unlike the drivetrain, we're defining a single motor rather than multiple. `pros::Motor` tells us that this is a motor, and `Motor1` is the name of our defined motor. `1` is the motor's port number. `pros::v5::MotorGearset::green` specifies the motor's cartridge (55-watt motors are considered green).\
 \
 This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}`. Continue on by changing the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port number to that part of your robot. Then make sure your motor gearset matches the motor cartridge you're using.\
 **Example:**
@@ -814,46 +840,46 @@ In main.cpp:
 This section will focus on motors and what you can do with them, extra coding options and abilities may be located in the [extra syntax section](#extra-stuff)
 
 ### Define your motor groups
-Now let's define some motors. Navigate back to `globals.hpp` and find the motor lines similar to\
-`extern pros::Motor Motor1;`\
-**Explanation:** This is a motor declaration[^4]. It follows a similar declaration format to the drivetrain. Unlike from the drivetrain, we declare a single motor rather than a motor group. `extern pros::Motor` tells us that this is a motor which will be defined elsewhere. `Motor1` is the name of our declared motor.\
+Now let's define some motor groups. Navigate back to `globals.hpp` and find the motor group lines similar to\
+`extern pros::MotorGroup MotorGroup1;`\
+**Explanation:** This is a motor group declaration[^4]. It follows a similar declaration format to the drivetrain. `extern pros::MotorGroup` tells us that this is a motor group which will be defined elsewhere. `MotorGroup1` is the name of our declared motor group.\
 \
-To start, let's change the motor's name from `Motor1` to something on your robot, try replacing it with `lift`, `claw`, `intake`, or whatever else you may have. Now navigate back to the `globals.cpp` file and find the line that looks like\
-`pros::Motor Motor1(1, pros::v5::MotorGearset::green);`\
-**Explanation:** This is a motor definition. It follows a similar definition format to the drivetrain. Unlike from the drivetrain, we're defining a single motor rather than multiple. `pros::Motor` tells us that this is a motor, and `Motor1` is the name of our defined motor. `1` is the motor's port number. `pros::v5::MotorGearset::green` specifies the motor's cartridge (55-watt motors are considered green).\
+To start, let's change the motor group's name from `MotorGroup1` to something on your robot, try replacing it with `lift`, `claw`, `intake`, or whatever else you may have. Now navigate back to the `globals.cpp` file and find the line that looks like\
+`pros::MotorGroup MotorGroup1(1, pros::v5::MotorGearset::green);`\
+**Explanation:** This is a motor group definition. It follows a similar definition format to the drivetrain. `pros::MotorGroup` tells us that this is a motor group, and `MotorGroup1` is the name of our defined motor. `{1,1}` are the motor group's port numbers. When assigning ports, remember that motors in pairs could spin opposite ways, you'll likely need to make one negative. `pros::v5::MotorGearset::green` specifies the motor group's cartridge (55-watt motors are considered green), cartridges should be the same for your entire motor group.\
 \
-This also follows the same format, but we only write a number like `1`/`-1` rather than `{1}`/`{-1}`. Continue on by changing the `Motor1` name to match whatever you wrote in your `globals.hpp` file and give it the port number to that part of your robot. Then make sure your motor gearset matches the motor cartridge you're using.\
+Continue on by changing the `MotorGroup1` name to match whatever you wrote in your `globals.hpp` file and give it the port numbers to that part of your robot. Then make sure your motor gearset matches the motor cartridge you're using for your motor group.\
 **Example:**
 ```
 In globals.hpp file:
-    extern pros::Motor intake;
-    extern pros::Motor lift;
-    extern pros::Motor claw;
+    extern pros::MotorGroup liftGroup;
+    extern pros::MotorGroup intakeGroup;
+    extern pros::MotorGroup clawGroup;
 
 In globals.cpp file:
-    pros::Motor intake(4, pros::v5::MotorGearset::green);
-    pros::Motor lift(-7, pros::v5::MotorGearset::blue);
-    pros::Motor claw(12, pros::v5::MotorGearset::red);
+    pros::MotorGroup liftGroup({15,-16}, pros::v5::MotorGearset::blue);
+    pros::MotorGroup intakeGroup({-5,-10,13,17}, pros::v5::MotorGearset::green);
+    pros::MotorGroup clawGroup({2,4,18}, pros::v5::MotorGearset::red);
 ```
-**Notice:** Unlike the template, the Motor4 and Motor5 lines are missing, this is because we can delete them if they're not being used. However, the contrary is also true, if you require more than just 5 motors, you may create your own motors on new lines by copying the same format. But be cautious, if you remove the motor declaration and definition, ensure you remove any other areas where it is used.\
+**Notice:** Unlike the template, the MotorGroup4 and MotorGroup5 lines are missing, this is because we can delete them if they're not being used. However, the contrary is also true, if you require more than just 5 motors groups, you may create your own motors on new lines by copying the same format. But be cautious, if you remove the motor group declaration and definition, ensure you remove any other areas where it is used.\
 \
-Now let's give it a brake mode using the [motor.set_brake_mode function](#motorset_brake_mode-function), navigate to `main.cpp` and scroll until you find something like
+Now let's give it a brake mode using the [motorGroup.set_brake_mode function](#motorgroupset_brake_mode-function), navigate to `main.cpp` and scroll until you find something like
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
-    Motor1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor3.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor4.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    Motor5.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    MotorGroup1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    MotorGroup2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    MotorGroup3.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    MotorGroup4.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    MotorGroup5.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 ```
-**Explanation:** This section is referring to our template motors, notice how they are using the name to call the function. Because we changed the name of the motor in the definition and declaration, we also have to change it wherever else it's mentioned.\
+**Explanation:** This section is referring to our template motor groups, notice how they are using the name to call the function. Because we changed the name of the motor group in the definition and declaration, we also have to change it wherever else it's mentioned.\
 \
-We're going to rename `Motor1` to our chosen name and pick a new brake mode from the [brake modes library](#motor-brake-modes-library), for our example, we'll pick one for each option (if you're following with your own choices, you can use any combination), so our new code will look like this:
+We're going to rename `MotorGroup1` to our chosen name and pick a new brake mode from the [brake modes library](#motor-brake-modes-library), for our example, we'll pick one for each option (if you're following with your own choices, you can use any combination), so our new code will look like this:
 ```
 //Set encoder unit, brake mode, tare position, and zero position here
-    intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-    lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    intakeGroup.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+    liftGroup.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    clawGroup.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     Motor4.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     Motor5.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 ```
@@ -864,44 +890,44 @@ Now that we have all of this defined, let's test it! Find something in `main.cpp
 void opcontrol () {
     //temporary code
 ```
-Under the temporary code section, write `[your motor's name].move(127);`. This is using the [motor.move function](#motormove-function) to tell the computer to move your motor at full speed. Then we will write the [pros delay function](#prosdelay-function) `pros::delay(2500);` which tells the computer to wait 2.5 seconds before continuing to the next step. Finally, we can use the [motor.brake function](#motorbrake-function) by writing `[your motor's name].brake();`, this will tell the motor to brake using our newly selected brake option.\
+Under the temporary code section, write `[your motor group's name].move(127);`. This is using the [motorGroup.move function](#motorGroupmove-function) to tell the computer to move your motor at full speed. Then we will write the [pros delay function](#prosdelay-function) `pros::delay(2500);` which tells the computer to wait 2.5 seconds before continuing to the next step. Finally, we can use the [motorGroup.brake function](#motorGroupbrake-function) by writing `[your motor group's name].brake();`, this will tell the motor to brake using our newly selected brake option.\
 **Example:**
 ```
 void opcontrol() {
     //temporary code
-        intake.move(127);
+        liftGroup.move(127);
         pros::delay(2500);
-        intake.brake();
+        liftGroup.brake();
 ```
-Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the autonomous selector, the motor should start spinning. If the motor spins for 2.5 seconds before stopping, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors.\
+Now download this by following the same [download instructions](#downloading-code) from before. Once done, run the code and click A to exit the autonomous selector, the motor group should start spinning. If the motor group spins for 2.5 seconds before stopping, you've properly declared, defined, and called a motor! If not, refer back to the above and check for any errors.\
 \
-**Note:** You can test your other motors doing the same thing, but for the sake of simplicity only one is shown.\
+**Note:** You can test your other motor groups doing the same thing, but for the sake of simplicity only one is shown.\
 \
 **Final code for our example:**
 ```
 In globals.hpp:
-    extern pros::Motor intake;
-    extern pros::Motor lift;
-    extern pros::Motor claw;
+    extern pros::MotorGroup liftGroup;
+    extern pros::MotorGroup intakeGroup;
+    extern pros::MotorGroup clawGroup;
 
 In globals.cpp:
-    pros::Motor intake(4, pros::v5::MotorGearset::green);
-    pros::Motor lift(-7, pros::v5::MotorGearset::blue);
-    pros::Motor claw(12, pros::v5::MotorGearset::red);
+    pros::MotorGroup liftGroup({15,-16}, pros::v5::MotorGearset::blue);
+    pros::MotorGroup intakeGroup({-5,-10,13,17}, pros::v5::MotorGearset::green);
+    pros::MotorGroup clawGroup({2,4,18}, pros::v5::MotorGearset::red);
 
 In main.cpp:
     //Set encoder unit, brake mode, tare position, and zero position here
-        intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-        lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-        claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+        intakeGroup.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+        liftGroup.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+        clawGroup.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     
     [Other code]
 
     void opcontrol() {
         //temporary code
-            intake.move(127);
+            liftGroup.move(127);
             pros::delay(2500);
-            intake.brake();
+            liftGroup.brake();
         
         [Other code]
     }
