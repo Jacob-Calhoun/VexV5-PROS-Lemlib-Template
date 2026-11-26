@@ -1773,7 +1773,7 @@ We've define an autonomous program, but it currently does nothing. Let's first u
 ```
 Let's now [download](#downloading-code) this and run the code. When we run the code, a menu should appear and prompt us to select an autonomous. Use the up/down arrows on the controller to get the ">" arrow pointing at our new calibration autonomous, then click A to select it. The robot should begin moving forwards and stop near the value (0, 15)! If it instead keeps going forwards and reports a negative y-value, try flipping your vertical tracking wheel port to a negative number. If the issue persists, ensure you've follow the directions properly.
 
-### Calibration auton program
+### Calibration autonomous program
 While this is a good start, this isn't a square yet. We're then going to point to a heading of 90 using the [chassis.turnToHeading function](#chassisturntoheading-function), then moving to (15, 15) within 5 seconds. For (0, 15), we'll combine the heading and point using the [chassis.moveToPose function](#chassismovetopose-function) and tell it to move to (0, 15) with a theta value of -180. Now we have code that looks as follows:
 ```
 //Route 1
@@ -1930,7 +1930,7 @@ The motorVelocity function is a function which takes `motor.move();` values in t
 **Note: Because this function is meant to return a value, you should normally only call it inside the .move**
 
 ## PID explained
-This 
+PID is a 3 part system which uses each part to balance the others. P is the proportional part, it takes the distance between the desired position and the actual position, multiplying it by kP. P and kP effectively serve as the baseline, being the heavy lifters of the other two. I is the integral part, it takes the area of errors (the P part multiplied by time between each taken measurement) and multiplies them by kI, this value allows small errors to be corrected after a lengthened amount of time. This means that if an error like 3 degrees is too small for kP/P, the kI/I value will gain until it's eventually made large enough to move the motor (in some systems, this I value resets to 0 whenever the current position crosses the desired position, ensuring it doesn't harm the kP/P adjustments that come after). Finally, the D part. D is the derivative, serving as a method to slow down the other two parts. Say P and I are growing extremely fast, so fast that they'll completely overshoot the desired position. The D part takes the rate of change between the previous and current positions and multiplied them by kD, softening the acceleration of the other two values.
 
 
 [^1]: Theta values are the direction which the robot faces, it can be both positive or negative. 0/360 directly forward, 180/-180 are directly backward, and so forth.
